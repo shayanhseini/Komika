@@ -13,10 +13,6 @@ public class PlayerCameraController : MonoBehaviour
     [SerializeField] private float rollAmount = 3f;
     [SerializeField] private float rotationSmoothness = 5f;
 
-    [Header("Vertical Bob")]
-    [SerializeField] private float bobAmount = 0.15f;
-    [SerializeField] private float bobSpeed = 1.5f;
-
     [Header("Lane Follow")]
     [SerializeField, Range(0f, 1f)] private float horizontalFollowAmount = 0.45f;
     [SerializeField, Min(0.01f)] private float horizontalFollowSmoothTime = 0.12f;
@@ -90,10 +86,8 @@ public class PlayerCameraController : MonoBehaviour
 
     private void ApplyCameraPosition()
     {
-        float bobOffset = Mathf.Sin(Time.time * bobSpeed) * bobAmount;
         Vector3 targetPosition = initialPosition;
         targetPosition.x = followedLocalX;
-        targetPosition.y += bobOffset;
         transform.localPosition = targetPosition;
     }
 

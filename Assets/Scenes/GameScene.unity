@@ -4582,8 +4582,6 @@ MonoBehaviour:
   pitchAmount: 1.5
   rollAmount: 1.5
   rotationSmoothness: 5
-  bobAmount: 0.15
-  bobSpeed: 1.5
   horizontalFollowAmount: 0.45
   horizontalFollowSmoothTime: 0.12
   targetCamera: {fileID: 5008145287639095002}
