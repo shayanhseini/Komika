@@ -435,8 +435,14 @@ public class PlayerController : MonoBehaviour
 
     private void StartJump()
     {
-        if (IsJumping || IsSliding)
+        if (IsJumping)
             return;
+
+        if (IsSliding)
+        {
+            RestoreStandingCollider();
+            RestoreStandingVisualImmediately();
+        }
 
         IsJumping = true;
         jumpElapsed = 0f;
@@ -523,6 +529,15 @@ public class PlayerController : MonoBehaviour
         float blend = 1f - Mathf.Exp(-slideVisualTransitionSpeed * Time.deltaTime);
         slideVisual.localScale = Vector3.Lerp(slideVisual.localScale, targetScale, blend);
         slideVisual.localPosition = Vector3.Lerp(slideVisual.localPosition, targetPosition, blend);
+    }
+
+    private void RestoreStandingVisualImmediately()
+    {
+        if (slideVisual == null)
+            return;
+
+        slideVisual.localScale = standingVisualScale;
+        slideVisual.localPosition = standingVisualPosition;
     }
 
 
