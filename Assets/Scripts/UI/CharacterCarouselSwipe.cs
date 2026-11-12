@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CharacterCarouselSwipe : MonoBehaviour, IBeginDragHandler, IEndDragHandler
+public class CharacterCarouselSwipe : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private KomikaUIController controller;
     [SerializeField] private float swipeThreshold = 60f;
@@ -13,6 +13,8 @@ public class CharacterCarouselSwipe : MonoBehaviour, IBeginDragHandler, IEndDrag
         dragStart = eventData.position;
     }
 
+
+    public void OnDrag(PointerEventData eventData) { }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (controller == null)

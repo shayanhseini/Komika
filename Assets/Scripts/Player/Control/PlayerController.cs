@@ -106,7 +106,13 @@ public class PlayerController : MonoBehaviour
         }
 
         if (slideVisual == null)
-            slideVisual = transform.Find("Cube");
+        {
+            slideVisual = transform.Find("Character_Visual");
+            if (slideVisual == null)
+                slideVisual = transform.Find("Character_Mesh");
+            if (slideVisual == null)
+                slideVisual = transform.Find("Cube");
+        }
 
         if (slideVisual != null)
         {

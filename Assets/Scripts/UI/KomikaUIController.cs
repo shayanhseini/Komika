@@ -140,7 +140,15 @@ public class KomikaUIController : MonoBehaviour
         if (characterMaterials == null || characterMaterials.Length == 0) return;
         index = Mathf.Clamp(index, 0, characterMaterials.Length - 1);
         selectedCharacterIndex = index;
-        if (playerRenderer != null && characterMaterials[index] != null) playerRenderer.sharedMaterial = characterMaterials[index];
+        if (playerRenderer != null && characterMaterials[index] != null)
+        {
+            bool hasCustomTexture = playerRenderer.sharedMaterial != null && playerRenderer.sharedMaterial.mainTexture != null;
+            bool targetHasTexture = characterMaterials[index].mainTexture != null;
+            if (!hasCustomTexture || targetHasTexture)
+            {
+                playerRenderer.sharedMaterial = characterMaterials[index];
+            }
+        }
         PlayerPrefs.SetInt("KomikaSelectedCharacter", index);
         PlayerPrefs.Save();
         if (selectedIndicators == null) return;

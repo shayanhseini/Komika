@@ -154,7 +154,7 @@ public static class BuildKomikaUI
         Text("Label",go.transform,label,23,accent,TextAlignmentOptions.Center,Vector2.zero,new Vector2(-18,-10)); Stretch(go.transform.GetChild(0).GetComponent<RectTransform>()); return b;
     }
     private static GameObject Image(string name,Transform parent,Color color){GameObject go=UIObject(name,parent); var image=go.AddComponent<Image>();image.color=color;return go;}
-    private static TMP_Text Text(string name,Transform parent,string value,float size,Color color,TextAlignmentOptions alignment,Vector2 pos,Vector2 sizeDelta){GameObject go=UIObject(name,parent);var t=go.AddComponent<TextMeshProUGUI>();t.text=value;t.fontSize=size;t.color=color;t.alignment=alignment;t.font=font;t.enableWordWrapping=false;Rect(t.rectTransform,.5f,.5f,pos,sizeDelta);return t;}
+    private static TMP_Text Text(string name,Transform parent,string value,float size,Color color,TextAlignmentOptions alignment,Vector2 pos,Vector2 sizeDelta){GameObject go=UIObject(name,parent);var t=go.AddComponent<TextMeshProUGUI>();t.text=value;t.fontSize=size;t.color=color;t.alignment=alignment;t.font=font;t.textWrappingMode=TextWrappingModes.NoWrap;Rect(t.rectTransform,.5f,.5f,pos,sizeDelta);return t;}
     private static GameObject UIObject(string name,Transform parent){GameObject go=new(name,typeof(RectTransform));go.transform.SetParent(parent,false);return go;}
     private static void Rect(RectTransform r,float ax,float ay,Vector2 pos,Vector2 size){r.anchorMin=r.anchorMax=new Vector2(ax,ay);r.pivot=new Vector2(.5f,.5f);r.anchoredPosition=pos;r.sizeDelta=size;}
     private static void Stretch(RectTransform r){r.anchorMin=Vector2.zero;r.anchorMax=Vector2.one;r.offsetMin=r.offsetMax=Vector2.zero;}
