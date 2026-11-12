@@ -78,7 +78,8 @@ public static class BuildKomikaUI
         UnityEditor.SceneManagement.EditorSceneManager.SaveOpenScenes();
         AssetDatabase.SaveAssets();
         string carouselResult = UpgradeKomikaCarousel.Main();
-        return $"Built Komika UI: characterMaterials={materials.Length}, EventSystems={UnityEngine.Object.FindObjectsByType<EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None).Length}; {carouselResult}";
+        string flowResult = UpgradeKomikaUIFlow.Main();
+        return $"Built Komika UI: characterMaterials={materials.Length}, EventSystems={UnityEngine.Object.FindObjectsByType<EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None).Length}; {carouselResult}; {flowResult}";
     }
 
     private static GameObject BuildCharacterPanel(Transform parent, KomikaUIController controller, out Material[] materials, out GameObject[] indicators)

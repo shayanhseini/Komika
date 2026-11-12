@@ -322,7 +322,7 @@ public class UIManager : MonoBehaviour
 
         while (elapsed < fadeDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
 
 
             float t =
@@ -358,6 +358,7 @@ public class UIManager : MonoBehaviour
         {
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
+            canvasGroup.gameObject.SetActive(false);
         }
         else
         {
