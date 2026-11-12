@@ -50,12 +50,13 @@ public class KomikaUIController : MonoBehaviour
     private void Awake()
     {
         Time.timeScale = 1f;
+        bool autoStartAfterRestart = PlayerPrefs.GetInt(AutoStartAfterRestartKey, 0) == 1;
         displayedBestRecord = saveManager != null ? saveManager.GetHighestScore() : 0f;
         UpdateRecordLabels();
-        SetInitialPanelState();
+        SetInitialPanelState(!autoStartAfterRestart);
         SelectCharacter(PlayerPrefs.GetInt("KomikaSelectedCharacter", 0));
 
-        if (PlayerPrefs.GetInt(AutoStartAfterRestartKey, 0) == 1)
+        if (autoStartAfterRestart)
         {
             PlayerPrefs.DeleteKey(AutoStartAfterRestartKey);
             PlayerPrefs.Save();
@@ -178,10 +179,10 @@ public class KomikaUIController : MonoBehaviour
         if (gameOverBestRecordText != null) gameOverBestRecordText.text = bestValue;
     }
 
-    private void SetInitialPanelState()
+    private void SetInitialPanelState(bool showMenu)
     {
         if (allPanelGroups == null) return;
-        foreach (CanvasGroup group in allPanelGroups) SetGroupImmediate(group, group == menuGroup);
+        foreach (CanvasGroup group in allPanelGroups) SetGroupImmediate(group, showMenu && group == menuGroup);
     }
 
     private void TransitionTo(CanvasGroup target)

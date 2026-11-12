@@ -51,7 +51,22 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        ShowStartUI();
+        bool autoStartAfterRestart = PlayerPrefs.GetInt("KomikaAutoStartAfterRestart", 0) == 1;
+        if (autoStartAfterRestart)
+        {
+            if (startPanel != null)
+                startPanel.SetActive(false);
+            if (startCanvasGroup != null)
+            {
+                startCanvasGroup.alpha = 0f;
+                startCanvasGroup.interactable = false;
+                startCanvasGroup.blocksRaycasts = false;
+            }
+        }
+        else
+        {
+            ShowStartUI();
+        }
 
         if (gamePanel != null)
             gamePanel.SetActive(false);
