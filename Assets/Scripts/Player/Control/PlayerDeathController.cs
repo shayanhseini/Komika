@@ -2,20 +2,6 @@ using UnityEngine;
 
 public class PlayerDeathController : MonoBehaviour
 {
-    private void OnEnable()
-    {
-        GameEvents.GameOver += DisablePlayer;
-    }
-
-
-    private void OnDisable()
-    {
-        GameEvents.GameOver -= DisablePlayer;
-    }
-
-
-    private void DisablePlayer()
-    {
-        gameObject.SetActive(false);
-    }
+    // The player intentionally stays visible after Game Over.
+    // PlayerController already stops accepting input through GameEvents.GameOver.
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class KomikaUIController : MonoBehaviour
 {
+    private const string AutoStartAfterRestartKey = "KomikaAutoStartAfterRestart";
+
     [Header("Panels")]
     [SerializeField] private GameObject menuExtensions;
     [SerializeField] private GameObject characterPanel;
@@ -52,6 +54,13 @@ public class KomikaUIController : MonoBehaviour
         UpdateRecordLabels();
         SetInitialPanelState();
         SelectCharacter(PlayerPrefs.GetInt("KomikaSelectedCharacter", 0));
+
+        if (PlayerPrefs.GetInt(AutoStartAfterRestartKey, 0) == 1)
+        {
+            PlayerPrefs.DeleteKey(AutoStartAfterRestartKey);
+            PlayerPrefs.Save();
+            StartCoroutine(AutoStartAfterReload());
+        }
     }
 
     private void OnEnable()
@@ -102,13 +111,27 @@ public class KomikaUIController : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1f;
+        PlayerPrefs.SetInt(AutoStartAfterRestartKey, 1);
+        PlayerPrefs.Save();
         if (gameManager != null) gameManager.RestartGameWithEffect();
     }
 
     public void ReturnToMainMenu()
     {
         Time.timeScale = 1f;
+        PlayerPrefs.DeleteKey(AutoStartAfterRestartKey);
+        PlayerPrefs.Save();
         if (gameManager != null) gameManager.RestartGame();
+    }
+
+    private IEnumerator AutoStartAfterReload()
+    {
+        yield return null;
+        UIManager uiManager = FindFirstObjectByType<UIManager>();
+        if (uiManager != null)
+            uiManager.StartGame();
+        else if (gameManager != null)
+            gameManager.StartGame();
     }
 
     public void SelectCharacter(int index)
