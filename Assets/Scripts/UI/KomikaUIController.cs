@@ -13,6 +13,10 @@ public class KomikaUIController : MonoBehaviour
     [SerializeField] private Renderer playerRenderer;
     [SerializeField] private Material[] characterMaterials;
     [SerializeField] private GameObject[] selectedIndicators;
+    [SerializeField] private RectTransform[] characterCards;
+    [SerializeField] private CanvasGroup[] characterCardGroups;
+    [SerializeField] private float carouselSpacing = 430f;
+    [SerializeField] private float carouselSmoothness = 12f;
 
     [Header("HUD")]
     [SerializeField] private TMP_Text coinText;
@@ -22,6 +26,7 @@ public class KomikaUIController : MonoBehaviour
     [SerializeField] private WorldMovementManager worldMovement;
 
     private int coinCount;
+    private int selectedCharacterIndex;
 
     private void Awake()
     {
@@ -49,6 +54,8 @@ public class KomikaUIController : MonoBehaviour
 
     private void Update()
     {
+        UpdateCharacterCarousel();
+
         if (gameplayHud == null || !gameplayHud.activeInHierarchy)
             return;
 
@@ -90,6 +97,7 @@ public class KomikaUIController : MonoBehaviour
             return;
 
         index = Mathf.Clamp(index, 0, characterMaterials.Length - 1);
+        selectedCharacterIndex = index;
         if (playerRenderer != null && characterMaterials[index] != null)
             playerRenderer.sharedMaterial = characterMaterials[index];
 
@@ -101,6 +109,47 @@ public class KomikaUIController : MonoBehaviour
         for (int i = 0; i < selectedIndicators.Length; i++)
             if (selectedIndicators[i] != null)
                 selectedIndicators[i].SetActive(i == index);
+    }
+
+    public void ShowNextCharacter()
+    {
+        if (characterMaterials == null || characterMaterials.Length == 0)
+            return;
+        SelectCharacter((selectedCharacterIndex + 1) % characterMaterials.Length);
+    }
+
+    public void ShowPreviousCharacter()
+    {
+        if (characterMaterials == null || characterMaterials.Length == 0)
+            return;
+        SelectCharacter((selectedCharacterIndex - 1 + characterMaterials.Length) % characterMaterials.Length);
+    }
+
+    private void UpdateCharacterCarousel()
+    {
+        if (characterPanel == null || !characterPanel.activeInHierarchy || characterCards == null)
+            return;
+
+        float blend = 1f - Mathf.Exp(-carouselSmoothness * Time.unscaledDeltaTime);
+        for (int i = 0; i < characterCards.Length; i++)
+        {
+            RectTransform card = characterCards[i];
+            if (card == null)
+                continue;
+
+            int offset = i - selectedCharacterIndex;
+            float targetX = offset * carouselSpacing;
+            card.anchoredPosition = Vector2.Lerp(card.anchoredPosition, new Vector2(targetX, 0f), blend);
+            float targetScale = offset == 0 ? 1f : 0.68f;
+            card.localScale = Vector3.Lerp(card.localScale, Vector3.one * targetScale, blend);
+
+            if (characterCardGroups != null && i < characterCardGroups.Length && characterCardGroups[i] != null)
+            {
+                float alpha = Mathf.Abs(offset) <= 1 ? (offset == 0 ? 1f : 0.42f) : 0f;
+                characterCardGroups[i].alpha = Mathf.Lerp(characterCardGroups[i].alpha, alpha, blend);
+                characterCardGroups[i].blocksRaycasts = offset == 0;
+            }
+        }
     }
 
     private void HandleGameStarted()
