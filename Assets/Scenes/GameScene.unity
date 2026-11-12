@@ -12866,6 +12866,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DifficultyManager
   maxScore: 200
+  secondsToMaximumDifficulty: 120
   startCoinCount: 3
   maxCoinCount: 20
   startObstacleCount: 3
@@ -13606,9 +13607,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4584c6abad136f74abc7c3e083875a67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldMovementManager
-  startSpeed: 15
-  speedAtMaxScore: 30
-  speedIncreaseAfterMaxScore: 0.02
+  startSpeed: 10
+  speedAtMaxScore: 18
+  speedIncreaseAfterMaxScore: 0.015
   realSpeedMultiplier: 13
   difficultyManager: {fileID: 1123856060938917861}
 --- !u!4 &6622485113034793504
@@ -13877,7 +13878,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e354d0a20cfe9a640ae99295da740225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraDistanceCulling
-  renderDistance: 500
+  renderDistance: 150
 --- !u!114 &8313013160506271268
 MonoBehaviour:
   m_ObjectHideFlags: 0

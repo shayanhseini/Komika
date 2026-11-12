@@ -21,6 +21,10 @@ public class WorldChunk : MonoBehaviour
         onResetContent?.Invoke();
         GameObject activeVariant = ActivateRandomBuildingVariant();
         SetGameplayLayoutActive(activeVariant, generateContent);
+        ChunkDifficultyPatternController patternController =
+            activeVariant != null ? activeVariant.GetComponentInChildren<ChunkDifficultyPatternController>(true) : null;
+        if (patternController != null)
+            patternController.Configure(difficultyManager, generateContent);
     }
 
     private GameObject ActivateRandomBuildingVariant()
