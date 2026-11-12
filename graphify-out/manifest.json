@@ -1,0 +1,854 @@
+{
+  ".vscode/extensions.json": {
+    "mtime": 1794136704.3609583,
+    "seen": 1794461476.8590162,
+    "ast_hash": "a9819ba4d76ccd81cf1f7b18e06c77d0",
+    "semantic_hash": ""
+  },
+  ".vscode/launch.json": {
+    "mtime": 1794136704.3634636,
+    "seen": 1794461476.859021,
+    "ast_hash": "b939dea735cf9d32842d6a2c44474427",
+    "semantic_hash": ""
+  },
+  ".vscode/settings.json": {
+    "mtime": 1794373481.9544644,
+    "seen": 1794461476.859023,
+    "ast_hash": "73fd13255a19f345358b0ef3e37ccd67",
+    "semantic_hash": ""
+  },
+  "Assets/Editor/BuildKomikaUI.cs": {
+    "mtime": 1794461445.203614,
+    "seen": 1794461476.8590243,
+    "ast_hash": "f692fd2ac2719f94c86615a3ecba6281",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Camera/CameraTransitionController.cs": {
+    "mtime": 1794376456.4757054,
+    "seen": 1794461476.8590255,
+    "ast_hash": "9cbc814d8e23fa85ef41dae70e4eed7e",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Camera/PlayerCameraController.cs": {
+    "mtime": 1794395526.527045,
+    "seen": 1794461476.8590267,
+    "ast_hash": "c91de5631397b937d6b8aa7933cca905",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/PauseController.cs": {
+    "mtime": 1794460712.897174,
+    "seen": 1794461476.8590283,
+    "ast_hash": "d6364fe30e165b7c0b83c44a73bfdfea",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Player/Control/PlayerController.cs": {
+    "mtime": 1794460712.8956683,
+    "seen": 1794461476.8590293,
+    "ast_hash": "0b51508d3a0fff0e6b9b93cde11a9872",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Player/Control/PlayerDeathController.cs": {
+    "mtime": 1794376456.474705,
+    "seen": 1794461476.8590302,
+    "ast_hash": "8d1693610c2f46d2ad252f1f778a89e1",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Player/PlayerInteraction.cs": {
+    "mtime": 1794376456.473705,
+    "seen": 1794461476.8590312,
+    "ast_hash": "e5f515281994be79cc559680175b801b",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Spawning/ContentGenerator.cs": {
+    "mtime": 1787909578.4078767,
+    "seen": 1794461476.8590326,
+    "ast_hash": "66b2ed76443f81a11ff5dddfcd07bb4d",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Spawning/Pooling/ObjectPool.cs": {
+    "mtime": 1787909578.4078767,
+    "seen": 1794461476.8590336,
+    "ast_hash": "33534eb9722973ef364bba7c4a6aee09",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Spawning/Pooling/PoolManager.cs": {
+    "mtime": 1787909578.4078767,
+    "seen": 1794461476.8590345,
+    "ast_hash": "48050ccc24b4c39e585b2020e6206733",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Spawning/Pooling/PoolType.cs": {
+    "mtime": 1787909578.4078767,
+    "seen": 1794461476.8590357,
+    "ast_hash": "ae692ebf139b9be77c60a376983efa0b",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Spawning/Pooling/PooledObject.cs": {
+    "mtime": 1787909578.4078767,
+    "seen": 1794461476.8590367,
+    "ast_hash": "7012197550878979e6b82d8f12157227",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/UI/FadeController.cs": {
+    "mtime": 1787909578.4078767,
+    "seen": 1794461476.8590376,
+    "ast_hash": "4aaa8cada8ab62a8e93b82ddc076da1b",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/UI/KomikaUIController.cs": {
+    "mtime": 1794460908.1952624,
+    "seen": 1794461476.859039,
+    "ast_hash": "8102cf6784ae645f535dbe87da55b55a",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/UI/UIManager.cs": {
+    "mtime": 1794375160.799679,
+    "seen": 1794461476.85904,
+    "ast_hash": "87d28462ac879e5eec680d3cd65bf30a",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Chunk/ChunkManager.cs": {
+    "mtime": 1794379694.1294818,
+    "seen": 1794461476.859041,
+    "ast_hash": "246737d91843a6dac6afb749086cfec5",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Chunk/WorldChunk.cs": {
+    "mtime": 1794382607.9859455,
+    "seen": 1794461476.8590424,
+    "ast_hash": "1b0e2c45a1b52bfe4c8bd8831c9c93d7",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Coin/Coin.cs": {
+    "mtime": 1794382557.5395634,
+    "seen": 1794461476.8590434,
+    "ast_hash": "8ee6126f3a0c6f8a7a0f779a81e8a38b",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Coin/SelfRotate.cs": {
+    "mtime": 1788172800.566308,
+    "seen": 1794461476.8590446,
+    "ast_hash": "b26b0cc80a3dbb34eb1da3f87d4cefa5",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Effects/WorldMovingEffect.cs": {
+    "mtime": 1787909578.4149592,
+    "seen": 1794461476.8590465,
+    "ast_hash": "77a383d34096abac9bcd4e479139d174",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/FloatingObject.cs": {
+    "mtime": 1787909578.4149592,
+    "seen": 1794461476.8590474,
+    "ast_hash": "6e633ffb4b4052f63b2082b456f49248",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Manager/DifficultyManager.cs": {
+    "mtime": 1794374797.548211,
+    "seen": 1794461476.8590484,
+    "ast_hash": "0ff34abba43c0bb02f4322fea319892d",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Manager/GameAudioController.cs": {
+    "mtime": 1794374845.5407846,
+    "seen": 1794461476.8590496,
+    "ast_hash": "c3c9ec1c717fba4d31aa75d5c52cccee",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Manager/GameEvents.cs": {
+    "mtime": 1794376456.474705,
+    "seen": 1794461476.8590505,
+    "ast_hash": "840bb6ebc716445d2764456280154472",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Manager/GameManager.cs": {
+    "mtime": 1794374814.8035474,
+    "seen": 1794461476.8590515,
+    "ast_hash": "944343b5572ba5717770be50d02fae9b",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Manager/GameMusicController.cs": {
+    "mtime": 1787909578.4149592,
+    "seen": 1794461476.8590522,
+    "ast_hash": "d990f86990a22d0c992162737820ab4d",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Manager/GameOverController.cs": {
+    "mtime": 1787909578.4149592,
+    "seen": 1794461476.8590534,
+    "ast_hash": "e2db00b1492d87ad5cae66a2ec24dac1",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Manager/SaveManager.cs": {
+    "mtime": 1789296376.6809063,
+    "seen": 1794461476.8590543,
+    "ast_hash": "9cb2b1aebddc944c7758784da80321ae",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Manager/WorldMovementManager.cs": {
+    "mtime": 1789296376.6814423,
+    "seen": 1794461476.8590555,
+    "ast_hash": "f8f7f24abedf86ea49daa6018959d836",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Obstacle/Obstacle.cs": {
+    "mtime": 1794460712.8956683,
+    "seen": 1794461476.8590565,
+    "ast_hash": "386a2a9e8d78934f4cf593ef62caf6a2",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs": {
+    "mtime": 1789291303.2517424,
+    "seen": 1794461476.8590574,
+    "ast_hash": "36de2b6492402697e7d036021ce5e50e",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01_UGUI.cs": {
+    "mtime": 1789291303.2517424,
+    "seen": 1794461476.8590586,
+    "ast_hash": "c07d494941dccc22d872a62a2e3d1e8d",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark02.cs": {
+    "mtime": 1789291303.2527478,
+    "seen": 1794461476.8590598,
+    "ast_hash": "958c3e5e467a51ded587022da3cacdcd",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark03.cs": {
+    "mtime": 1789291303.2527478,
+    "seen": 1794461476.8590608,
+    "ast_hash": "d2bf703632c299d1c2db1237946d4b0d",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark04.cs": {
+    "mtime": 1789291303.2537465,
+    "seen": 1794461476.8590617,
+    "ast_hash": "240bd42db1abb3b05fb90b9506a4ebd5",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/CameraController.cs": {
+    "mtime": 1789291303.2537465,
+    "seen": 1794461476.8590627,
+    "ast_hash": "00dbf9bac72e18dafe900e11f9b6d3eb",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/ChatController.cs": {
+    "mtime": 1789291303.2537465,
+    "seen": 1794461476.8590639,
+    "ast_hash": "244c38d780b402dff25efd7e6adb662d",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/DropdownSample.cs": {
+    "mtime": 1789291303.2547479,
+    "seen": 1794461476.8590646,
+    "ast_hash": "f44c5b591bb42b2c5aa32fa014852110",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/EnvMapAnimator.cs": {
+    "mtime": 1789291303.2547479,
+    "seen": 1794461476.8590655,
+    "ast_hash": "fcef4254a745eee0e41eb629c6817b70",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/ObjectSpin.cs": {
+    "mtime": 1789291303.255799,
+    "seen": 1794461476.8590667,
+    "ast_hash": "aa6477a618dff2fb9b0ac490846100bb",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/ShaderPropAnimator.cs": {
+    "mtime": 1789291303.255799,
+    "seen": 1794461476.859068,
+    "ast_hash": "0e34b15fff13c80b293265bc7a36c779",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/SimpleScript.cs": {
+    "mtime": 1789291303.2568,
+    "seen": 1794461476.8590689,
+    "ast_hash": "944dcbf490334f278a54b6fb0792fe6e",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/SkewTextExample.cs": {
+    "mtime": 1789291303.2568,
+    "seen": 1794461476.85907,
+    "ast_hash": "362d0ace31ae6b3fb3757ec3cc5bf062",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_DigitValidator.cs": {
+    "mtime": 1789291303.257799,
+    "seen": 1794461476.859071,
+    "ast_hash": "8bb8f132d85be6a682626dcab9a246c7",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_ExampleScript_01.cs": {
+    "mtime": 1789291303.257799,
+    "seen": 1794461476.859072,
+    "ast_hash": "46b08bb14f436836c467157b1807e38c",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_FrameRateCounter.cs": {
+    "mtime": 1789291303.2587993,
+    "seen": 1794461476.859073,
+    "ast_hash": "bc9ced35005acfab4fe262936c0f6cca",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_PhoneNumberValidator.cs": {
+    "mtime": 1789291303.259302,
+    "seen": 1794461476.8590739,
+    "ast_hash": "313fdfe5ff6e8b71e99ccced2b00957e",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextEventCheck.cs": {
+    "mtime": 1789291303.259302,
+    "seen": 1794461476.8590748,
+    "ast_hash": "1484b5310c771859fe7de18d5e5fb813",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextEventHandler.cs": {
+    "mtime": 1789291303.2603061,
+    "seen": 1794461476.8590758,
+    "ast_hash": "bfcc80ecc37ec83116bb71aeaaf688b0",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextInfoDebugTool.cs": {
+    "mtime": 1789291303.2613065,
+    "seen": 1794461476.859077,
+    "ast_hash": "31e0c6f41e7f0ff05bdfaaa1956e3d51",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextSelector_A.cs": {
+    "mtime": 1789291303.2613065,
+    "seen": 1794461476.859078,
+    "ast_hash": "83f3c9e26606e64d3cb6d9c03673104d",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextSelector_B.cs": {
+    "mtime": 1789291303.2623541,
+    "seen": 1794461476.859079,
+    "ast_hash": "e992b326136c7234663521c81d29e072",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_UiFrameRateCounter.cs": {
+    "mtime": 1789291303.2623541,
+    "seen": 1794461476.8590798,
+    "ast_hash": "1f19f4d96b877196bef408906a041745",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMPro_InstructionOverlay.cs": {
+    "mtime": 1789291303.2623541,
+    "seen": 1794461476.8590808,
+    "ast_hash": "0b9035c334d737bc158365f2973dcd6d",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TeleType.cs": {
+    "mtime": 1789291303.2638588,
+    "seen": 1794461476.8590817,
+    "ast_hash": "559bc8cb05992bb541ad20347a549b21",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TextConsoleSimulator.cs": {
+    "mtime": 1789291303.2638588,
+    "seen": 1794461476.8590825,
+    "ast_hash": "dccec1047226f70ec8a014352cb2dd95",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TextMeshProFloatingText.cs": {
+    "mtime": 1789291303.264863,
+    "seen": 1794461476.8590832,
+    "ast_hash": "0e3c960a78d241a5806b6345f5a002b0",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TextMeshSpawner.cs": {
+    "mtime": 1789291303.264863,
+    "seen": 1794461476.8590844,
+    "ast_hash": "775f3b2047f240c96b812a5cd01e10b5",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexColorCycler.cs": {
+    "mtime": 1789291303.2658648,
+    "seen": 1794461476.859085,
+    "ast_hash": "05a283946cdc60925f96e87b88bd41b6",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexJitter.cs": {
+    "mtime": 1789291303.2658648,
+    "seen": 1794461476.8590858,
+    "ast_hash": "dc41ae0ff64a07816d22b6d4e78aed44",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexShakeA.cs": {
+    "mtime": 1789291303.2668638,
+    "seen": 1794461476.8590868,
+    "ast_hash": "ca403c63e47dbf6a23308694cf109b42",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexShakeB.cs": {
+    "mtime": 1789291303.2668638,
+    "seen": 1794461476.859088,
+    "ast_hash": "f3227a4bfe15cf73e72714d6c27d617b",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexZoom.cs": {
+    "mtime": 1789291303.2668638,
+    "seen": 1794461476.8590887,
+    "ast_hash": "0ade35706e19bf6837b124a0d1f570a9",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/WarpTextExample.cs": {
+    "mtime": 1789291303.2683678,
+    "seen": 1794461476.8590899,
+    "ast_hash": "6ab21776ec37bed41ad7dd6d9481f0d0",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Sprites/EmojiOne.json": {
+    "mtime": 1787909578.6205087,
+    "seen": 1794461476.859091,
+    "ast_hash": "53408097aa38738c15b17ca34e13882a",
+    "semantic_hash": ""
+  },
+  "Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs": {
+    "mtime": 1787909578.6532938,
+    "seen": 1794461476.8590918,
+    "ast_hash": "71f3bcd4517e2924835a9390d868a18f",
+    "semantic_hash": ""
+  },
+  "Assets/TutorialInfo/Scripts/Readme.cs": {
+    "mtime": 1787909578.6532938,
+    "seen": 1794461476.8590925,
+    "ast_hash": "ac66313634b98b3f40cd66cf20882aba",
+    "semantic_hash": ""
+  },
+  "Assets/Update_4/CameraDistanceCulling.cs": {
+    "mtime": 1789291303.2968357,
+    "seen": 1794461476.8590934,
+    "ast_hash": "d3c25873e527d4d506ea97e2d26f39b9",
+    "semantic_hash": ""
+  },
+  "Packages/manifest.json": {
+    "mtime": 1794385385.1833146,
+    "seen": 1794461476.8590944,
+    "ast_hash": "3f3538845c5c5686f84ceb0d6b0f533c",
+    "semantic_hash": ""
+  },
+  "Packages/packages-lock.json": {
+    "mtime": 1794385385.188903,
+    "seen": 1794461476.8590953,
+    "ast_hash": "5590c992a0d7dde590b68c44e385189a",
+    "semantic_hash": ""
+  },
+  "ProjectSettings/Packages/com.unity.progrids/Settings.json": {
+    "mtime": 1788018762.0655875,
+    "seen": 1794461476.859096,
+    "ast_hash": "6e3b6ce3a6c6c017e58a058c16bb1986",
+    "semantic_hash": ""
+  },
+  "ProjectSettings/SceneTemplateSettings.json": {
+    "mtime": 1787909580.557821,
+    "seen": 1794461476.859097,
+    "ast_hash": "3620a2b0a1c79cc4ae4b6b6ad599ff4d",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Fonts/Anton OFL.txt": {
+    "mtime": 1789291302.8293774,
+    "seen": 1794461476.859098,
+    "ast_hash": "200fb56875abe81caf68aaa500e1fca6",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Fonts/Bangers - OFL.txt": {
+    "mtime": 1789291303.193028,
+    "seen": 1794461476.859099,
+    "ast_hash": "1ac0f88edfc7544c85a7549fe3a90e32",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Fonts/Oswald-Bold - OFL.txt": {
+    "mtime": 1789291303.1959524,
+    "seen": 1794461476.8590999,
+    "ast_hash": "56a8c1c995a5b8de92bcaa75055e7cfb",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold - AFL.txt": {
+    "mtime": 1789291303.197678,
+    "seen": 1794461476.8591006,
+    "ast_hash": "0ba5044c64ef53cb0189c9546081e228",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold - License.txt": {
+    "mtime": 1789291303.19821,
+    "seen": 1794461476.8591018,
+    "ast_hash": "53b9b651a0fd1c11b6e446586c88f52b",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Fonts/Unity - OFL.txt": {
+    "mtime": 1789291303.1997604,
+    "seen": 1794461476.8591025,
+    "ast_hash": "dac46d8393dd3337dace996945dbc365",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt": {
+    "mtime": 1787909578.5743735,
+    "seen": 1794461476.8591034,
+    "ast_hash": "a0631122fee5a71a264609ff53bf5a23",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt": {
+    "mtime": 1787909578.5894024,
+    "seen": 1794461476.8591044,
+    "ast_hash": "345c77ed32179f5f982dcf8e2b1d92af",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt": {
+    "mtime": 1787909578.5894024,
+    "seen": 1794461476.8591056,
+    "ast_hash": "d52dd40acd32a62df3bc764b1e783ddf",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt": {
+    "mtime": 1787909578.6205087,
+    "seen": 1794461476.8591065,
+    "ast_hash": "759264906d349d566518f06e38d06772",
+    "semantic_hash": ""
+  },
+  "ProjectSettings/ProjectVersion.txt": {
+    "mtime": 1787909580.557821,
+    "seen": 1794461476.8591073,
+    "ast_hash": "9fadeb9d2d7133ee192fda0b82b67734",
+    "semantic_hash": ""
+  },
+  "Assets/Art/TehranGrayscale/Tehran_Alborz_Grayscale.png": {
+    "mtime": 1794137265.7404697,
+    "seen": 1794461476.859109,
+    "ast_hash": "7d711ea6f226ee0d1740bb09b8fc5cb8",
+    "semantic_hash": ""
+  },
+  "Assets/Art/TehranGrayscale/Tehran_Azadi_Grayscale.png": {
+    "mtime": 1794137221.3982432,
+    "seen": 1794461476.8591099,
+    "ast_hash": "71ebbc0e0de910bf59d8145d9d911bb2",
+    "semantic_hash": ""
+  },
+  "Assets/Art/TehranGrayscale/Tehran_Valiasr_Grayscale.png": {
+    "mtime": 1794137177.9886308,
+    "seen": 1794461476.8591106,
+    "ast_hash": "4add40a384e191e366603983af18ee1b",
+    "semantic_hash": ""
+  },
+  "Assets/Effects/Speed Line/tall-triangle1 1.png": {
+    "mtime": 1794394228.6515422,
+    "seen": 1794461476.8591118,
+    "ast_hash": "c53af8584b57068fbd6b451a01e5f160",
+    "semantic_hash": ""
+  },
+  "Assets/Models/Player/Cartoon Plane/textures/Plane_texturing_01_Plane_main_material_Bas.png": {
+    "mtime": 1787909578.3742292,
+    "seen": 1794461476.8591125,
+    "ast_hash": "861e4ce5fd3b7156c32257170357bb0b",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Sprites/Default Sprites.png": {
+    "mtime": 1789291303.2698863,
+    "seen": 1794461476.8591135,
+    "ast_hash": "c0835872f1061e68f125c1b9a7329cf6",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Brushed Metal 3.jpg": {
+    "mtime": 1789291303.27246,
+    "seen": 1794461476.8591144,
+    "ast_hash": "e2a48914a497be9f8a941e653d217c42",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Floor Cement.jpg": {
+    "mtime": 1789291303.273484,
+    "seen": 1794461476.8591156,
+    "ast_hash": "1e0edd414d33833c3914723d2c854e10",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Floor Tiles 1 - diffuse.jpg": {
+    "mtime": 1789291303.2745197,
+    "seen": 1794461476.8591166,
+    "ast_hash": "d8bf4cf68dac3a9d77bfe9350112ac42",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Fruit Jelly (B&W).jpg": {
+    "mtime": 1789291303.275553,
+    "seen": 1794461476.8591173,
+    "ast_hash": "08da843bb0c657ddc65837bedfad4282",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Diagonal (Color).jpg": {
+    "mtime": 1789291303.2765968,
+    "seen": 1794461476.859118,
+    "ast_hash": "4d222a8923ee30482162bf5481148681",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Horizontal (Color).jpg": {
+    "mtime": 1789291303.2776265,
+    "seen": 1794461476.8591194,
+    "ast_hash": "f92384c0b129979d168d3ec298b0f03d",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Vertical (Color).jpg": {
+    "mtime": 1789291303.2786536,
+    "seen": 1794461476.8591201,
+    "ast_hash": "fd5a4d4ca1c6293e163afc7dffc60592",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_diffuse.jpg": {
+    "mtime": 1789291303.2802024,
+    "seen": 1794461476.859121,
+    "ast_hash": "1167f1636b1eb54636d36fb1f935fb4c",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_normal.jpg": {
+    "mtime": 1789291303.281232,
+    "seen": 1794461476.859122,
+    "ast_hash": "6b51a76c9f9863a54ed1fe81939a18cf",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Sunny Days - Seamless.jpg": {
+    "mtime": 1789291303.282259,
+    "seen": 1794461476.8591228,
+    "ast_hash": "046760a79f9f81611d82e06551eb2d86",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text Image 1.png": {
+    "mtime": 1789291303.2827706,
+    "seen": 1794461476.8591237,
+    "ast_hash": "b4077499505f2ab8d45966362a098f90",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text UI Screenshot.png": {
+    "mtime": 1789291303.2838342,
+    "seen": 1794461476.8591244,
+    "ast_hash": "c433e8a4de4438d13693ed173b0d2dab",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Resources/Sprite Assets/InlineIcons.png": {
+    "mtime": 1787909578.6031241,
+    "seen": 1794461476.8591251,
+    "ast_hash": "19dfbc2deb54f12db891945407f79bc1",
+    "semantic_hash": ""
+  },
+  "Assets/TextMesh Pro/Sprites/EmojiOne.png": {
+    "mtime": 1787909578.629692,
+    "seen": 1794461476.8591263,
+    "ast_hash": "abd61fb690e3df99b4cbd4f114afbd06",
+    "semantic_hash": ""
+  },
+  "Assets/Texture/Shield/Shiled01 1.png": {
+    "mtime": 1787909578.6389425,
+    "seen": 1794461476.8591273,
+    "ast_hash": "ac844d0be7ebad08309b17ab46f494eb",
+    "semantic_hash": ""
+  },
+  "Assets/Texture/Shield/Shiled01.png": {
+    "mtime": 1787909578.6446772,
+    "seen": 1794461476.859128,
+    "ast_hash": "a08ee1007f8a5ee9195b689f3ed9b06c",
+    "semantic_hash": ""
+  },
+  "Assets/TutorialInfo/Icons/URP.png": {
+    "mtime": 1787909578.651141,
+    "seen": 1794461476.8591292,
+    "ast_hash": "6d2f425093f43ca4866c76d333895ab8",
+    "semantic_hash": ""
+  },
+  "Assets/UI/GameOver/Buttons_BG.png": {
+    "mtime": 1787909578.6613235,
+    "seen": 1794461476.8591301,
+    "ast_hash": "233d6848fc22ac4a76916525fdc3d21a",
+    "semantic_hash": ""
+  },
+  "Assets/UI/GameOver/Buttons_FG.png": {
+    "mtime": 1787909578.6668603,
+    "seen": 1794461476.8591309,
+    "ast_hash": "2d253ff7a98c69355c4765c8e6f86eaf",
+    "semantic_hash": ""
+  },
+  "Assets/UI/GameOver/GameOverPanel_BG 1.png": {
+    "mtime": 1794373903.730652,
+    "seen": 1794461476.8591318,
+    "ast_hash": "b510d7ef7b8701399f346d73954406da",
+    "semantic_hash": ""
+  },
+  "Assets/UI/GameOver/GameOverPanel_FG 1.png": {
+    "mtime": 1794373887.8646836,
+    "seen": 1794461476.8591328,
+    "ast_hash": "a1daa1a62f4d6f7ca61e85e51fc6c394",
+    "semantic_hash": ""
+  },
+  "Assets/UI/GameOver/GameOverPanel_Text.png": {
+    "mtime": 1787909578.6876483,
+    "seen": 1794461476.8591335,
+    "ast_hash": "81c15987864c7ce06a0e854f299d5361",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Gameplay/GamePlay_BG.png": {
+    "mtime": 1787909578.6940892,
+    "seen": 1794461476.8591344,
+    "ast_hash": "29136f44ed4ecea36b8fb757a28191f3",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Gameplay/Panel_BG 1.png": {
+    "mtime": 1787909578.702716,
+    "seen": 1794461476.8591354,
+    "ast_hash": "3b35ea4e45b8032fd34f85ba96dc7368",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Gameplay/Panel_BG.png": {
+    "mtime": 1787909578.7113266,
+    "seen": 1794461476.8591363,
+    "ast_hash": "4d0d775ee5cf0626d47941c9b9e9a5a6",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Gameplay/Panel_FG 1.png": {
+    "mtime": 1787909578.7183785,
+    "seen": 1794461476.859137,
+    "ast_hash": "0385d9c62f0e00ff79c4b17114d57865",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Gameplay/Panel_FG.png": {
+    "mtime": 1787909578.7245874,
+    "seen": 1794461476.859138,
+    "ast_hash": "5f691330a6f24638c62fd4d202e2d3b4",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Gameplay/Shield.png": {
+    "mtime": 1787909578.731446,
+    "seen": 1794461476.8591387,
+    "ast_hash": "38e872e0c9447e1dda072dbbe9f79652",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Logo/Logo1.png": {
+    "mtime": 1788019126.7924829,
+    "seen": 1794461476.8591397,
+    "ast_hash": "a7610bdcacc14ff97ee9526e7fe5341c",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Logo/Logo2.png": {
+    "mtime": 1788019126.7934883,
+    "seen": 1794461476.8591406,
+    "ast_hash": "116b399f1e5a53a63015d7b986f4e44a",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Logo/Logo3.png": {
+    "mtime": 1788019126.7945085,
+    "seen": 1794461476.8591413,
+    "ast_hash": "bd788de1b0f5e200353e060162ad21ac",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/Borders.png": {
+    "mtime": 1787909578.7378871,
+    "seen": 1794461476.859142,
+    "ast_hash": "f480ae9157b29b12b6ea465d8f650b4e",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/Coin.png": {
+    "mtime": 1789296376.6829946,
+    "seen": 1794461476.8591433,
+    "ast_hash": "722cd847e243ed9fe2acbfa162e0636f",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/GameLogo.png": {
+    "mtime": 1787909578.744913,
+    "seen": 1794461476.859144,
+    "ast_hash": "f2a076e4fdad00ef0624462a57c002fe",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/Items_bg.png": {
+    "mtime": 1789296376.6845617,
+    "seen": 1794461476.8591447,
+    "ast_hash": "b8959db796117489996e948df4897161",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/SidePanels_BG 1.png": {
+    "mtime": 1787909578.7506943,
+    "seen": 1794461476.8591456,
+    "ast_hash": "9aa31d201f5d40697c4ded503c72b3f6",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/SidePanels_FG 1.png": {
+    "mtime": 1787909578.7564962,
+    "seen": 1794461476.8591466,
+    "ast_hash": "f1c54e3e50655b48fb4a40f668ab2826",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/SignOne.png": {
+    "mtime": 1787909578.7634435,
+    "seen": 1794461476.8591473,
+    "ast_hash": "eca1fda3054d279a5f75429e69959c26",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/SignTwo.png": {
+    "mtime": 1787909578.769104,
+    "seen": 1794461476.859148,
+    "ast_hash": "b054173fa75c604a0f01afe2d8455c37",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/StartButtonBG 1.png": {
+    "mtime": 1787909578.775991,
+    "seen": 1794461476.859149,
+    "ast_hash": "df55135aa7acdce17c5b24cdaf11e649",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/StartButtonBG.png": {
+    "mtime": 1787909578.77704,
+    "seen": 1794461476.8591502,
+    "ast_hash": "df55135aa7acdce17c5b24cdaf11e649",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/StartButtonFG 1.png": {
+    "mtime": 1787909578.7828798,
+    "seen": 1794461476.859151,
+    "ast_hash": "7e6ad86279fe617a171edbabcb0a4251",
+    "semantic_hash": ""
+  },
+  "Assets/UI/Start Panel/StartButtonFG.png": {
+    "mtime": 1787909578.7839873,
+    "seen": 1794461476.8591518,
+    "ast_hash": "7e6ad86279fe617a171edbabcb0a4251",
+    "semantic_hash": ""
+  },
+  "Assets/Sounds/Music/03 - Hans Zimmer - Dream Is Collapsing.mp3": {
+    "mtime": 1787909578.445925,
+    "seen": 1794461476.8591526,
+    "ast_hash": "10b36ff59ec8c0d1e2027ddfaa87c5b6",
+    "semantic_hash": ""
+  },
+  "Assets/Sounds/Music/11 - 2CELLOS - Mombasa (From Inception).mp3": {
+    "mtime": 1787909578.4669526,
+    "seen": 1794461476.8591537,
+    "ast_hash": "dbd31e7beb712d59671c4dadc5a59aa3",
+    "semantic_hash": ""
+  },
+  "Assets/Sounds/Music/Drone Approach.mp3": {
+    "mtime": 1794394231.683786,
+    "seen": 1794461476.8591545,
+    "ast_hash": "002a3ad78c2095afd2cbfe99bee1f66a",
+    "semantic_hash": ""
+  },
+  "Assets/Sounds/SFX/Carier-Drone-Sound.wav": {
+    "mtime": 1794394231.6983123,
+    "seen": 1794461476.8591554,
+    "ast_hash": "4806909353cb528c7a9ebdc2d5b1bf7b",
+    "semantic_hash": ""
+  },
+  "Assets/Sounds/SFX/Coin/energy_coin_collect_1.mp3": {
+    "mtime": 1787909578.4982584,
+    "seen": 1794461476.8591561,
+    "ast_hash": "b244c677c08462b2b92341553fa65188",
+    "semantic_hash": ""
+  },
+  "Assets/Sounds/SFX/Coin/energy_coin_collect_2.mp3": {
+    "mtime": 1787909578.4982584,
+    "seen": 1794461476.859157,
+    "ast_hash": "9d5f00183363e4ded48c3d16dad92f66",
+    "semantic_hash": ""
+  },
+  "Assets/Sounds/SFX/Coin/energy_coin_collect_3.mp3": {
+    "mtime": 1787909578.5115893,
+    "seen": 1794461476.859158,
+    "ast_hash": "ae0c9c46024605653bfc5f6a2bb4c072",
+    "semantic_hash": ""
+  }
+}
