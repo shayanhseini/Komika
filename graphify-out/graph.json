@@ -2098,7 +2098,7 @@
       "label": ".StartSlide()",
       "file_type": "code",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L447",
+      "source_location": "L453",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2107,7 +2107,7 @@
       "label": ".UpdateJumpAndSlide()",
       "file_type": "code",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L469",
+      "source_location": "L475",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -2115,7 +2115,7 @@
             "callee": "Clamp01",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L474"
+            "line": "L480"
           }
         ]
       },
@@ -2126,7 +2126,7 @@
       "label": ".RestoreStandingCollider()",
       "file_type": "code",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L497",
+      "source_location": "L503",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2135,7 +2135,7 @@
       "label": ".UpdateSlideVisual()",
       "file_type": "code",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L509",
+      "source_location": "L515",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -2143,16 +2143,25 @@
             "callee": "Exp",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L523"
+            "line": "L529"
           },
           {
             "callee": "Lerp",
             "receiver_type": "Vector3",
             "lang": "csharp",
-            "line": "L524"
+            "line": "L530"
           }
         ]
       },
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_player_control_playercontroller_playercontroller_restorestandingvisualimmediately",
+      "label": ".RestoreStandingVisualImmediately()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
+      "source_location": "L534",
+      "_callable": true,
       "_origin": "ast"
     },
     {
@@ -2160,7 +2169,7 @@
       "label": ".GetClosestLane()",
       "file_type": "code",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L529",
+      "source_location": "L544",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -2168,13 +2177,13 @@
             "callee": "Clamp",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L534"
+            "line": "L549"
           },
           {
             "callee": "RoundToInt",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L535"
+            "line": "L550"
           }
         ]
       },
@@ -2185,7 +2194,7 @@
       "label": ".ResetPointerGesture()",
       "file_type": "code",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L542",
+      "source_location": "L557",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2917,19 +2926,19 @@
             "callee": "GetInt",
             "receiver_type": "PlayerPrefs",
             "lang": "csharp",
-            "line": "L56"
+            "line": "L53"
           },
           {
             "callee": "DeleteKey",
             "receiver_type": "PlayerPrefs",
             "lang": "csharp",
-            "line": "L60"
+            "line": "L61"
           },
           {
             "callee": "Save",
             "receiver_type": "PlayerPrefs",
             "lang": "csharp",
-            "line": "L61"
+            "line": "L62"
           }
         ]
       },
@@ -2940,7 +2949,7 @@
       "label": ".OnEnable()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L66",
+      "source_location": "L67",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2949,7 +2958,7 @@
       "label": ".OnDisable()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L72",
+      "source_location": "L73",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2958,7 +2967,7 @@
       "label": ".Update()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L79",
+      "source_location": "L80",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2967,7 +2976,7 @@
       "label": ".OpenCharacterPanel()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L89",
+      "source_location": "L90",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2976,7 +2985,7 @@
       "label": ".OpenHowToPlayPanel()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L90",
+      "source_location": "L91",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2985,7 +2994,7 @@
       "label": ".CloseOverlayPanels()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L91",
+      "source_location": "L92",
       "_callable": true,
       "_origin": "ast"
     },
@@ -2994,7 +3003,7 @@
       "label": ".PauseGame()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L93",
+      "source_location": "L94",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3003,7 +3012,7 @@
       "label": ".ResumeGame()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L101",
+      "source_location": "L102",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3012,7 +3021,7 @@
       "label": ".TogglePauseMenu()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L109",
+      "source_location": "L110",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3021,7 +3030,7 @@
       "label": ".RestartGame()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L111",
+      "source_location": "L112",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3029,13 +3038,13 @@
             "callee": "SetInt",
             "receiver_type": "PlayerPrefs",
             "lang": "csharp",
-            "line": "L114"
+            "line": "L115"
           },
           {
             "callee": "Save",
             "receiver_type": "PlayerPrefs",
             "lang": "csharp",
-            "line": "L115"
+            "line": "L116"
           }
         ]
       },
@@ -3046,7 +3055,7 @@
       "label": ".ReturnToMainMenu()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L119",
+      "source_location": "L120",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3054,13 +3063,13 @@
             "callee": "DeleteKey",
             "receiver_type": "PlayerPrefs",
             "lang": "csharp",
-            "line": "L122"
+            "line": "L123"
           },
           {
             "callee": "Save",
             "receiver_type": "PlayerPrefs",
             "lang": "csharp",
-            "line": "L123"
+            "line": "L124"
           }
         ]
       },
@@ -3071,7 +3080,7 @@
       "label": ".AutoStartAfterReload()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L127",
+      "source_location": "L128",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3088,7 +3097,7 @@
       "label": ".SelectCharacter()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L137",
+      "source_location": "L138",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3096,19 +3105,19 @@
             "callee": "Clamp",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L140"
+            "line": "L141"
           },
           {
             "callee": "SetInt",
             "receiver_type": "PlayerPrefs",
             "lang": "csharp",
-            "line": "L143"
+            "line": "L144"
           },
           {
             "callee": "Save",
             "receiver_type": "PlayerPrefs",
             "lang": "csharp",
-            "line": "L144"
+            "line": "L145"
           }
         ]
       },
@@ -3119,7 +3128,7 @@
       "label": ".ShowNextCharacter()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L150",
+      "source_location": "L151",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3128,7 +3137,7 @@
       "label": ".ShowPreviousCharacter()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L151",
+      "source_location": "L152",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3137,7 +3146,7 @@
       "label": ".HandleGameStarted()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L153",
+      "source_location": "L154",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3146,7 +3155,7 @@
       "label": ".HandleGameOver()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L160",
+      "source_location": "L161",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3154,7 +3163,7 @@
             "callee": "Max",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L164"
+            "line": "L165"
           }
         ]
       },
@@ -3165,7 +3174,7 @@
       "label": ".UpdateRecordLabels()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L169",
+      "source_location": "L170",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3173,13 +3182,13 @@
             "callee": "FloorToInt",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L172"
+            "line": "L173"
           },
           {
             "callee": "Max",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L173"
+            "line": "L174"
           }
         ]
       },
@@ -3190,7 +3199,7 @@
       "label": ".SetInitialPanelState()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L181",
+      "source_location": "L182",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3199,7 +3208,7 @@
       "label": ".TransitionTo()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L187",
+      "source_location": "L188",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3208,7 +3217,7 @@
       "label": ".FadePanels()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L194",
+      "source_location": "L195",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3216,19 +3225,19 @@
             "callee": "SmoothStep",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L210"
+            "line": "L211"
           },
           {
             "callee": "Clamp01",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L210"
+            "line": "L211"
           },
           {
             "callee": "Lerp",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L214"
+            "line": "L215"
           }
         ]
       },
@@ -3239,7 +3248,7 @@
       "label": ".SetGroupImmediate()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L222",
+      "source_location": "L223",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3248,7 +3257,7 @@
       "label": ".UpdateCharacterCarousel()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L231",
+      "source_location": "L232",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3256,31 +3265,31 @@
             "callee": "Exp",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L234"
+            "line": "L235"
           },
           {
             "callee": "Lerp",
             "receiver_type": "Vector2",
             "lang": "csharp",
-            "line": "L240"
+            "line": "L241"
           },
           {
             "callee": "Lerp",
             "receiver_type": "Vector3",
             "lang": "csharp",
-            "line": "L241"
+            "line": "L242"
           },
           {
             "callee": "Lerp",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L244"
+            "line": "L245"
           },
           {
             "callee": "Abs",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L244"
+            "line": "L245"
           }
         ]
       },
@@ -3370,10 +3379,16 @@
       "metadata": {
         "unresolved_calls": [
           {
+            "callee": "GetInt",
+            "receiver_type": "PlayerPrefs",
+            "lang": "csharp",
+            "line": "L54"
+          },
+          {
             "callee": "SetActive",
             "receiver_type": "GameObject",
             "lang": "csharp",
-            "line": "L57"
+            "line": "L58"
           }
         ]
       },
@@ -3384,7 +3399,7 @@
       "label": ".OnEnable()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L69",
+      "source_location": "L84",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3393,7 +3408,7 @@
       "label": ".OnDisable()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L79",
+      "source_location": "L94",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3402,7 +3417,7 @@
       "label": ".Update()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L86",
+      "source_location": "L101",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3411,7 +3426,7 @@
       "label": ".HandleLoadGame()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L103",
+      "source_location": "L118",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3420,7 +3435,7 @@
       "label": ".HandleGameStarted()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L118",
+      "source_location": "L133",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3429,7 +3444,7 @@
       "label": ".HandleGameOver()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L125",
+      "source_location": "L140",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3438,7 +3453,7 @@
       "label": ".UpdateCoin()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L141",
+      "source_location": "L156",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3447,7 +3462,7 @@
       "label": ".UpdateFinalScore()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L152",
+      "source_location": "L167",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3456,7 +3471,7 @@
       "label": ".UpdateFlightInfo()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L168",
+      "source_location": "L183",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3465,7 +3480,7 @@
       "label": ".UpdateSpeed()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L175",
+      "source_location": "L190",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3474,7 +3489,7 @@
       "label": ".UpdateDistance()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L191",
+      "source_location": "L206",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3483,7 +3498,7 @@
       "label": ".ShowStartUI()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L206",
+      "source_location": "L221",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3491,7 +3506,7 @@
             "callee": "SetActive",
             "receiver_type": "GameObject",
             "lang": "csharp",
-            "line": "L209"
+            "line": "L224"
           }
         ]
       },
@@ -3502,7 +3517,7 @@
       "label": ".StartGame()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L225",
+      "source_location": "L240",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3511,7 +3526,7 @@
       "label": ".FadeIn()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L239",
+      "source_location": "L254",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3520,7 +3535,7 @@
       "label": ".FadeOut()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L256",
+      "source_location": "L271",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3529,7 +3544,7 @@
       "label": ".StartFade()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L270",
+      "source_location": "L285",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3537,13 +3552,13 @@
             "callee": "TryGetValue",
             "receiver_type": "Dictionary",
             "lang": "csharp",
-            "line": "L275"
+            "line": "L290"
           },
           {
             "callee": "Remove",
             "receiver_type": "Dictionary",
             "lang": "csharp",
-            "line": "L281"
+            "line": "L296"
           }
         ]
       },
@@ -3554,7 +3569,7 @@
       "label": ".FadeCanvasGroup()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L300",
+      "source_location": "L315",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3562,25 +3577,25 @@
             "callee": "Clamp01",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L329"
+            "line": "L344"
           },
           {
             "callee": "SmoothStep",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L335"
+            "line": "L350"
           },
           {
             "callee": "Lerp",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L343"
+            "line": "L358"
           },
           {
             "callee": "Remove",
             "receiver_type": "Dictionary",
             "lang": "csharp",
-            "line": "L370"
+            "line": "L385"
           }
         ]
       },
@@ -3599,7 +3614,7 @@
       "label": ".HidePanel()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L378",
+      "source_location": "L393",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3607,7 +3622,7 @@
             "callee": "SetActive",
             "receiver_type": "GameObject",
             "lang": "csharp",
-            "line": "L381"
+            "line": "L396"
           }
         ]
       },
@@ -3618,7 +3633,7 @@
       "label": ".ShowPanel()",
       "file_type": "code",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L385",
+      "source_location": "L400",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3626,10 +3641,70 @@
             "callee": "SetActive",
             "receiver_type": "GameObject",
             "lang": "csharp",
-            "line": "L388"
+            "line": "L403"
           }
         ]
       },
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_chunk_chunkdifficultypatterncontroller",
+      "label": "ChunkDifficultyPatternController.cs",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller",
+      "label": "ChunkDifficultyPatternController",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L3",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_cs_gameobject",
+      "label": "GameObject",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller_configure",
+      "label": ".Configure()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L9",
+      "_callable": true,
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "Range",
+            "receiver_type": "Random",
+            "lang": "csharp",
+            "line": "L26"
+          },
+          {
+            "callee": "SetActive",
+            "receiver_type": "GameObject",
+            "lang": "csharp",
+            "line": "L27"
+          }
+        ]
+      },
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller_setallinactive",
+      "label": ".SetAllInactive()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L30",
+      "_callable": true,
       "_origin": "ast"
     },
     {
@@ -3787,6 +3862,16 @@
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
       "source_location": "L17",
       "_callable": true,
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "GetComponentInChildren",
+            "receiver_type": "GameObject",
+            "lang": "csharp",
+            "line": "L25"
+          }
+        ]
+      },
       "_origin": "ast"
     },
     {
@@ -3794,7 +3879,7 @@
       "label": ".ActivateRandomBuildingVariant()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L26",
+      "source_location": "L30",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3802,7 +3887,7 @@
             "callee": "Range",
             "receiver_type": "Random",
             "lang": "csharp",
-            "line": "L38"
+            "line": "L42"
           }
         ]
       },
@@ -3813,7 +3898,7 @@
       "label": ".SetGameplayLayoutActive()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L49",
+      "source_location": "L53",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3822,7 +3907,7 @@
       "label": ".FindBuildingVariants()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L59",
+      "source_location": "L63",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -3830,19 +3915,19 @@
             "callee": "GetChild",
             "receiver_type": "Transform",
             "lang": "csharp",
-            "line": "L68"
+            "line": "L72"
           },
           {
             "callee": "Add",
             "receiver_type": "List",
             "lang": "csharp",
-            "line": "L70"
+            "line": "L74"
           },
           {
             "callee": "ToArray",
             "receiver_type": "List",
             "lang": "csharp",
-            "line": "L73"
+            "line": "L77"
           }
         ]
       },
@@ -3853,7 +3938,7 @@
       "label": ".Move()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L76",
+      "source_location": "L80",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3870,7 +3955,7 @@
       "label": ".MoveTo()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L81",
+      "source_location": "L85",
       "_callable": true,
       "_origin": "ast"
     },
@@ -3962,6 +4047,70 @@
       "source_file": "Assets/Scripts/World/Coin/SelfRotate.cs",
       "source_location": "L7",
       "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_effects_curvedworldcontroller",
+      "label": "CurvedWorldController.cs",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Effects/CurvedWorldController.cs",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_effects_curvedworldcontroller_curvedworldcontroller",
+      "label": "CurvedWorldController",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Effects/CurvedWorldController.cs",
+      "source_location": "L3",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_effects_curvedworldcontroller_cs_transform",
+      "label": "Transform",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_effects_curvedworldcontroller_curvedworldcontroller_lateupdate",
+      "label": ".LateUpdate()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Effects/CurvedWorldController.cs",
+      "source_location": "L13",
+      "_callable": true,
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "SetGlobalVector",
+            "receiver_type": "Shader",
+            "lang": "csharp",
+            "line": "L16"
+          }
+        ]
+      },
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_effects_curvedworldcontroller_curvedworldcontroller_ondisable",
+      "label": ".OnDisable()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Effects/CurvedWorldController.cs",
+      "source_location": "L20",
+      "_callable": true,
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "SetGlobalVector",
+            "receiver_type": "Shader",
+            "lang": "csharp",
+            "line": "L22"
+          }
+        ]
+      },
       "_origin": "ast"
     },
     {
@@ -4078,12 +4227,36 @@
       "label": "CoinCount",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L19",
+      "source_location": "L17",
       "_origin": "ast"
     },
     {
       "id": "assets_scripts_world_manager_difficultymanager_difficultymanager_obstaclecount",
       "label": "ObstacleCount",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L18",
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_manager_difficultymanager_difficultymanager_progress",
+      "label": "Progress",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L19",
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_manager_difficultymanager_difficultymanager_elapsedgameplaytime",
+      "label": "ElapsedGameplayTime",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L20",
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_manager_difficultymanager_difficultymanager_tier",
+      "label": "Tier",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
       "source_location": "L21",
@@ -4094,7 +4267,7 @@
       "label": ".Awake()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L23",
+      "source_location": "L26",
       "_callable": true,
       "_origin": "ast"
     },
@@ -4103,7 +4276,7 @@
       "label": ".OnEnable()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L29",
+      "source_location": "L28",
       "_callable": true,
       "_origin": "ast"
     },
@@ -4117,11 +4290,38 @@
       "_origin": "ast"
     },
     {
+      "id": "assets_scripts_world_manager_difficultymanager_difficultymanager_update",
+      "label": ".Update()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L42",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_manager_difficultymanager_difficultymanager_startdifficulty",
+      "label": ".StartDifficulty()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L49",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_manager_difficultymanager_difficultymanager_stopdifficulty",
+      "label": ".StopDifficulty()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L57",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
       "id": "assets_scripts_world_manager_difficultymanager_difficultymanager_onscorechanged",
       "label": ".OnScoreChanged()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L41",
+      "source_location": "L59",
       "_callable": true,
       "_origin": "ast"
     },
@@ -4130,7 +4330,7 @@
       "label": ".UpdateDifficulty()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L47",
+      "source_location": "L65",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -4138,19 +4338,25 @@
             "callee": "Clamp01",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L50"
+            "line": "L69"
+          },
+          {
+            "callee": "Max",
+            "receiver_type": "Mathf",
+            "lang": "csharp",
+            "line": "L69"
           },
           {
             "callee": "RoundToInt",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L57"
+            "line": "L70"
           },
           {
             "callee": "Lerp",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L58"
+            "line": "L70"
           }
         ]
       },
@@ -4161,7 +4367,16 @@
       "label": ".GetMaxScore()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L80",
+      "source_location": "L74",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_manager_difficultymanager_difficultymanager_getsecondstomaximumdifficulty",
+      "label": ".GetSecondsToMaximumDifficulty()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L75",
       "_callable": true,
       "_origin": "ast"
     },
@@ -4935,7 +5150,7 @@
       "label": "BaseWorldSpeed",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L23",
+      "source_location": "L20",
       "_origin": "ast"
     },
     {
@@ -4943,7 +5158,7 @@
       "label": "WorldSpeed",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L25",
+      "source_location": "L22",
       "_origin": "ast"
     },
     {
@@ -4951,7 +5166,7 @@
       "label": "SpeedMultiplier",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L27",
+      "source_location": "L24",
       "_origin": "ast"
     },
     {
@@ -4959,7 +5174,7 @@
       "label": "IsMovementEnabled",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L29",
+      "source_location": "L26",
       "_origin": "ast"
     },
     {
@@ -4967,7 +5182,7 @@
       "label": ".Awake()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L32",
+      "source_location": "L29",
       "_callable": true,
       "_origin": "ast"
     },
@@ -4976,7 +5191,7 @@
       "label": ".OnEnable()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L55",
+      "source_location": "L48",
       "_callable": true,
       "_origin": "ast"
     },
@@ -4985,7 +5200,7 @@
       "label": ".OnDisable()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L63",
+      "source_location": "L56",
       "_callable": true,
       "_origin": "ast"
     },
@@ -4994,7 +5209,7 @@
       "label": ".StartMovement()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L71",
+      "source_location": "L64",
       "_callable": true,
       "_origin": "ast"
     },
@@ -5003,8 +5218,33 @@
       "label": ".StopMovement()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L77",
+      "source_location": "L70",
       "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_manager_worldmovementmanager_worldmovementmanager_update",
+      "label": ".Update()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
+      "source_location": "L75",
+      "_callable": true,
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "Lerp",
+            "receiver_type": "Mathf",
+            "lang": "csharp",
+            "line": "L80"
+          },
+          {
+            "callee": "Max",
+            "receiver_type": "Mathf",
+            "lang": "csharp",
+            "line": "L81"
+          }
+        ]
+      },
       "_origin": "ast"
     },
     {
@@ -5012,24 +5252,8 @@
       "label": ".UpdateSpeed()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L83",
+      "source_location": "L88",
       "_callable": true,
-      "metadata": {
-        "unresolved_calls": [
-          {
-            "callee": "Clamp01",
-            "receiver_type": "Mathf",
-            "lang": "csharp",
-            "line": "L91"
-          },
-          {
-            "callee": "Lerp",
-            "receiver_type": "Mathf",
-            "lang": "csharp",
-            "line": "L97"
-          }
-        ]
-      },
       "_origin": "ast"
     },
     {
@@ -5037,7 +5261,7 @@
       "label": ".SetSpeedMultiplier()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L124",
+      "source_location": "L94",
       "_callable": true,
       "metadata": {
         "unresolved_calls": [
@@ -5045,7 +5269,7 @@
             "callee": "Max",
             "receiver_type": "Mathf",
             "lang": "csharp",
-            "line": "L128"
+            "line": "L98"
           }
         ]
       },
@@ -5056,7 +5280,7 @@
       "label": ".UpdateWorldSpeed()",
       "file_type": "code",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L138",
+      "source_location": "L108",
       "_callable": true,
       "_origin": "ast"
     },
@@ -5118,6 +5342,114 @@
           }
         ]
       },
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_traffic_crossroadtrafficcontroller",
+      "label": "CrossroadTrafficController.cs",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "label": "CrossroadTrafficController",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L3",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_traffic_crossroadtrafficcontroller_cs_gameobject",
+      "label": "GameObject",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_traffic_crossroadtrafficcontroller_cs_transform",
+      "label": "Transform",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_awake",
+      "label": ".Awake()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L19",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_onenable",
+      "label": ".OnEnable()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L26",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_ondisable",
+      "label": ".OnDisable()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L32",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_update",
+      "label": ".Update()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L37",
+      "_callable": true,
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "Range",
+            "receiver_type": "Random",
+            "lang": "csharp",
+            "line": "L48"
+          }
+        ]
+      },
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_spawnvehicle",
+      "label": ".SpawnVehicle()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L67",
+      "_callable": true,
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "Euler",
+            "receiver_type": "Quaternion",
+            "lang": "csharp",
+            "line": "L77"
+          }
+        ]
+      },
+      "_origin": "ast"
+    },
+    {
+      "id": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_clearactivevehicle",
+      "label": ".ClearActiveVehicle()",
+      "file_type": "code",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L81",
+      "_callable": true,
       "_origin": "ast"
     },
     {
@@ -19820,7 +20152,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L447",
+      "source_location": "L453",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -19830,7 +20162,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L469",
+      "source_location": "L475",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -19840,7 +20172,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L497",
+      "source_location": "L503",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -19850,7 +20182,17 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L509",
+      "source_location": "L515",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_player_control_playercontroller_playercontroller",
+      "target": "assets_scripts_player_control_playercontroller_playercontroller_restorestandingvisualimmediately",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
+      "source_location": "L534",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -19860,7 +20202,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L529",
+      "source_location": "L544",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -19870,7 +20212,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L542",
+      "source_location": "L557",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -20109,13 +20451,35 @@
       "_origin": "ast"
     },
     {
+      "source": "assets_scripts_player_control_playercontroller_playercontroller_startjump",
+      "target": "assets_scripts_player_control_playercontroller_playercontroller_restorestandingcollider",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
+      "source_location": "L443",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_player_control_playercontroller_playercontroller_startjump",
+      "target": "assets_scripts_player_control_playercontroller_playercontroller_restorestandingvisualimmediately",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
+      "source_location": "L444",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
       "source": "assets_scripts_player_control_playercontroller_playercontroller_updatejumpandslide",
       "target": "assets_scripts_player_control_playercontroller_playercontroller_restorestandingcollider",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/Player/Control/PlayerController.cs",
-      "source_location": "L493",
+      "source_location": "L499",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21682,7 +22046,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L66",
+      "source_location": "L67",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21692,7 +22056,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L72",
+      "source_location": "L73",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21702,7 +22066,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L79",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21712,7 +22076,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L89",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21722,7 +22086,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L90",
+      "source_location": "L91",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21732,7 +22096,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L91",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21742,7 +22106,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L93",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21752,7 +22116,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L101",
+      "source_location": "L102",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21762,7 +22126,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L109",
+      "source_location": "L110",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21772,7 +22136,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L111",
+      "source_location": "L112",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21782,7 +22146,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L119",
+      "source_location": "L120",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21792,7 +22156,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L127",
+      "source_location": "L128",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21802,7 +22166,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L127",
+      "source_location": "L128",
       "weight": 1.0,
       "context": "return_type",
       "metadata": {
@@ -21816,7 +22180,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L137",
+      "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21826,7 +22190,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L150",
+      "source_location": "L151",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21836,7 +22200,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L151",
+      "source_location": "L152",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21846,7 +22210,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L153",
+      "source_location": "L154",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21856,7 +22220,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L160",
+      "source_location": "L161",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21866,7 +22230,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L169",
+      "source_location": "L170",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21876,7 +22240,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L181",
+      "source_location": "L182",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21886,7 +22250,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L187",
+      "source_location": "L188",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21896,7 +22260,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L187",
+      "source_location": "L188",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -21910,7 +22274,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L194",
+      "source_location": "L195",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21920,7 +22284,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L194",
+      "source_location": "L195",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -21934,7 +22298,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L194",
+      "source_location": "L195",
       "weight": 1.0,
       "context": "return_type",
       "metadata": {
@@ -21948,7 +22312,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L222",
+      "source_location": "L223",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -21958,7 +22322,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L222",
+      "source_location": "L223",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -21972,24 +22336,13 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L231",
+      "source_location": "L232",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
       "source": "assets_scripts_ui_komikauicontroller_komikauicontroller_awake",
       "target": "assets_scripts_ui_komikauicontroller_komikauicontroller_updaterecordlabels",
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L54",
-      "weight": 1.0,
-      "_origin": "ast"
-    },
-    {
-      "source": "assets_scripts_ui_komikauicontroller_komikauicontroller_awake",
-      "target": "assets_scripts_ui_komikauicontroller_komikauicontroller_setinitialpanelstate",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -22000,7 +22353,7 @@
     },
     {
       "source": "assets_scripts_ui_komikauicontroller_komikauicontroller_awake",
-      "target": "assets_scripts_ui_komikauicontroller_komikauicontroller_selectcharacter",
+      "target": "assets_scripts_ui_komikauicontroller_komikauicontroller_setinitialpanelstate",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -22011,12 +22364,23 @@
     },
     {
       "source": "assets_scripts_ui_komikauicontroller_komikauicontroller_awake",
+      "target": "assets_scripts_ui_komikauicontroller_komikauicontroller_selectcharacter",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_ui_komikauicontroller_komikauicontroller_awake",
       "target": "assets_scripts_ui_komikauicontroller_komikauicontroller_autostartafterreload",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L62",
+      "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22027,7 +22391,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L81",
+      "source_location": "L82",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22038,7 +22402,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L86",
+      "source_location": "L87",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22049,7 +22413,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L89",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22060,7 +22424,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L90",
+      "source_location": "L91",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22071,7 +22435,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L91",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22082,7 +22446,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L98",
+      "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22093,7 +22457,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L106",
+      "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22104,7 +22468,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L109",
+      "source_location": "L110",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22115,7 +22479,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L109",
+      "source_location": "L110",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22125,7 +22489,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L130",
+      "source_location": "L131",
       "weight": 1.0,
       "context": "generic_arg",
       "metadata": {
@@ -22140,7 +22504,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L150",
+      "source_location": "L151",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22151,7 +22515,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L151",
+      "source_location": "L152",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22162,7 +22526,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L157",
+      "source_location": "L158",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22173,7 +22537,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L165",
+      "source_location": "L166",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22184,7 +22548,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L166",
+      "source_location": "L167",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22195,7 +22559,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L184",
+      "source_location": "L185",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22206,7 +22570,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L191",
+      "source_location": "L192",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22217,7 +22581,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L218",
+      "source_location": "L219",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22510,7 +22874,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L69",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22520,7 +22884,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L79",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22530,7 +22894,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L86",
+      "source_location": "L101",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22540,7 +22904,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L103",
+      "source_location": "L118",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22550,7 +22914,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L118",
+      "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22560,7 +22924,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L125",
+      "source_location": "L140",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22570,7 +22934,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L141",
+      "source_location": "L156",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22580,7 +22944,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L152",
+      "source_location": "L167",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22590,7 +22954,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L168",
+      "source_location": "L183",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22600,7 +22964,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L175",
+      "source_location": "L190",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22610,7 +22974,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L191",
+      "source_location": "L206",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22620,7 +22984,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L206",
+      "source_location": "L221",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22630,7 +22994,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L225",
+      "source_location": "L240",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22640,7 +23004,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L239",
+      "source_location": "L254",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22650,7 +23014,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L239",
+      "source_location": "L254",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -22664,7 +23028,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L256",
+      "source_location": "L271",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22674,7 +23038,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L256",
+      "source_location": "L271",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -22688,7 +23052,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L270",
+      "source_location": "L285",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22698,7 +23062,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L270",
+      "source_location": "L285",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -22712,7 +23076,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L300",
+      "source_location": "L315",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22722,7 +23086,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L300",
+      "source_location": "L315",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -22736,7 +23100,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L300",
+      "source_location": "L315",
       "weight": 1.0,
       "context": "return_type",
       "metadata": {
@@ -22750,7 +23114,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L378",
+      "source_location": "L393",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22760,7 +23124,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L378",
+      "source_location": "L393",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -22774,7 +23138,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L385",
+      "source_location": "L400",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22784,7 +23148,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L385",
+      "source_location": "L400",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -22799,7 +23163,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L54",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22810,7 +23174,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L63",
+      "source_location": "L78",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22821,7 +23185,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L64",
+      "source_location": "L79",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22832,7 +23196,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L75",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22843,7 +23207,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L96",
+      "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22854,7 +23218,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L120",
+      "source_location": "L135",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22865,7 +23229,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L121",
+      "source_location": "L136",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22876,7 +23240,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L127",
+      "source_location": "L142",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22887,7 +23251,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L129",
+      "source_location": "L144",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22898,7 +23262,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L131",
+      "source_location": "L146",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22909,7 +23273,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L132",
+      "source_location": "L147",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22920,7 +23284,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L134",
+      "source_location": "L149",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22931,7 +23295,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L170",
+      "source_location": "L185",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22942,7 +23306,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L171",
+      "source_location": "L186",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22953,7 +23317,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L248",
+      "source_location": "L263",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22964,7 +23328,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L262",
+      "source_location": "L277",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -22975,7 +23339,119 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L287",
+      "source_location": "L302",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_chunk_chunkdifficultypatterncontroller",
+      "target": "unityengine",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L1",
+      "weight": 1.0,
+      "metadata": {
+        "using_kind": "namespace",
+        "target_fqn": "UnityEngine",
+        "scope_kind": "file"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_chunk_chunkdifficultypatterncontroller",
+      "target": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller",
+      "target": "monobehaviour",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "metadata": {
+        "ref_token": "MonoBehaviour"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller",
+      "target": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_cs_gameobject",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "context": "field",
+      "metadata": {
+        "ref_token": "GameObject"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller",
+      "target": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller_configure",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller_configure",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L9",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "metadata": {
+        "ref_token": "DifficultyManager"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller",
+      "target": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller_setallinactive",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller_setallinactive",
+      "target": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_cs_gameobject",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L30",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "metadata": {
+        "ref_token": "GameObject"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller_configure",
+      "target": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller_setallinactive",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23399,7 +23875,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L26",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23409,7 +23885,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L26",
+      "source_location": "L30",
       "weight": 1.0,
       "context": "return_type",
       "metadata": {
@@ -23423,7 +23899,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L49",
+      "source_location": "L53",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23433,7 +23909,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L49",
+      "source_location": "L53",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -23447,7 +23923,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L59",
+      "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23457,7 +23933,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L76",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23467,7 +23943,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L76",
+      "source_location": "L80",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -23481,7 +23957,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23491,7 +23967,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L81",
+      "source_location": "L85",
       "weight": 1.0,
       "context": "parameter_type",
       "metadata": {
@@ -23522,13 +23998,27 @@
       "_origin": "ast"
     },
     {
+      "source": "assets_scripts_world_chunk_worldchunk_worldchunk_resetcontent",
+      "target": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
+      "source_location": "L25",
+      "weight": 1.0,
+      "context": "generic_arg",
+      "metadata": {
+        "ref_token": "ChunkDifficultyPatternController"
+      },
+      "_origin": "ast"
+    },
+    {
       "source": "assets_scripts_world_chunk_worldchunk_worldchunk_activaterandombuildingvariant",
       "target": "assets_scripts_world_chunk_worldchunk_worldchunk_findbuildingvariants",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
-      "source_location": "L29",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23700,6 +24190,79 @@
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Coin/SelfRotate.cs",
       "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_effects_curvedworldcontroller",
+      "target": "unityengine",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Effects/CurvedWorldController.cs",
+      "source_location": "L1",
+      "weight": 1.0,
+      "metadata": {
+        "using_kind": "namespace",
+        "target_fqn": "UnityEngine",
+        "scope_kind": "file"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_effects_curvedworldcontroller",
+      "target": "assets_scripts_world_effects_curvedworldcontroller_curvedworldcontroller",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Effects/CurvedWorldController.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_effects_curvedworldcontroller_curvedworldcontroller",
+      "target": "monobehaviour",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Effects/CurvedWorldController.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "metadata": {
+        "ref_token": "MonoBehaviour"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_effects_curvedworldcontroller_curvedworldcontroller",
+      "target": "assets_scripts_world_effects_curvedworldcontroller_cs_transform",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Effects/CurvedWorldController.cs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "context": "field",
+      "metadata": {
+        "ref_token": "Transform"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_effects_curvedworldcontroller_curvedworldcontroller",
+      "target": "assets_scripts_world_effects_curvedworldcontroller_curvedworldcontroller_lateupdate",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Effects/CurvedWorldController.cs",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_effects_curvedworldcontroller_curvedworldcontroller",
+      "target": "assets_scripts_world_effects_curvedworldcontroller_curvedworldcontroller_ondisable",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Effects/CurvedWorldController.cs",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23884,7 +24447,7 @@
       "relation": "defines",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L19",
+      "source_location": "L17",
       "weight": 1.0,
       "context": "field",
       "_origin": "ast"
@@ -23892,6 +24455,39 @@
     {
       "source": "assets_scripts_world_manager_difficultymanager_difficultymanager",
       "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_obstaclecount",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L18",
+      "weight": 1.0,
+      "context": "field",
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_manager_difficultymanager_difficultymanager",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_progress",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L19",
+      "weight": 1.0,
+      "context": "field",
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_manager_difficultymanager_difficultymanager",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_elapsedgameplaytime",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "field",
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_manager_difficultymanager_difficultymanager",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_tier",
       "relation": "defines",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
@@ -23906,7 +24502,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23916,7 +24512,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L29",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23932,11 +24528,41 @@
     },
     {
       "source": "assets_scripts_world_manager_difficultymanager_difficultymanager",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_update",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_manager_difficultymanager_difficultymanager",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_startdifficulty",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_manager_difficultymanager_difficultymanager",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_stopdifficulty",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_manager_difficultymanager_difficultymanager",
       "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_onscorechanged",
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L41",
+      "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23946,7 +24572,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L47",
+      "source_location": "L65",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23956,7 +24582,17 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L80",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_manager_difficultymanager_difficultymanager",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_getsecondstomaximumdifficulty",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23967,7 +24603,29 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L25",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_manager_difficultymanager_difficultymanager_update",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_updatedifficulty",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_manager_difficultymanager_difficultymanager_startdifficulty",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_updatedifficulty",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
+      "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -23978,7 +24636,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/DifficultyManager.cs",
-      "source_location": "L43",
+      "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -25014,7 +25672,7 @@
       "relation": "defines",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L23",
+      "source_location": "L20",
       "weight": 1.0,
       "context": "field",
       "_origin": "ast"
@@ -25025,7 +25683,7 @@
       "relation": "defines",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L25",
+      "source_location": "L22",
       "weight": 1.0,
       "context": "field",
       "_origin": "ast"
@@ -25036,7 +25694,7 @@
       "relation": "defines",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L27",
+      "source_location": "L24",
       "weight": 1.0,
       "context": "field",
       "_origin": "ast"
@@ -25047,7 +25705,7 @@
       "relation": "defines",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L29",
+      "source_location": "L26",
       "weight": 1.0,
       "context": "field",
       "_origin": "ast"
@@ -25058,7 +25716,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L32",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -25068,7 +25726,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L55",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -25078,7 +25736,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L63",
+      "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -25088,7 +25746,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L71",
+      "source_location": "L64",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -25098,7 +25756,17 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L77",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_manager_worldmovementmanager_worldmovementmanager",
+      "target": "assets_scripts_world_manager_worldmovementmanager_worldmovementmanager_update",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
+      "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -25108,7 +25776,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L83",
+      "source_location": "L88",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -25118,7 +25786,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L124",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -25128,18 +25796,18 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L138",
+      "source_location": "L108",
       "weight": 1.0,
       "_origin": "ast"
     },
     {
-      "source": "assets_scripts_world_manager_worldmovementmanager_worldmovementmanager_updatespeed",
+      "source": "assets_scripts_world_manager_worldmovementmanager_worldmovementmanager_update",
       "target": "assets_scripts_world_manager_worldmovementmanager_worldmovementmanager_updateworldspeed",
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L120",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -25150,7 +25818,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L134",
+      "source_location": "L104",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -25267,6 +25935,194 @@
       "metadata": {
         "ref_token": "PlayerInteraction"
       },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller",
+      "target": "unityengine",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L1",
+      "weight": 1.0,
+      "metadata": {
+        "using_kind": "namespace",
+        "target_fqn": "UnityEngine",
+        "scope_kind": "file"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "target": "monobehaviour",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L3",
+      "weight": 1.0,
+      "metadata": {
+        "ref_token": "MonoBehaviour"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_cs_gameobject",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "context": "field",
+      "metadata": {
+        "ref_token": "GameObject"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_cs_transform",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L6",
+      "weight": 1.0,
+      "context": "field",
+      "metadata": {
+        "ref_token": "Transform"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "target": "assets_scripts_world_manager_gamemanager_gamemanager",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L14",
+      "weight": 1.0,
+      "context": "field",
+      "metadata": {
+        "ref_token": "GameManager"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_awake",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_onenable",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_ondisable",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_update",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_spawnvehicle",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_clearactivevehicle",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_awake",
+      "target": "assets_scripts_world_manager_gamemanager_gamemanager",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "generic_arg",
+      "metadata": {
+        "ref_token": "GameManager"
+      },
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_onenable",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_clearactivevehicle",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_ondisable",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_clearactivevehicle",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_update",
+      "target": "assets_scripts_world_traffic_crossroadtrafficcontroller_crossroadtrafficcontroller_spawnvehicle",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs",
+      "source_location": "L52",
+      "weight": 1.0,
       "_origin": "ast"
     },
     {
@@ -39728,7 +40584,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L53",
+      "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -39740,7 +40596,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L116",
+      "source_location": "L117",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -39752,7 +40608,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L124",
+      "source_location": "L125",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -39764,7 +40620,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L132",
+      "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -39776,7 +40632,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "Assets/Scripts/UI/KomikaUIController.cs",
-      "source_location": "L134",
+      "source_location": "L135",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -39788,7 +40644,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L107",
+      "source_location": "L122",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -39800,7 +40656,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L113",
+      "source_location": "L128",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -39812,7 +40668,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "Assets/Scripts/UI/UIManager.cs",
-      "source_location": "L232",
+      "source_location": "L247",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -39849,6 +40705,18 @@
       "confidence_score": 0.8,
       "source_file": "Assets/Scripts/World/Chunk/ChunkManager.cs",
       "source_location": "L96",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "assets_scripts_world_chunk_worldchunk_worldchunk_resetcontent",
+      "target": "assets_scripts_world_chunk_chunkdifficultypatterncontroller_chunkdifficultypatterncontroller_configure",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "Assets/Scripts/World/Chunk/WorldChunk.cs",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast"
     },
@@ -39913,14 +40781,14 @@
       "_origin": "ast"
     },
     {
-      "source": "assets_scripts_world_manager_worldmovementmanager_worldmovementmanager_awake",
-      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_getmaxscore",
+      "source": "assets_scripts_world_manager_worldmovementmanager_worldmovementmanager_update",
+      "target": "assets_scripts_world_manager_difficultymanager_difficultymanager_getsecondstomaximumdifficulty",
       "relation": "calls",
       "context": "call",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "Assets/Scripts/World/Manager/WorldMovementManager.cs",
-      "source_location": "L35",
+      "source_location": "L81",
       "weight": 1.0,
       "_origin": "ast"
     },

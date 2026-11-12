@@ -42,9 +42,9 @@
     "semantic_hash": ""
   },
   "Assets/Scripts/Player/Control/PlayerController.cs": {
-    "mtime": 1794464629.8562458,
-    "seen": 1794465063.4838746,
-    "ast_hash": "c3c6067cdbae50e0ad4c0a1d9e56564f",
+    "mtime": 1794468319.383016,
+    "seen": 1794468485.0795634,
+    "ast_hash": "17e204dd63433a75014521efc9f9518d",
     "semantic_hash": ""
   },
   "Assets/Scripts/Player/Control/PlayerDeathController.cs": {
@@ -96,15 +96,15 @@
     "semantic_hash": ""
   },
   "Assets/Scripts/UI/KomikaUIController.cs": {
-    "mtime": 1794464965.224,
-    "seen": 1794465063.4838874,
-    "ast_hash": "dab3d1a8a54884b7f25474a204b0ae8d",
+    "mtime": 1794467378.0375624,
+    "seen": 1794467659.6193304,
+    "ast_hash": "935d4d96e0080438c474634cf4e91740",
     "semantic_hash": ""
   },
   "Assets/Scripts/UI/UIManager.cs": {
-    "mtime": 1794463625.5517628,
-    "seen": 1794463862.9690847,
-    "ast_hash": "25abfd2faae9aa3645f5b75164bd58f1",
+    "mtime": 1794467378.0395794,
+    "seen": 1794467659.6193323,
+    "ast_hash": "b74b7c4542cb0a58280f58ffe4db1cb7",
     "semantic_hash": ""
   },
   "Assets/Scripts/World/Chunk/ChunkManager.cs": {
@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "Assets/Scripts/World/Chunk/WorldChunk.cs": {
-    "mtime": 1794382607.9859455,
-    "seen": 1794461476.8590424,
-    "ast_hash": "1b0e2c45a1b52bfe4c8bd8831c9c93d7",
+    "mtime": 1794469384.821327,
+    "seen": 1794469592.1390953,
+    "ast_hash": "908cd03252335f66668c61e012b1bff4",
     "semantic_hash": ""
   },
   "Assets/Scripts/World/Coin/Coin.cs": {
@@ -144,9 +144,9 @@
     "semantic_hash": ""
   },
   "Assets/Scripts/World/Manager/DifficultyManager.cs": {
-    "mtime": 1794374797.548211,
-    "seen": 1794461476.8590484,
-    "ast_hash": "0ff34abba43c0bb02f4322fea319892d",
+    "mtime": 1794469405.712,
+    "seen": 1794469592.139103,
+    "ast_hash": "babe8102da3270598600699980c68547",
     "semantic_hash": ""
   },
   "Assets/Scripts/World/Manager/GameAudioController.cs": {
@@ -186,9 +186,9 @@
     "semantic_hash": ""
   },
   "Assets/Scripts/World/Manager/WorldMovementManager.cs": {
-    "mtime": 1789296376.6814423,
-    "seen": 1794461476.8590555,
-    "ast_hash": "f8f7f24abedf86ea49daa6018959d836",
+    "mtime": 1794469390.26795,
+    "seen": 1794469592.1391113,
+    "ast_hash": "221029d485ed1577fe781865d1e8e679",
     "semantic_hash": ""
   },
   "Assets/Scripts/World/Obstacle/Obstacle.cs": {
@@ -867,6 +867,24 @@
     "mtime": 1794463708.395,
     "seen": 1794463862.9690564,
     "ast_hash": "e4a07cdef7eb0e11711bb553d2ace67c",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Traffic/CrossroadTrafficController.cs": {
+    "mtime": 1794467679.297,
+    "seen": 1794468485.0796027,
+    "ast_hash": "e36f6784d77991a006a7f3459ffdb828",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Effects/CurvedWorldController.cs": {
+    "mtime": 1794468364.158,
+    "seen": 1794468485.0795867,
+    "ast_hash": "c0e2c0ba837563c1950c13046d3df305",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/World/Chunk/ChunkDifficultyPatternController.cs": {
+    "mtime": 1794469405.755,
+    "seen": 1794469592.139092,
+    "ast_hash": "a319f0d9336bc9d2603cbb0bd92edabe",
     "semantic_hash": ""
   }
 }
