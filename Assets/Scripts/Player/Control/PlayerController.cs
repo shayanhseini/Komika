@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float movementSmoothness = 10f;
+    [SerializeField] private float movementSmoothness = 18f;
 
     [Header("Three Lane Controls")]
     [SerializeField] private float laneOffset = 3f;
