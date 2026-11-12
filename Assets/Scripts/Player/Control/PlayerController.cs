@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpDuration = 0.85f;
     [SerializeField] private float slideDuration = 0.75f;
     [SerializeField, Range(0.2f, 0.8f)] private float slideColliderHeightMultiplier = 0.45f;
+    [SerializeField] private Transform slideVisual;
+    [SerializeField, Range(0.2f, 0.8f)] private float slideVisualHeightMultiplier = 0.45f;
+    [SerializeField] private float slideVisualTransitionSpeed = 14f;
 
 
     [Header("Movement Limits")]
@@ -62,6 +65,8 @@ public class PlayerController : MonoBehaviour
     private BoxCollider playerCollider;
     private Vector3 standingColliderSize;
     private Vector3 standingColliderCenter;
+    private Vector3 standingVisualScale;
+    private Vector3 standingVisualPosition;
 
 
     private void Awake()
@@ -99,6 +104,15 @@ public class PlayerController : MonoBehaviour
             standingColliderSize = playerCollider.size;
             standingColliderCenter = playerCollider.center;
         }
+
+        if (slideVisual == null)
+            slideVisual = transform.Find("Cube");
+
+        if (slideVisual != null)
+        {
+            standingVisualScale = slideVisual.localScale;
+            standingVisualPosition = slideVisual.localPosition;
+        }
     }
 
 
@@ -125,6 +139,7 @@ public class PlayerController : MonoBehaviour
         ReadInput();
 
         UpdateJumpAndSlide();
+        UpdateSlideVisual();
 
         Move();
 
@@ -489,6 +504,25 @@ public class PlayerController : MonoBehaviour
 
         playerCollider.size = standingColliderSize;
         playerCollider.center = standingColliderCenter;
+    }
+
+    private void UpdateSlideVisual()
+    {
+        if (slideVisual == null)
+            return;
+
+        Vector3 targetScale = standingVisualScale;
+        Vector3 targetPosition = standingVisualPosition;
+
+        if (IsSliding)
+        {
+            targetScale.y *= slideVisualHeightMultiplier;
+            targetPosition.y -= (standingVisualScale.y - targetScale.y) * 0.5f;
+        }
+
+        float blend = 1f - Mathf.Exp(-slideVisualTransitionSpeed * Time.deltaTime);
+        slideVisual.localScale = Vector3.Lerp(slideVisual.localScale, targetScale, blend);
+        slideVisual.localPosition = Vector3.Lerp(slideVisual.localPosition, targetPosition, blend);
     }
 
 
