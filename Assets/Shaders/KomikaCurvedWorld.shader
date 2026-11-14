@@ -4,6 +4,9 @@ Shader "Komika/Curved World Lit"
     {
         [MainTexture] _BaseMap("Base Map", 2D) = "white" {}
         [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
+        [Toggle(_NORMALMAP)] _EnableNormalMap("Enable Normal Map", Float) = 0.0
+        _BumpMap("Normal Map", 2D) = "bump" {}
+        _BumpScale("Normal Scale", Float) = 1.0
         _Smoothness("Smoothness", Range(0.0, 1.0)) = 0.5
         _Metallic("Metallic", Range(0.0, 1.0)) = 0.0
         [HDR] _EmissionColor("Emission Color", Color) = (0, 0, 0, 1)
@@ -33,6 +36,8 @@ Shader "Komika/Curved World Lit"
             #pragma vertex LitPassVertex
             #pragma fragment LitPassFragment
 
+            #pragma shader_feature_local _NORMALMAP
+
             // Universal Pipeline keywords
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
@@ -49,6 +54,7 @@ Shader "Komika/Curved World Lit"
             {
                 float4 positionOS   : POSITION;
                 float3 normalOS     : NORMAL;
+                float4 tangentOS    : TANGENT;
                 float2 uv           : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -58,6 +64,7 @@ Shader "Komika/Curved World Lit"
                 float4 positionCS   : SV_POSITION;
                 float3 positionWS   : TEXCOORD0;
                 float3 normalWS     : TEXCOORD1;
+                float4 tangentWS    : TEXCOORD5;
                 float2 uv           : TEXCOORD2;
                 float4 shadowCoord  : TEXCOORD3;
                 float  fogFactor    : TEXCOORD4;
@@ -67,11 +74,15 @@ Shader "Komika/Curved World Lit"
 
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
+            TEXTURE2D(_BumpMap);
+            SAMPLER(sampler_BumpMap);
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _BaseMap_ST;
+                float4 _BumpMap_ST;
                 float4 _BaseColor;
                 float4 _EmissionColor;
+                float _BumpScale;
                 float _Smoothness;
                 float _Metallic;
                 float _ReceiveShadows;
@@ -98,6 +109,8 @@ Shader "Komika/Curved World Lit"
                 output.positionWS = worldPos;
                 output.positionCS = TransformWorldToHClip(worldPos);
                 output.normalWS = TransformObjectToWorldNormal(input.normalOS);
+                real sign = input.tangentOS.w * GetOddNegativeScale();
+                output.tangentWS = float4(TransformObjectToWorldDir(input.tangentOS.xyz), sign);
                 output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
                 output.fogFactor = ComputeFogFactor(output.positionCS.z);
                 output.shadowCoord = TransformWorldToShadowCoord(worldPos);
@@ -112,6 +125,13 @@ Shader "Komika/Curved World Lit"
 
                 half4 albedo = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv) * _BaseColor;
                 half3 normalWS = normalize(input.normalWS);
+
+            #if defined(_NORMALMAP)
+                half4 bumpSample = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, input.uv);
+                half3 normalTS = UnpackNormalScale(bumpSample, _BumpScale);
+                float3 bitangent = input.tangentWS.w * cross(input.normalWS, input.tangentWS.xyz);
+                normalWS = TransformTangentToWorld(normalTS, half3x3(input.tangentWS.xyz, bitangent, input.normalWS), true);
+            #endif
 
                 // Directional / Main Light
                 Light mainLight = GetMainLight(input.shadowCoord);

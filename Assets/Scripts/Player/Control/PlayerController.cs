@@ -15,12 +15,20 @@ public class PlayerController : MonoBehaviour
     [Header("Jump & Slide")]
     [SerializeField] private float jumpHeight = 2.5f;
     [SerializeField] private float jumpDuration = 0.85f;
-    [SerializeField] private float slideDuration = 0.75f;
+    [Tooltip("Total duration of slide in seconds (matched with 49-frame slide animation)")]
+    [SerializeField] private float slideDuration = 1.25f;
     [SerializeField, Range(0.2f, 0.8f)] private float slideColliderHeightMultiplier = 0.45f;
     [SerializeField] private Transform slideVisual;
+    [Tooltip("If true, bone animation handles the slide pose so visual mesh is not unnaturally squashed")]
+    [SerializeField] private bool useRiggedAnimationForSlide = true;
     [SerializeField, Range(0.2f, 0.8f)] private float slideVisualHeightMultiplier = 0.45f;
     [SerializeField] private float slideVisualTransitionSpeed = 14f;
 
+
+    [Header("Visual Scale")]
+    [Tooltip("Scale multiplier for the character model. 1.5 - 1.7 is recommended for realistic runner proportion.")]
+    [SerializeField] private float modelScale = 1.6f;
+    [SerializeField] private bool autoApplyModelScale = true;
 
     [Header("Movement Limits")]
     [SerializeField] private float xLimit = 5f;
@@ -42,6 +50,16 @@ public class PlayerController : MonoBehaviour
     public Vector2 Input { get; private set; }
     public bool IsJumping { get; private set; }
     public bool IsSliding { get; private set; }
+
+    public float JumpDuration => jumpDuration;
+    public float JumpElapsed => jumpElapsed;
+    public float JumpProgress => (IsJumping && jumpDuration > 0f) ? Mathf.Clamp01(jumpElapsed / jumpDuration) : 0f;
+
+    public event System.Action<float> OnJumpStarted;
+    public event System.Action OnJumpEnded;
+    public event System.Action<float> OnSlideStarted;
+    public event System.Action OnSlideEnded;
+    public event System.Action<int> OnLaneChangeStarted;
 
 
     private Quaternion initialRotation;
@@ -98,13 +116,6 @@ public class PlayerController : MonoBehaviour
 
         canControl = false;
 
-        playerCollider = GetComponent<BoxCollider>();
-        if (playerCollider != null)
-        {
-            standingColliderSize = playerCollider.size;
-            standingColliderCenter = playerCollider.center;
-        }
-
         if (slideVisual == null)
         {
             slideVisual = transform.Find("Character_Visual");
@@ -116,10 +127,50 @@ public class PlayerController : MonoBehaviour
 
         if (slideVisual != null)
         {
+            if (autoApplyModelScale && modelScale > 0.01f)
+            {
+                slideVisual.localScale = Vector3.one * modelScale;
+            }
             standingVisualScale = slideVisual.localScale;
             standingVisualPosition = slideVisual.localPosition;
         }
+
+        playerCollider = GetComponent<BoxCollider>();
+        if (playerCollider != null)
+        {
+            if (autoApplyModelScale && modelScale > 0.01f)
+            {
+                playerCollider.size = new Vector3(0.5f * modelScale, 1.05f * modelScale, 0.5f * modelScale);
+                playerCollider.center = new Vector3(0f, -0.47f + (1.05f * modelScale) * 0.5f, 0f);
+            }
+            standingColliderSize = playerCollider.size;
+            standingColliderCenter = playerCollider.center;
+        }
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (autoApplyModelScale && modelScale > 0.01f)
+        {
+            if (slideVisual == null)
+                slideVisual = transform.Find("Character_Visual");
+
+            if (slideVisual != null)
+            {
+                slideVisual.localScale = Vector3.one * modelScale;
+                standingVisualScale = slideVisual.localScale;
+            }
+
+            var col = GetComponent<BoxCollider>();
+            if (col != null)
+            {
+                col.size = new Vector3(0.5f * modelScale, 1.05f * modelScale, 0.5f * modelScale);
+                col.center = new Vector3(0f, -0.47f + (1.05f * modelScale) * 0.5f, 0f);
+            }
+        }
+    }
+#endif
 
 
     private void OnEnable()
@@ -170,7 +221,11 @@ public class PlayerController : MonoBehaviour
         Input = Vector2.zero;
 
         isTouching = false;
-        IsJumping = false;
+        if (IsJumping)
+        {
+            IsJumping = false;
+            OnJumpEnded?.Invoke();
+        }
         RestoreStandingCollider();
         ResetPointerGesture();
     }
@@ -183,7 +238,11 @@ public class PlayerController : MonoBehaviour
         Input = Vector2.zero;
 
         isTouching = false;
-        IsJumping = false;
+        if (IsJumping)
+        {
+            IsJumping = false;
+            OnJumpEnded?.Invoke();
+        }
         targetPosition.y = lockedY;
         RestoreStandingCollider();
         ResetPointerGesture();
@@ -193,6 +252,27 @@ public class PlayerController : MonoBehaviour
     private void ReadInput()
     {
         Input = Vector2.zero;
+
+        // Keyboard controls (useful for Editor testing and PC controls)
+        if (Keyboard.current != null)
+        {
+            if (Keyboard.current.downArrowKey.wasPressedThisFrame || Keyboard.current.sKey.wasPressedThisFrame)
+            {
+                StartSlide();
+            }
+            else if (Keyboard.current.upArrowKey.wasPressedThisFrame || Keyboard.current.wKey.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                StartJump();
+            }
+            else if (Keyboard.current.leftArrowKey.wasPressedThisFrame || Keyboard.current.aKey.wasPressedThisFrame)
+            {
+                SetLane(currentLane - 1);
+            }
+            else if (Keyboard.current.rightArrowKey.wasPressedThisFrame || Keyboard.current.dKey.wasPressedThisFrame)
+            {
+                SetLane(currentLane + 1);
+            }
+        }
 
         if (Touchscreen.current != null &&
             Touchscreen.current.primaryTouch.press.isPressed)
@@ -409,6 +489,7 @@ public class PlayerController : MonoBehaviour
         currentLane = nextLane;
         Input = new Vector2(direction, 0f);
         targetPosition.x = (currentLane - 1) * laneOffset;
+        OnLaneChangeStarted?.Invoke(direction);
     }
 
 
@@ -453,28 +534,36 @@ public class PlayerController : MonoBehaviour
         IsJumping = true;
         jumpElapsed = 0f;
         Input = Vector2.up;
+        OnJumpStarted?.Invoke(jumpDuration);
     }
 
 
     private void StartSlide()
     {
         if (IsJumping)
-            return;
+        {
+            // Cancel jump and drop down immediately into slide
+            IsJumping = false;
+            targetPosition.y = lockedY;
+            OnJumpEnded?.Invoke();
+        }
 
         IsSliding = true;
         slideTimeRemaining = slideDuration;
         Input = Vector2.down;
 
-        if (playerCollider == null)
-            return;
+        if (playerCollider != null)
+        {
+            Vector3 size = standingColliderSize;
+            size.y *= slideColliderHeightMultiplier;
+            playerCollider.size = size;
 
-        Vector3 size = standingColliderSize;
-        size.y *= slideColliderHeightMultiplier;
-        playerCollider.size = size;
+            Vector3 center = standingColliderCenter;
+            center.y -= (standingColliderSize.y - size.y) * 0.5f;
+            playerCollider.center = center;
+        }
 
-        Vector3 center = standingColliderCenter;
-        center.y -= (standingColliderSize.y - size.y) * 0.5f;
-        playerCollider.center = center;
+        OnSlideStarted?.Invoke(slideDuration);
     }
 
 
@@ -490,6 +579,7 @@ public class PlayerController : MonoBehaviour
             {
                 IsJumping = false;
                 targetPosition.y = lockedY;
+                OnJumpEnded?.Invoke();
             }
         }
         else
@@ -508,14 +598,20 @@ public class PlayerController : MonoBehaviour
 
     private void RestoreStandingCollider()
     {
+        bool wasSliding = IsSliding;
         IsSliding = false;
         slideTimeRemaining = 0f;
 
-        if (playerCollider == null)
-            return;
+        if (playerCollider != null)
+        {
+            playerCollider.size = standingColliderSize;
+            playerCollider.center = standingColliderCenter;
+        }
 
-        playerCollider.size = standingColliderSize;
-        playerCollider.center = standingColliderCenter;
+        if (wasSliding)
+        {
+            OnSlideEnded?.Invoke();
+        }
     }
 
     private void UpdateSlideVisual()
@@ -526,7 +622,7 @@ public class PlayerController : MonoBehaviour
         Vector3 targetScale = standingVisualScale;
         Vector3 targetPosition = standingVisualPosition;
 
-        if (IsSliding)
+        if (IsSliding && !useRiggedAnimationForSlide)
         {
             targetScale.y *= slideVisualHeightMultiplier;
             targetPosition.y -= (standingVisualScale.y - targetScale.y) * 0.5f;
