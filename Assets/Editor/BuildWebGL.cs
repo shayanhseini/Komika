@@ -46,12 +46,10 @@ public static class BuildWebGL
         try
         {
             File.WriteAllText(StatusPath, "BUILDING");
-            Debug.Log("[BuildWebGL] Configuring WebGL settings for GitHub Pages...");
+            Debug.Log("[BuildWebGL] Applying optimizations and configuring WebGL settings for GitHub Pages...");
 
-            // 1. Configure settings for 100% GitHub Pages compatibility (No Gzip/Brotli header mismatch)
-            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
-            PlayerSettings.WebGL.decompressionFallback = true;
-            PlayerSettings.WebGL.dataCaching = true;
+            // 1. Apply WebGL Optimizations
+            WebGLOptimizer.ApplyOptimizations();
 
             // 2. Gather active scenes
             string[] scenes = EditorBuildSettings.scenes
@@ -61,7 +59,6 @@ public static class BuildWebGL
 
             if (scenes.Length == 0)
             {
-                // Fallback to active scene or GameScene.unity
                 string fallback = "Assets/Scenes/GameScene.unity";
                 if (File.Exists(fallback))
                     scenes = new[] { fallback };
@@ -91,6 +88,35 @@ public static class BuildWebGL
 
             if (summary.result == BuildResult.Succeeded)
             {
+                // Ensure .nojekyll for GitHub Pages
+                string nojekyllPath = Path.Combine(fullOutputPath, ".nojekyll");
+                if (!File.Exists(nojekyllPath))
+                {
+                    File.WriteAllText(nojekyllPath, "");
+                }
+
+                // Update index.html title
+                string indexPath = Path.Combine(fullOutputPath, "index.html");
+                if (File.Exists(indexPath))
+                {
+                    string html = File.ReadAllText(indexPath);
+                    html = html.Replace("<title>Unity Web Player | EndlessFlyingProject</title>", "<title>Komika | کامیکا</title>");
+                    html = html.Replace("<title>Unity Web Player | Endless Flying Project</title>", "<title>Komika | کامیکا</title>");
+                    html = html.Replace("<title>Unity Web Player | Komika</title>", "<title>Komika | کامیکا</title>");
+                    html = html.Replace("<div id=\"unity-build-title\">EndlessFlyingProject</div>", "<div id=\"unity-build-title\">Komika | کامیکا</div>");
+                    html = html.Replace("<div id=\"unity-build-title\">Endless Flying Project</div>", "<div id=\"unity-build-title\">Komika | کامیکا</div>");
+                    html = html.Replace("<div id=\"unity-build-title\">Komika</div>", "<div id=\"unity-build-title\">Komika | کامیکا</div>");
+
+                    if (!html.Contains("unity-progress-text"))
+                    {
+                        html = html.Replace("<div id=\"unity-progress-bar-full\"></div>\n        </div>",
+                            "<div id=\"unity-progress-bar-full\"></div>\n        </div>\n        <div id=\"unity-progress-text\" style=\"color: #00e5ff; font-family: sans-serif; font-size: 15px; font-weight: bold; margin-top: 12px; text-shadow: 0 0 10px rgba(0,229,255,0.7); text-align: center;\">0%</div>");
+                        html = html.Replace("document.querySelector(\"#unity-progress-bar-full\").style.width = 100 * progress + \"%\";",
+                            "document.querySelector(\"#unity-progress-bar-full\").style.width = 100 * progress + \"%\";\n          var pt = document.querySelector(\"#unity-progress-text\");\n          if (pt) pt.textContent = Math.round(100 * progress) + \"%\";");
+                    }
+                    File.WriteAllText(indexPath, html);
+                }
+
                 string info = $"SUCCESS:{summary.totalSize}:{summary.totalTime.TotalSeconds:F1}";
                 File.WriteAllText(StatusPath, info);
                 Debug.Log($"[BuildWebGL] BUILD SUCCEEDED in {summary.totalTime.TotalSeconds:F1}s! Output size: {summary.totalSize / (1024 * 1024)}MB");
