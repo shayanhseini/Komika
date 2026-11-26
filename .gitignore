@@ -110,5 +110,9 @@ InitTestScene*.unity*
 /Screenshots/
 /Assets/Scripts/graphify-out/
 /Assets/Scripts/graphify-out.meta
+/TMP_Examples_Backup/
+/Assets/_Recovery/
+/Assets/_Recovery.meta
+/wait_for_build.py
 # JetBrains Rider / IntelliJ
 .idea/

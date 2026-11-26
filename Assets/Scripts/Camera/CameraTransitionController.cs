@@ -54,8 +54,8 @@ public class CameraTransitionController : MonoBehaviour
 
     public void ApplyGameplayTransform()
     {
-        Vector3 targetPosition = gameplayPoint != null ? gameplayPoint.position : new Vector3(0.05f, 3.746f, -100.74f);
-        Quaternion targetRotation = gameplayPoint != null ? gameplayPoint.rotation : Quaternion.Euler(12.9f, 0f, 0f);
+        Vector3 targetPosition = gameplayPoint != null ? gameplayPoint.position : new Vector3(0f, 2.55f, -98.40f);
+        Quaternion targetRotation = gameplayPoint != null ? gameplayPoint.rotation : Quaternion.Euler(10.0f, 0f, 0f);
 
         transform.SetPositionAndRotation(targetPosition, targetRotation);
 
@@ -82,8 +82,8 @@ public class CameraTransitionController : MonoBehaviour
         Vector3 startPosition = transform.position;
         Quaternion startRotation = transform.rotation;
 
-        Vector3 targetPosition = gameplayPoint != null ? gameplayPoint.position : new Vector3(0.05f, 3.746f, -100.74f);
-        Quaternion targetRotation = gameplayPoint != null ? gameplayPoint.rotation : Quaternion.Euler(12.9f, 0f, 0f);
+        Vector3 targetPosition = gameplayPoint != null ? gameplayPoint.position : new Vector3(0f, 2.55f, -98.40f);
+        Quaternion targetRotation = gameplayPoint != null ? gameplayPoint.rotation : Quaternion.Euler(10.0f, 0f, 0f);
 
         Transform playerTransform = null;
         var pObj = GameObject.FindGameObjectWithTag("Player") ?? GameObject.Find("Player");

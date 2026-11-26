@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PauseController : MonoBehaviour
 {
@@ -7,14 +8,15 @@ public class PauseController : MonoBehaviour
     public void TogglePause()
     {
         if (uiController != null)
+        {
             uiController.TogglePauseMenu();
-        else
-            Time.timeScale = Mathf.Approximately(Time.timeScale, 0f) ? 1f : 0f;
+        }
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        Keyboard kb = Keyboard.current;
+        if (kb != null && (kb.pKey.wasPressedThisFrame || kb.escapeKey.wasPressedThisFrame))
         {
             TogglePause();
         }

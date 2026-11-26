@@ -9,18 +9,18 @@ public class PlayerCameraController : MonoBehaviour
     [SerializeField] private PlayerController playerController;
 
     [Header("Rotation")]
-    [SerializeField] private float pitchAmount = 5f;
-    [SerializeField] private float rollAmount = 3f;
+    [SerializeField] private float pitchAmount = 3.5f;
+    [SerializeField] private float rollAmount = 2.5f;
     [SerializeField] private float rotationSmoothness = 5f;
 
     [Header("Lane Follow")]
-    [SerializeField, Range(0f, 1f)] private float horizontalFollowAmount = 0.45f;
+    [SerializeField, Range(0f, 1f)] private float horizontalFollowAmount = 0.52f;
     [SerializeField, Min(0.01f)] private float horizontalFollowSmoothTime = 0.12f;
 
     [Header("FOV")]
     [SerializeField] private Camera targetCamera;
-    [SerializeField] private float normalFOV = 60f;
-    [SerializeField] private float speedFOV = 68f;
+    [SerializeField] private float normalFOV = 62f;
+    [SerializeField] private float speedFOV = 70f;
     [SerializeField] private float fovTransitionDuration = 0.25f;
 
     private Quaternion initialRotation;

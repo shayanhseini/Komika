@@ -34,9 +34,11 @@ public class KomikaUIController : MonoBehaviour
     [Header("Records")]
     [SerializeField] private TMP_Text currentRecordText;
     [SerializeField] private TMP_Text hudBestRecordText;
+    [SerializeField] private TMP_Text hudCoinText;
     [SerializeField] private TMP_Text menuBestRecordText;
     [SerializeField] private TMP_Text gameOverRecordText;
     [SerializeField] private TMP_Text gameOverBestRecordText;
+    [SerializeField] private TMP_Text gameOverCoinText;
 
     [Header("References")]
     [SerializeField] private GameManager gameManager;
@@ -68,12 +70,14 @@ public class KomikaUIController : MonoBehaviour
     {
         GameEvents.GameStarted += HandleGameStarted;
         GameEvents.GameOver += HandleGameOver;
+        GameEvents.ScoreChanged += HandleScoreChanged;
     }
 
     private void OnDisable()
     {
         GameEvents.GameStarted -= HandleGameStarted;
         GameEvents.GameOver -= HandleGameOver;
+        GameEvents.ScoreChanged -= HandleScoreChanged;
         Time.timeScale = 1f;
     }
 
@@ -175,16 +179,22 @@ public class KomikaUIController : MonoBehaviour
         TransitionTo(gameOverGroup);
     }
 
+    private void HandleScoreChanged(int _) => UpdateRecordLabels();
+
     private void UpdateRecordLabels()
     {
         float current = gameManager != null ? gameManager.Distance : 0f;
-        string currentValue = $"{Mathf.FloorToInt(current):0000} M";
-        string bestValue = $"{Mathf.FloorToInt(Mathf.Max(displayedBestRecord, current)):0000} M";
-        if (currentRecordText != null) currentRecordText.text = currentValue;
-        if (hudBestRecordText != null) hudBestRecordText.text = bestValue;
-        if (menuBestRecordText != null) menuBestRecordText.text = bestValue;
-        if (gameOverRecordText != null) gameOverRecordText.text = currentValue;
-        if (gameOverBestRecordText != null) gameOverBestRecordText.text = bestValue;
+        int coins = gameManager != null ? gameManager.Score : 0;
+        string currentValue = $"{Mathf.FloorToInt(current)} متر";
+        string bestValue = $"{Mathf.FloorToInt(Mathf.Max(displayedBestRecord, current))} متر";
+        string coinValue = $"{coins}";
+        RTLTextMeshPro.ApplyTo(currentRecordText, currentValue);
+        RTLTextMeshPro.ApplyTo(hudBestRecordText, bestValue);
+        RTLTextMeshPro.ApplyTo(hudCoinText, coinValue);
+        RTLTextMeshPro.ApplyTo(menuBestRecordText, bestValue);
+        RTLTextMeshPro.ApplyTo(gameOverRecordText, currentValue);
+        RTLTextMeshPro.ApplyTo(gameOverBestRecordText, bestValue);
+        RTLTextMeshPro.ApplyTo(gameOverCoinText, $"{coinValue} سکه");
     }
 
     private void SetInitialPanelState(bool showMenu)

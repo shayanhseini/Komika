@@ -10,7 +10,13 @@ Shader "Komika/Curved World Lit"
         _Smoothness("Smoothness", Range(0.0, 1.0)) = 0.5
         _Metallic("Metallic", Range(0.0, 1.0)) = 0.0
         [HDR] _EmissionColor("Emission Color", Color) = (0, 0, 0, 1)
+        [Toggle(_ALPHACLIP)] _AlphaClip("Alpha Clipping", Float) = 0.0
+        _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.42
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull Mode", Float) = 2.0
         [Toggle] _ReceiveShadows("Receive Shadows", Float) = 1.0
+        _ShadowTint("Shadow Tint", Color) = (0.36, 0.43, 0.56, 1)
+        _LightingWrap("Stylized Wrap", Range(0.0, 0.6)) = 0.25
+        _RimStrength("Rim Light Strength", Range(0.0, 0.6)) = 0.14
     }
 
     SubShader
@@ -29,6 +35,7 @@ Shader "Komika/Curved World Lit"
         {
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 3.0
@@ -37,6 +44,7 @@ Shader "Komika/Curved World Lit"
             #pragma fragment LitPassFragment
 
             #pragma shader_feature_local _NORMALMAP
+            #pragma shader_feature_local _ALPHACLIP
 
             // Universal Pipeline keywords
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
@@ -66,7 +74,9 @@ Shader "Komika/Curved World Lit"
                 float3 normalWS     : TEXCOORD1;
                 float4 tangentWS    : TEXCOORD5;
                 float2 uv           : TEXCOORD2;
+            #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
                 float4 shadowCoord  : TEXCOORD3;
+            #endif
                 float  fogFactor    : TEXCOORD4;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
                 UNITY_VERTEX_OUTPUT_STEREO
@@ -82,10 +92,14 @@ Shader "Komika/Curved World Lit"
                 float4 _BumpMap_ST;
                 float4 _BaseColor;
                 float4 _EmissionColor;
+                float4 _ShadowTint;
                 float _BumpScale;
                 float _Smoothness;
                 float _Metallic;
                 float _ReceiveShadows;
+                float _LightingWrap;
+                float _RimStrength;
+                float _Cutoff;
             CBUFFER_END
 
             float4 _KomikaCurveOrigin;
@@ -113,7 +127,9 @@ Shader "Komika/Curved World Lit"
                 output.tangentWS = float4(TransformObjectToWorldDir(input.tangentOS.xyz), sign);
                 output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
                 output.fogFactor = ComputeFogFactor(output.positionCS.z);
+            #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
                 output.shadowCoord = TransformWorldToShadowCoord(worldPos);
+            #endif
 
                 return output;
             }
@@ -124,6 +140,9 @@ Shader "Komika/Curved World Lit"
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
                 half4 albedo = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv) * _BaseColor;
+            #if defined(_ALPHACLIP)
+                clip(albedo.a - _Cutoff);
+            #endif
                 half3 normalWS = normalize(input.normalWS);
 
             #if defined(_NORMALMAP)
@@ -133,28 +152,44 @@ Shader "Komika/Curved World Lit"
                 normalWS = TransformTangentToWorld(normalTS, half3x3(input.tangentWS.xyz, bitangent, input.normalWS), true);
             #endif
 
-                // Directional / Main Light
-                Light mainLight = GetMainLight(input.shadowCoord);
-                half NdotL = saturate(dot(normalWS, mainLight.direction));
+                // Directional / Main Light with per-pixel cascade shadow sampling (prevents blocky/sheared cascade seams)
+            #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
+                float4 shadowCoord = input.shadowCoord;
+            #elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
+                float4 shadowCoord = TransformWorldToShadowCoord(input.positionWS);
+            #else
+                float4 shadowCoord = float4(0, 0, 0, 0);
+            #endif
+                Light mainLight = GetMainLight(shadowCoord, input.positionWS, half4(1, 1, 1, 1));
+                half rawNdotL = dot(normalWS, mainLight.direction);
+                half NdotL = saturate((rawNdotL + (half)_LightingWrap) / (1.0h + (half)_LightingWrap));
 
-                // Spherical harmonics ambient light (sky/ground ambient) with stylized floor
-                half3 ambient = max(SampleSH(normalWS), half3(0.2, 0.2, 0.2));
+                // Spherical harmonics ambient light with atmospheric cool Tehran sky floor
+                half3 shAmbient = SampleSH(normalWS);
+                half3 ambient = max(shAmbient, _ShadowTint.rgb * 0.85h);
 
                 // Shadow attenuation with ReceiveShadows toggle support
                 half shadowAtten = lerp(1.0h, (half)mainLight.shadowAttenuation, (half)_ReceiveShadows);
+                half lightTerm = NdotL * shadowAtten * (half)mainLight.distanceAttenuation;
 
-                // Direct lighting with shadow and distance attenuation
-                half3 directDiffuse = mainLight.color * (NdotL * shadowAtten * (half)mainLight.distanceAttenuation);
+                // Blend shaded regions gently toward _ShadowTint instead of flat black mud
+                half3 directDiffuse = mainLight.color * lightTerm;
+                half3 shadowFill = _ShadowTint.rgb * ((1.0h - lightTerm) * 0.28h);
 
-                // Specular reflection (Blinn-Phong)
+                // Specular reflection (Blinn-Phong, tinted for metallic surfaces)
                 float3 viewDirWS = SafeNormalize(GetCameraPositionWS() - input.positionWS);
                 float3 halfDir = SafeNormalize(mainLight.direction + viewDirWS);
                 float NdotH = saturate(dot(normalWS, halfDir));
                 float specPow = exp2(10.0 * _Smoothness + 1.0);
-                float spec = pow(NdotH, specPow) * _Smoothness;
-                half3 directSpecular = mainLight.color * (spec * shadowAtten * NdotL);
+                float spec = pow(NdotH, specPow) * _Smoothness * (0.35 + 0.65 * _Metallic);
+                half3 specTint = lerp(half3(1.0h, 1.0h, 1.0h), albedo.rgb, (half)_Metallic);
+                half3 directSpecular = mainLight.color * specTint * (spec * shadowAtten * saturate(rawNdotL));
 
-                half3 totalLighting = ambient + directDiffuse;
+                // Subtle stylized fresnel rim light so silhouettes separate cleanly in curved perspective
+                half fresnel = pow(1.0h - saturate(dot(normalWS, viewDirWS)), 3.0h);
+                half3 rimLight = mainLight.color * (fresnel * (half)_RimStrength * (0.4h + 0.6h * saturate(normalWS.y)));
+
+                half3 totalLighting = ambient + directDiffuse + shadowFill;
 
             #if defined(_ADDITIONAL_LIGHTS)
                 uint pixelLightCount = GetAdditionalLightsCount();
@@ -167,7 +202,7 @@ Shader "Komika/Curved World Lit"
                 }
             #endif
 
-                half3 finalRgb = albedo.rgb * totalLighting + directSpecular + _EmissionColor.rgb;
+                half3 finalRgb = albedo.rgb * totalLighting + directSpecular + rimLight + _EmissionColor.rgb;
                 finalRgb = MixFog(finalRgb, input.fogFactor);
 
                 return half4(finalRgb, albedo.a);
@@ -183,17 +218,35 @@ Shader "Komika/Curved World Lit"
             ZWrite On
             ZTest LEqual
             ColorMask 0
-            Cull Back
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
             #pragma vertex ShadowPassVertex
             #pragma fragment ShadowPassFragment
+            #pragma shader_feature_local _ALPHACLIP
             #pragma multi_compile_instancing
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+
+            TEXTURE2D(_BaseMap);
+            SAMPLER(sampler_BaseMap);
+            CBUFFER_START(UnityPerMaterial)
+                float4 _BaseMap_ST;
+                float4 _BumpMap_ST;
+                float4 _BaseColor;
+                float4 _EmissionColor;
+                float4 _ShadowTint;
+                float _BumpScale;
+                float _Smoothness;
+                float _Metallic;
+                float _ReceiveShadows;
+                float _LightingWrap;
+                float _RimStrength;
+                float _Cutoff;
+            CBUFFER_END
 
             float3 _LightDirection;
             float3 _LightPosition;
@@ -205,12 +258,14 @@ Shader "Komika/Curved World Lit"
             {
                 float4 positionOS   : POSITION;
                 float3 normalOS     : NORMAL;
+                float2 uv           : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct Varyings
             {
                 float4 positionCS   : SV_POSITION;
+                float2 uv           : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -237,12 +292,17 @@ Shader "Komika/Curved World Lit"
                 float4 positionCS = TransformWorldToHClip(ApplyShadowBias(worldPos, normalWS, lightDirectionWS));
                 positionCS = ApplyShadowClamping(positionCS);
                 output.positionCS = positionCS;
+                output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
 
                 return output;
             }
 
             half4 ShadowPassFragment(Varyings input) : SV_TARGET
             {
+            #if defined(_ALPHACLIP)
+                half alpha = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).a * _BaseColor.a;
+                clip(alpha - _Cutoff);
+            #endif
                 return 0;
             }
             ENDHLSL
@@ -255,15 +315,33 @@ Shader "Komika/Curved World Lit"
 
             ZWrite On
             ColorMask R
-            Cull Back
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
             #pragma vertex DepthOnlyVertex
             #pragma fragment DepthOnlyFragment
+            #pragma shader_feature_local _ALPHACLIP
             #pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+            TEXTURE2D(_BaseMap);
+            SAMPLER(sampler_BaseMap);
+            CBUFFER_START(UnityPerMaterial)
+                float4 _BaseMap_ST;
+                float4 _BumpMap_ST;
+                float4 _BaseColor;
+                float4 _EmissionColor;
+                float4 _ShadowTint;
+                float _BumpScale;
+                float _Smoothness;
+                float _Metallic;
+                float _ReceiveShadows;
+                float _LightingWrap;
+                float _RimStrength;
+                float _Cutoff;
+            CBUFFER_END
 
             float4 _KomikaCurveOrigin;
             float4 _KomikaCurveParams;
@@ -271,12 +349,14 @@ Shader "Komika/Curved World Lit"
             struct Attributes
             {
                 float4 positionOS : POSITION;
+                float2 uv         : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct Varyings
             {
                 float4 positionCS : SV_POSITION;
+                float2 uv         : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -293,11 +373,16 @@ Shader "Komika/Curved World Lit"
                 worldPos.x += curveAmount * _KomikaCurveParams.y;
 
                 output.positionCS = TransformWorldToHClip(worldPos);
+                output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
                 return output;
             }
 
             half4 DepthOnlyFragment(Varyings input) : SV_TARGET
             {
+            #if defined(_ALPHACLIP)
+                half alpha = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).a * _BaseColor.a;
+                clip(alpha - _Cutoff);
+            #endif
                 return 0;
             }
             ENDHLSL
@@ -309,15 +394,33 @@ Shader "Komika/Curved World Lit"
             Tags { "LightMode" = "DepthNormals" }
 
             ZWrite On
-            Cull Back
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma target 2.0
             #pragma vertex DepthNormalsVertex
             #pragma fragment DepthNormalsFragment
+            #pragma shader_feature_local _ALPHACLIP
             #pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+            TEXTURE2D(_BaseMap);
+            SAMPLER(sampler_BaseMap);
+            CBUFFER_START(UnityPerMaterial)
+                float4 _BaseMap_ST;
+                float4 _BumpMap_ST;
+                float4 _BaseColor;
+                float4 _EmissionColor;
+                float4 _ShadowTint;
+                float _BumpScale;
+                float _Smoothness;
+                float _Metallic;
+                float _ReceiveShadows;
+                float _LightingWrap;
+                float _RimStrength;
+                float _Cutoff;
+            CBUFFER_END
 
             float4 _KomikaCurveOrigin;
             float4 _KomikaCurveParams;
@@ -326,6 +429,7 @@ Shader "Komika/Curved World Lit"
             {
                 float4 positionOS : POSITION;
                 float3 normalOS   : NORMAL;
+                float2 uv         : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -333,6 +437,7 @@ Shader "Komika/Curved World Lit"
             {
                 float4 positionCS : SV_POSITION;
                 float3 normalWS   : TEXCOORD0;
+                float2 uv         : TEXCOORD1;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -350,12 +455,17 @@ Shader "Komika/Curved World Lit"
 
                 output.positionCS = TransformWorldToHClip(worldPos);
                 output.normalWS = TransformObjectToWorldNormal(input.normalOS);
+                output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
                 return output;
             }
 
             half4 DepthNormalsFragment(Varyings input) : SV_TARGET
             {
                 UNITY_SETUP_INSTANCE_ID(input);
+            #if defined(_ALPHACLIP)
+                half alpha = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).a * _BaseColor.a;
+                clip(alpha - _Cutoff);
+            #endif
                 return half4(NormalizeNormalPerPixel(input.normalWS), 0.0);
             }
             ENDHLSL
