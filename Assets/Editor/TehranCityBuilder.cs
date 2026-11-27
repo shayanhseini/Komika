@@ -1041,7 +1041,7 @@ public static class TehranCityBuilder
             var uac = Camera.main.GetComponent<UniversalAdditionalCameraData>();
             if (uac != null)
             {
-                uac.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+                uac.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
                 uac.antialiasingQuality = AntialiasingQuality.Low;
                 EditorUtility.SetDirty(uac);
             }

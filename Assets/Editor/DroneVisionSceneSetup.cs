@@ -174,7 +174,7 @@ public static class DroneVisionSceneSetup
 
     private static void ApplyWebGLScenePerformanceOptimizations(Scene scene)
     {
-        // 1. Switch Main Camera AA from expensive TAA High (motion-vector + history passes) to crisp FXAA
+        // 1. Use crisp SMAA Low (clean edges, zero FXAA texture blur, no TAA MotionVectors overhead)
         Camera mainCam = Camera.main;
         if (mainCam == null)
         {
@@ -193,7 +193,7 @@ public static class DroneVisionSceneSetup
             var uac = mainCam.GetComponent<UniversalAdditionalCameraData>();
             if (uac != null)
             {
-                uac.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+                uac.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
                 uac.antialiasingQuality = AntialiasingQuality.Low;
                 uac.stopNaN = false;
                 EditorUtility.SetDirty(uac);
@@ -245,21 +245,21 @@ public static class DroneVisionSceneSetup
             }
         }
 
-        // 4. Cap massive 2048 character albedo/normal textures to 1024 on WebGL (4x less VRAM & download, sharp in 3rd-person view)
-        foreach (string texPath in new[]
+        // 4. Keep character albedo crisp at 2048 and cap heavy normal map at 1024 compressed on WebGL
+        foreach (var entry in new[]
         {
-            "Assets/Models/Player/Character/texture_pbr_20250901.png",
-            "Assets/Models/Player/Character/texture_pbr_20250901_normal.png"
+            ("Assets/Models/Player/Character/texture_pbr_20250901.png", 2048),
+            ("Assets/Models/Player/Character/texture_pbr_20250901_normal.png", 1024)
         })
         {
-            var importer = AssetImporter.GetAtPath(texPath) as TextureImporter;
+            var importer = AssetImporter.GetAtPath(entry.Item1) as TextureImporter;
             if (importer == null) continue;
             var ps = importer.GetPlatformTextureSettings("WebGL");
-            if (!ps.overridden || ps.maxTextureSize != 1024 || ps.textureCompression != TextureImporterCompression.Compressed)
+            if (!ps.overridden || ps.maxTextureSize != entry.Item2 || ps.textureCompression != TextureImporterCompression.Compressed)
             {
                 ps.name = "WebGL";
                 ps.overridden = true;
-                ps.maxTextureSize = 1024;
+                ps.maxTextureSize = entry.Item2;
                 ps.textureCompression = TextureImporterCompression.Compressed;
                 ps.compressionQuality = 50;
                 importer.SetPlatformTextureSettings(ps);
@@ -624,10 +624,10 @@ public static class DroneVisionSceneSetup
 
         Debug.Log($"[PerfVerify] AA={(uac != null ? uac.antialiasing.ToString() : "null")} MobileRP=(resScale={(rp ? rp.renderScale : -1f)}, shadowRes={(rp ? rp.mainLightShadowmapResolution : -1)}, shadowDist={(rp ? rp.shadowDistance : -1f)}, cascades={(rp ? rp.shadowCascadeCount : -1)}, addLights={(rp ? rp.additionalLightsRenderingMode.ToString() : "?")}) Chunks={chunks.Length} ActiveMR={activeRenderers} CastShadows={castShadowRenderers} TotalTris={totalTriangles} HorizonRenderers={horizonCount} CV=(model={dv?.model}, {dv?.cameraWidth}x{dv?.cameraHeight}@{dv?.maxFps}fps)");
 
-        if (uac == null || uac.antialiasing != AntialiasingMode.FastApproximateAntialiasing)
-            throw new Exception("Expected Main Camera FXAA antialiasing!");
-        if (rp == null || rp.mainLightShadowmapResolution > 1024 || rp.shadowCascadeCount != 1 || rp.shadowDistance > 65f)
-            throw new Exception("Mobile_RPAsset shadow optimizations not applied!");
+        if (uac == null || uac.antialiasing != AntialiasingMode.SubpixelMorphologicalAntiAliasing)
+            throw new Exception("Expected Main Camera SMAA antialiasing!");
+        if (rp == null || rp.renderScale < 0.99f || rp.mainLightShadowmapResolution > 1024 || rp.shadowCascadeCount != 1 || rp.shadowDistance > 65f)
+            throw new Exception("Mobile_RPAsset crisp resolution + shadow optimizations not applied!");
         if (dv == null || dv.model != "lite" || dv.cameraWidth != 640 || dv.maxFps != 24)
             throw new Exception("DroneVision CV perf settings not applied!");
 
