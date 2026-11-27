@@ -89,18 +89,22 @@ function createView(cfg) {
   #dv-keys span{min-width:22px;height:22px;padding:0 4px;border-radius:6px;background:rgba(255,255,255,.12);
     color:rgba(255,255,255,.55);font:700 12px/22px Tahoma,sans-serif;text-align:center}
   #dv-keys span.on{background:#34d399;color:#06281c}
+  #dv-meter{width:44px;height:7px;border-radius:999px;background:rgba(255,255,255,.16);overflow:hidden;direction:ltr}
+  #dv-meter > i{display:block;height:100%;width:0%;background:#34d399;transition:width .08s linear,background .15s}
+  #dv-meter.fast > i{background:#23e6ff}
   #dv-toast{position:absolute;left:50%;top:16px;transform:translateX(-50%);padding:8px 18px;border-radius:999px;
     background:rgba(10,18,36,.9);color:#fff;font-size:16px;font-weight:700;display:none}`;
   document.head.appendChild(style);
   const root = document.createElement('div');
   root.id = 'dv-root';
   root.innerHTML = '<div id="dv-cam"><video muted playsinline></video><canvas></canvas></div><div id="dv-msg"></div>'
-    + '<div id="dv-box"><span id="dv-dot"></span><span id="dv-state"></span><span id="dv-keys"></span></div><div id="dv-toast"></div>';
+    + '<div id="dv-box"><span id="dv-dot"></span><span id="dv-state"></span><span id="dv-meter"><i></i></span><span id="dv-keys"></span></div><div id="dv-toast"></div>';
   document.body.appendChild(root);
   const labels = String(cfg.keyLabels || 'D,A,W,S').split(',');
   const v = { root, cam: root.querySelector('#dv-cam'), video: root.querySelector('video'),
     canvas: root.querySelector('canvas'), msg: root.querySelector('#dv-msg'), box: null,
-    statusBox: root.querySelector('#dv-box'), state: root.querySelector('#dv-state'), keysEl: root.querySelector('#dv-keys'),
+    statusBox: root.querySelector('#dv-box'), state: root.querySelector('#dv-state'),
+    meterEl: root.querySelector('#dv-meter'), meterFill: root.querySelector('#dv-meter > i'), keysEl: root.querySelector('#dv-keys'),
     toast: root.querySelector('#dv-toast'), toastTimer: 0,
     mode: 'lobby', corner: cfg.previewCorner || 'bottom-left', labels: cfg.previewLabels !== false,
     showBox: cfg.statusBox !== false, lastText: '', lastBox: '', errorAt: 0 };
@@ -133,14 +137,19 @@ function paintClasses(v) {
 
 function paintBox(v) {
   const state = ui.phase === 'locked' ? 'on' : ui.phase === 'detected' ? 'wait' : 'off';
-  const motionText = ui.runPct >= 65 ? 'تند دویدن ✓' : ui.runPct >= 10 ? 'در حال دویدن ✓' : 'متصل · درجا بزنید';
+  const motionText = ui.runPct >= 62 ? 'تند دویدن ✓' : ui.runPct >= 10 ? 'در حال دویدن ✓' : 'متصل · درجا بزنید';
   const text = ui.phase === 'locked' ? motionText
     : ui.phase === 'detected' ? 'در حال شناسایی…' : (ERROR_TEXT[feed && feed.status] ? 'دوربین قطع' : 'منتظر بازیکن');
-  const key = state + text + ui.keys;
+  const pct = ui.phase === 'locked' ? Math.max(0, Math.min(100, ui.runPct | 0)) : 0;
+  const key = state + text + ui.keys + ':' + (pct >> 2);
   if (key === v.lastBox) return;
   v.lastBox = key;
   v.statusBox.className = state;
   v.state.textContent = text;
+  if (v.meterFill) {
+    v.meterFill.style.width = pct + '%';
+    v.meterEl.className = pct >= 62 ? 'fast' : '';
+  }
   for (const s of v.keySpans) s.className = ui.keys & Number(s.dataset.bit) ? 'on' : '';
 }
 

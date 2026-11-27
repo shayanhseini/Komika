@@ -28,13 +28,14 @@ namespace DroneVision.Core
         public double leanCooldownMs = 340;
         /// <summary>Minimum upright time (ms) required before re-arming the same lean direction.</summary>
         public double leanNeutralRearmMs = 110;
-        // running-in-place cadence detection
+        // running-in-place cadence & vigor detection
         public bool enableJogDetection = true;
-        public double jogStepDeadband = 0.017;
-        public double jogKneeDeadband = 0.055;
-        public double jogTimeoutMs = 450;
-        public double jogMinHz = 1.25;
-        public double jogSprintHz = 2.65;
+        public double jogStepDeadband = 0.0085;
+        public double jogKneeDeadband = 0.025;
+        public double jogArmDeadband = 0.032;
+        public double jogTimeoutMs = 620;
+        public double jogMinHz = 1.15;
+        public double jogSprintHz = 2.45;
         // wings: both wrists above this fraction of the shoulder → hip distance (hanging arms ≈ 1.12-1.19)
         public double holdLine = 0.9;
         public double handVisibility = 0.35;

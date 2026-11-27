@@ -77,7 +77,7 @@ public static class DroneVisionSceneSetup
         activeInput.leanCooldownMs = 340f;
         activeInput.leanNeutralRearmMs = 110f;
         activeInput.enableJogDetection = true;
-        activeInput.jogSprintHz = 2.65f;
+        activeInput.jogSprintHz = 2.45f;
         activeInput.lockMs = 350f;
         activeInput.lockGraceMs = 1200f;
         activeInput.invert = false;
@@ -167,7 +167,7 @@ public static class DroneVisionSceneSetup
             Debug.Log("[DroneVisionSceneSetup] Opened & saved GameScene with root DroneVision, SFX & FastRun BlendTree.");
     }
 
-    private static PoseFrame MakePose(double leanRight, bool includeHips, double wristUp = -1.2, double jogBob = 0.0, double kneeSwing = 0.0)
+    private static PoseFrame MakePose(double leanRight, bool includeHips, double wristUp = -1.2, double jogBob = 0.0, double kneeSwing = 0.0, double armSwing = 0.0)
     {
         var f = new PoseFrame { Aspect = 16.0 / 9.0 };
         double cx = 0.5, sy = 0.4 + jogBob, sw = 0.1, swh = sw * f.Aspect;
@@ -178,6 +178,8 @@ public static class DroneVisionSceneSetup
         lm[PoseFrame.Nose] = new Landmark(cx - leanRight * sw * 0.85, sy - swh * 0.8, 0.99);
         lm[PoseFrame.LShoulder] = new Landmark(sx + sw / 2, sy - leanRight * swh * 0.12, 0.99);
         lm[PoseFrame.RShoulder] = new Landmark(sx - sw / 2, sy + leanRight * swh * 0.12, 0.99);
+        lm[PoseFrame.LElbow] = new Landmark(sx + sw * 0.60, sy + swh * 0.65 - armSwing, 0.95);
+        lm[PoseFrame.RElbow] = new Landmark(sx - sw * 0.60, sy + swh * 0.65 + armSwing, 0.95);
         if (includeHips)
         {
             lm[PoseFrame.LHip] = new Landmark(cx + sw * 0.4, sy + swh * 1.45, 0.97);
@@ -201,48 +203,63 @@ public static class DroneVisionSceneSetup
             leanCooldownMs = 340,
             leanNeutralRearmMs = 110,
             enableJogDetection = true,
-            jogSprintHz = 2.65,
+            jogSprintHz = 2.45,
             lockMs = 350
         };
         var tracker = new DroneTracker(cfg);
         double t = 0;
+        double sw = 0.1 * (16.0 / 9.0);
 
-        // 1. Stand still upright (450ms) -> locks, RunIntensity == 0 (Idle)
+        // 1. Stand still with realistic MediaPipe sensor jitter (~18 FPS) -> locks, RunIntensity == 0 (Idle)
         DroneState st = null;
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 20; i++)
         {
-            t += 33.3;
-            st = tracker.Update(MakePose(0.0, includeHips: true, wristUp: -1.3), t);
+            t += 55.0;
+            double noise = ((i % 3) - 1) * sw * 0.0025;
+            st = tracker.Update(MakePose(0.0, includeHips: true, wristUp: -1.3, jogBob: noise), t);
         }
         if (!st.Locked || st.Side != 0 || st.Vert != 0 || st.RunIntensity > 0.05)
-            throw new Exception($"Upright stationary check failed: locked={st.Locked}, side={st.Side}, run={st.RunIntensity}");
+            throw new Exception($"Stationary noise check failed: locked={st.Locked}, side={st.Side}, run={st.RunIntensity}");
 
-        // 2. Normal jogging in place (~1.8 Hz) -> RunIntensity enters jog band (>= 0.30, < 0.72)
-        double sw = 0.1 * (16.0 / 9.0);
-        for (int i = 0; i < 45; i++)
+        // 2a. Soft realistic indoor jog @ 15 FPS with natural foot weight-shift sway and NO knees visible
+        for (int i = 0; i < 24; i++)
         {
-            t += 33.3;
-            double phase = (t / 1000.0) * 1.8 * Math.PI * 2.0;
-            double bob = Math.Sin(phase) * sw * 0.042;
-            st = tracker.Update(MakePose(0.0, includeHips: false, wristUp: -1.3, jogBob: bob), t);
+            t += 66.7;
+            double phase = (t / 1000.0) * 1.75 * Math.PI * 2.0;
+            double bob = Math.Sin(phase) * sw * 0.018;
+            double sway = Math.Sin(phase * 0.5) * 0.08;
+            st = tracker.Update(MakePose(sway, includeHips: false, wristUp: -1.3, jogBob: bob), t);
         }
         if (st.RunIntensity < 0.30)
-            throw new Exception($"Normal jog failed to drive RunIntensity: run={st.RunIntensity}, hz={st.StepCadence}");
+            throw new Exception($"Soft 15FPS jog with sway failed: run={st.RunIntensity}, hz={st.StepCadence}");
 
-        // 3. Fast sprint in place (~3.2 Hz) -> RunIntensity pushes into sprint band (>= 0.72)
-        for (int i = 0; i < 45; i++)
+        // 2b. Chest-up view where arms pump and head barely moves (no hips/knees)
+        for (int i = 0; i < 15; i++) { t += 55.0; tracker.Update(MakePose(0.0, includeHips: false), t); }
+        for (int i = 0; i < 24; i++)
+        {
+            t += 50.0;
+            double phase = (t / 1000.0) * 1.9 * Math.PI * 2.0;
+            double bob = Math.Sin(phase) * sw * 0.007;
+            double arm = Math.Sin(phase * 0.5) * sw * 0.095;
+            st = tracker.Update(MakePose(0.0, includeHips: false, wristUp: -1.1, jogBob: bob, armSwing: arm), t);
+        }
+        if (st.RunIntensity < 0.30)
+            throw new Exception($"Chest-up arm pump jog failed: run={st.RunIntensity}, hz={st.StepCadence}");
+
+        // 3. Fast sprint in place (~2.75 Hz) -> RunIntensity pushes into sprint band (>= 0.72)
+        for (int i = 0; i < 40; i++)
         {
             t += 33.3;
-            double phase = (t / 1000.0) * 3.2 * Math.PI * 2.0;
-            double bob = Math.Sin(phase) * sw * 0.052;
-            double knee = Math.Sin(phase * 0.5) * sw * 0.25;
+            double phase = (t / 1000.0) * 2.75 * Math.PI * 2.0;
+            double bob = Math.Sin(phase) * sw * 0.040;
+            double knee = Math.Sin(phase * 0.5) * sw * 0.20;
             st = tracker.Update(MakePose(0.0, includeHips: true, wristUp: -1.3, jogBob: bob, kneeSwing: knee), t);
         }
         if (st.RunIntensity < 0.72)
             throw new Exception($"Fast sprint failed to reach FastRun band: run={st.RunIntensity}, hz={st.StepCadence}");
 
-        // 4. Stop moving (800ms) -> drops back to Idle (< 0.08)
-        for (int i = 0; i < 25; i++)
+        // 4. Stop moving (1000ms) -> drops cleanly back to Idle (< 0.08)
+        for (int i = 0; i < 30; i++)
         {
             t += 33.3;
             st = tracker.Update(MakePose(0.0, includeHips: true), t);

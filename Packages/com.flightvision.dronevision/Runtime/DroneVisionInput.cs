@@ -91,7 +91,7 @@ namespace DroneVision
         [Tooltip("Detect running/jogging in place to drive forward speed and Idle/Run/FastRun animations.")]
         public bool enableJogDetection = true;
         [Tooltip("Steps/sec threshold mapped to fast sprint animation (FastRun).")]
-        [Range(1.8f, 4.0f)] public float jogSprintHz = 2.65f;
+        [Range(1.6f, 3.8f)] public float jogSprintHz = 2.45f;
         [Tooltip("Up: both wrists this far above the shoulder line (unused in uprightLeanMode)")]
         [Range(0.1f, 0.6f)] public float upMargin = 0.25f;
         [Tooltip("Down: both wrists this far below the shoulder line (unused in uprightLeanMode)")]
