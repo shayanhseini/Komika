@@ -48,8 +48,9 @@ public static class BuildWebGL
             File.WriteAllText(StatusPath, "BUILDING");
             Debug.Log("[BuildWebGL] Applying optimizations and configuring WebGL settings for GitHub Pages...");
 
-            // 1. Apply WebGL Optimizations
+            // 1. Apply WebGL Optimizations & ensure DroneVision CV setup in scene
             WebGLOptimizer.ApplyOptimizations();
+            DroneVisionSceneSetup.SetupSceneQuiet();
 
             // 2. Gather active scenes
             string[] scenes = EditorBuildSettings.scenes
@@ -107,7 +108,7 @@ public static class BuildWebGL
                     html = html.Replace("<div id=\"unity-build-title\">Endless Flying Project</div>", "<div id=\"unity-build-title\">Komika | کامیکا</div>");
                     html = html.Replace("<div id=\"unity-build-title\">Komika</div>", "<div id=\"unity-build-title\">Komika | کامیکا</div>");
 
-                    if (!html.Contains("unity-progress-text"))
+                    if (!html.Contains("unity-progress-text") && html.Contains("<div id=\"unity-progress-bar-full\"></div>"))
                     {
                         html = html.Replace("<div id=\"unity-progress-bar-full\"></div>\n        </div>",
                             "<div id=\"unity-progress-bar-full\"></div>\n        </div>\n        <div id=\"unity-progress-text\" style=\"color: #00e5ff; font-family: sans-serif; font-size: 15px; font-weight: bold; margin-top: 12px; text-shadow: 0 0 10px rgba(0,229,255,0.7); text-align: center;\">0%</div>");

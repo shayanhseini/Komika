@@ -1,0 +1,16 @@
+{
+  "name": "com.flightvision.dronevision",
+  "version": "1.0.0",
+  "displayName": "Drone Vision (wings gesture)",
+  "description": "Body control for the drone-operator game, the same logic as the PC app (Mashk drone): the player raises both hands like wings; tilting them turns left / right (keys A / D), both wrists above / below the shoulder line flies up / down (W / S). A green frame confirms the player first. All logic runs in C# (WebAssembly in WebGL builds). Read README.md (English, for developers and AI assistants) or README.fa.md (Persian).",
+  "unity": "2021.3",
+  "keywords": ["pose", "mediapipe", "body tracking", "drone", "webgl", "input", "exhibition"],
+  "author": { "name": "Flight Vision R&D" },
+  "samples": [
+    {
+      "displayName": "Quick Start (drone controller + debug HUD)",
+      "description": "DroneVisionExample: flies a transform with the wings (keys or analog), pauses when the player is lost. DroneVisionDebugHUD: on-screen status readout (F1).",
+      "path": "Samples~/QuickStart"
+    }
+  ]
+}

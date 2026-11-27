@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CameraDistanceCulling : MonoBehaviour
 {
-    [SerializeField] private float renderDistance = 100f;
+    [SerializeField] private float renderDistance = 260f;
 
     private Camera cam;
 

@@ -1,3 +1,4 @@
+using DroneVision;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -46,6 +47,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float wingRollAmount = 15f;
     [SerializeField] private float wingRotationSpeed = 5f;
 
+    [Header("Computer Vision (Standing Lean)")]
+    [SerializeField] private bool enableVisionControl = true;
+    [SerializeField, Range(0.2f, 2f)] private float visionHoldRepeatInterval = 0.55f;
+
 
     public Vector2 Input { get; private set; }
     public bool IsJumping { get; private set; }
@@ -85,6 +90,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 standingColliderCenter;
     private Vector3 standingVisualScale;
     private Vector3 standingVisualPosition;
+    private int prevVisionHorizontal;
+    private float visionHoldTimer;
 
 
     private void Awake()
@@ -189,7 +196,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!canControl)
+        if (!canControl || Time.timeScale <= 0f)
             return;
 
 
@@ -228,6 +235,10 @@ public class PlayerController : MonoBehaviour
         }
         RestoreStandingCollider();
         ResetPointerGesture();
+        prevVisionHorizontal = 0;
+        visionHoldTimer = 0f;
+        if (enableVisionControl && DroneVisionInput.Instance != null)
+            DroneVisionInput.Instance.SetPreviewMode(PreviewMode.Corner);
     }
 
 
@@ -246,6 +257,8 @@ public class PlayerController : MonoBehaviour
         targetPosition.y = lockedY;
         RestoreStandingCollider();
         ResetPointerGesture();
+        prevVisionHorizontal = 0;
+        visionHoldTimer = 0f;
     }
 
 
@@ -273,6 +286,8 @@ public class PlayerController : MonoBehaviour
                 SetLane(currentLane + 1);
             }
         }
+
+        ReadVisionInput();
 
         if (Touchscreen.current != null &&
             Touchscreen.current.primaryTouch.press.isPressed)
@@ -475,6 +490,44 @@ public class PlayerController : MonoBehaviour
                     wingRotationSpeed *
                     Time.deltaTime
                 );
+        }
+    }
+
+
+    private void ReadVisionInput()
+    {
+        if (!enableVisionControl)
+            return;
+
+        DroneVisionInput vision = DroneVisionInput.Instance;
+        if (vision == null || !vision.IsLocked)
+        {
+            prevVisionHorizontal = 0;
+            visionHoldTimer = 0f;
+            return;
+        }
+
+        int h = vision.Horizontal;
+        if (h == 0)
+        {
+            prevVisionHorizontal = 0;
+            visionHoldTimer = 0f;
+            return;
+        }
+
+        if (h != prevVisionHorizontal)
+        {
+            prevVisionHorizontal = h;
+            visionHoldTimer = 0f;
+            SetLane(currentLane + h);
+            return;
+        }
+
+        visionHoldTimer += Time.deltaTime;
+        if (visionHoldTimer >= visionHoldRepeatInterval)
+        {
+            visionHoldTimer = 0f;
+            SetLane(currentLane + h);
         }
     }
 
