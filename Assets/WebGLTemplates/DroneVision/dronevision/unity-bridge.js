@@ -32,7 +32,7 @@ const DARK_TEXT = 'نور محیط کم است؛ جای روشن‌تری بای
 const PHASE_TEXT = {
   searching: 'روبه‌روی دوربین صاف بایستید',
   detected: 'کمی صبر کنید، صاف بایستید…',
-  locked: 'آماده! برای تغییر خط کمی به چپ یا راست خم شوید',
+  locked: 'آماده! برای حرکت درجا بزنید و با خم شدن چپ یا راست مسیر را عوض کنید',
 };
 const ERROR_TEXT = {
   loading: 'در حال آماده‌سازی دوربین…',
@@ -50,7 +50,7 @@ const buf = new Float32Array(BUFFER_LENGTH);
 let feed = null;
 let view = null;
 // what C# decided on the last frame (drives the drawing only)
-const ui = { op: -1, phase: 'searching', progress: 0, hint: 0, side: 0, vert: 0, held: false, keys: 0, lockedAt: 0 };
+const ui = { op: -1, phase: 'searching', progress: 0, hint: 0, side: 0, vert: 0, held: false, keys: 0, runPct: 0, lockedAt: 0 };
 
 function createView(cfg) {
   const style = document.createElement('style');
@@ -133,7 +133,8 @@ function paintClasses(v) {
 
 function paintBox(v) {
   const state = ui.phase === 'locked' ? 'on' : ui.phase === 'detected' ? 'wait' : 'off';
-  const text = ui.phase === 'locked' ? 'متصل ✓'
+  const motionText = ui.runPct >= 65 ? 'تند دویدن ✓' : ui.runPct >= 10 ? 'در حال دویدن ✓' : 'متصل · درجا بزنید';
+  const text = ui.phase === 'locked' ? motionText
     : ui.phase === 'detected' ? 'در حال شناسایی…' : (ERROR_TEXT[feed && feed.status] ? 'دوربین قطع' : 'منتظر بازیکن');
   const key = state + text + ui.keys;
   if (key === v.lastBox) return;
@@ -244,12 +245,12 @@ const api = {
   },
 
   /** From C#, once per processed frame: who the player is and what the core decided. */
-  setUi(op, phase, progress, hint, side, vert, held, keys) {
+  setUi(op, phase, progress, hint, side, vert, held, keys, runPct = 0) {
     const ph = PHASE[phase] || 'searching';
     if (ph === 'locked' && ui.phase !== 'locked') ui.lockedAt = performance.now();
     const changed = ph !== ui.phase;
     ui.op = op; ui.phase = ph; ui.progress = progress; ui.hint = hint;
-    ui.side = side; ui.vert = vert; ui.held = !!held; ui.keys = keys | 0;
+    ui.side = side; ui.vert = vert; ui.held = !!held; ui.keys = keys | 0; ui.runPct = runPct | 0;
     if (changed && view) paintClasses(view);
     // crop around the player only once LOCKED (only if focusCrop is on)
     if (feed) feed.setFocus(op >= 0 && phase === 2 ? feed.poses[op] : null);

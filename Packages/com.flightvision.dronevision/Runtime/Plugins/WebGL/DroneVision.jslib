@@ -24,8 +24,8 @@ mergeInto(LibraryManager.library, {
   // Drawing only: operator index, phase (0 searching, 1 detected, 2 locked),
   // lock progress 0..1, hint code (DroneHint), roll zone -1/0/+1, pitch zone
   // -1/0/+1, wings up 0/1, pressed keys (bits: 1 right, 2 left, 4 up, 8 down).
-  DroneVision_SetUi: function (op, phase, progress, hint, side, vert, held, keys) {
-    if (window.DroneVisionUnity) window.DroneVisionUnity.setUi(op, phase, progress, hint, side, vert, held, keys);
+  DroneVision_SetUi: function (op, phase, progress, hint, side, vert, held, keys, runPct) {
+    if (window.DroneVisionUnity) window.DroneVisionUnity.setUi(op, phase, progress, hint, side, vert, held, keys, runPct);
   },
 
   // 0 lobby (big preview + frame), 1 corner, 2 hidden

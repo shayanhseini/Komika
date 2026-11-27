@@ -20,10 +20,18 @@ public class DifficultyManager : MonoBehaviour
     public float ElapsedGameplayTime { get; private set; }
     public int Tier => Progress < 0.3f ? 0 : Progress < 0.68f ? 1 : 2;
 
+    [Header("Movement Gate")]
+    [SerializeField] private WorldMovementManager worldMovement;
+
     private int currentScore;
     private bool isRunning;
 
-    private void Awake() => UpdateDifficulty();
+    private void Awake()
+    {
+        if (worldMovement == null)
+            worldMovement = FindFirstObjectByType<WorldMovementManager>();
+        UpdateDifficulty();
+    }
 
     private void OnEnable()
     {
@@ -42,7 +50,8 @@ public class DifficultyManager : MonoBehaviour
     private void Update()
     {
         if (!isRunning) return;
-        ElapsedGameplayTime += Time.deltaTime;
+        if (worldMovement == null || worldMovement.WorldSpeed > 0.2f)
+            ElapsedGameplayTime += Time.deltaTime;
         UpdateDifficulty();
     }
 

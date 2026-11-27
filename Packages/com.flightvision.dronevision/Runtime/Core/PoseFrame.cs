@@ -22,7 +22,7 @@ namespace DroneVision.Core
     public sealed class PoseFrame
     {
         public const int Count = 33;
-        public const int Nose = 0, LShoulder = 11, RShoulder = 12, LWrist = 15, RWrist = 16, LHip = 23, RHip = 24;
+        public const int Nose = 0, LShoulder = 11, RShoulder = 12, LElbow = 13, RElbow = 14, LWrist = 15, RWrist = 16, LHip = 23, RHip = 24, LKnee = 25, RKnee = 26, LAnkle = 27, RAnkle = 28;
 
         public readonly Landmark[] Landmarks = new Landmark[Count];
         public double Aspect = 4.0 / 3.0;

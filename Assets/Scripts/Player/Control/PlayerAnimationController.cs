@@ -29,6 +29,7 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private float laneReturnCrossFade = 0.12f;
 
     private static readonly int IsRunningHash = Animator.StringToHash("IsRunning");
+    private static readonly int RunBlendHash = Animator.StringToHash("RunBlend");
     private static readonly int IsJumpingHash = Animator.StringToHash("IsJumping");
     private static readonly int IsSlidingHash = Animator.StringToHash("IsSliding");
     private static readonly int JumpProgressHash = Animator.StringToHash("JumpProgress");
@@ -103,7 +104,8 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Start()
     {
-        bool isPlaying = gameManager != null && gameManager.State == GameState.Playing;
+        bool isPlaying = gameManager != null && gameManager.State == GameState.Playing
+            && worldMovement != null && worldMovement.WorldSpeed > 0.12f;
         SetRunning(isPlaying);
     }
 
@@ -118,23 +120,43 @@ public class PlayerAnimationController : MonoBehaviour
             animator.SetFloat(JumpProgressHash, progress);
         }
 
-        if (autoSyncWorldSpeed && animator != null && worldMovement != null)
+        if (animator == null)
+            return;
+
+        bool isGameplay = gameManager != null && gameManager.State == GameState.Playing;
+        bool shouldRun = isGameplay && worldMovement != null && worldMovement.WorldSpeed > 0.12f;
+        if (animator.GetBool(IsRunningHash) != shouldRun)
         {
-            if (animator.GetBool(IsRunningHash) && !animator.GetBool(IsJumpingHash) && !animator.GetBool(IsSlidingHash))
+            SetRunning(shouldRun);
+        }
+
+        if (shouldRun && !animator.GetBool(IsJumpingHash) && !animator.GetBool(IsSlidingHash))
+        {
+            float intensity = playerController != null
+                ? playerController.VisionRunIntensity
+                : (worldMovement != null ? Mathf.Clamp01((worldMovement.JogFactor - 0.35f) / 1.05f) : 0.5f);
+            float runBlend = Mathf.Clamp01((intensity - 0.52f) / 0.42f);
+            animator.SetFloat(RunBlendHash, runBlend, 0.12f, Time.deltaTime);
+
+            float targetAnimSpeed = Mathf.Lerp(0.92f, 1.32f, runBlend);
+            if (autoSyncWorldSpeed && worldMovement != null)
             {
-                float speedRatio = worldMovement.WorldSpeed / 10f;
-                animator.speed = Mathf.Clamp(speedRatio, 0.8f, 2.0f);
+                float ratio = Mathf.Clamp(worldMovement.WorldSpeed / 10f, 0.85f, 1.55f);
+                targetAnimSpeed = Mathf.Max(targetAnimSpeed, ratio);
             }
-            else if (!animator.GetBool(IsJumpingHash) && !animator.GetBool(IsSlidingHash))
-            {
-                animator.speed = 1.0f;
-            }
+            animator.speed = targetAnimSpeed;
+        }
+        else if (!animator.GetBool(IsJumpingHash) && !animator.GetBool(IsSlidingHash))
+        {
+            animator.SetFloat(RunBlendHash, 0f);
+            animator.speed = 1.0f;
         }
     }
 
     private void HandleGameStarted()
     {
-        SetRunning(true);
+        bool shouldRun = worldMovement != null && worldMovement.WorldSpeed > 0.12f;
+        SetRunning(shouldRun);
     }
 
     private void HandleGameOver()
@@ -230,9 +252,6 @@ public class PlayerAnimationController : MonoBehaviour
 
         // Do not interrupt jump or slide animation if currently airborne or sliding
         if (animator.GetBool(IsJumpingHash) || animator.GetBool(IsSlidingHash)) return;
-
-        // Only play lane shift animations while running
-        if (!animator.GetBool(IsRunningHash)) return;
 
         if (direction < 0)
         {

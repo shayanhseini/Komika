@@ -47,14 +47,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float wingRollAmount = 15f;
     [SerializeField] private float wingRotationSpeed = 5f;
 
-    [Header("Computer Vision (Standing Lean)")]
+    [Header("Computer Vision (Standing Lean & In-Place Jogging)")]
     [SerializeField] private bool enableVisionControl = true;
-    [SerializeField, Range(0.2f, 2f)] private float visionHoldRepeatInterval = 0.55f;
+    [SerializeField, Range(0.15f, 0.8f)] private float visionStepMinCooldown = 0.25f;
+    [SerializeField] private WorldMovementManager worldMovement;
 
 
     public Vector2 Input { get; private set; }
     public bool IsJumping { get; private set; }
     public bool IsSliding { get; private set; }
+    /// <summary>Current normalized forward running drive (0 = stationary Idle, 0.35..0.65 = Run, 0.65..1 = FastRun).</summary>
+    public float VisionRunIntensity { get; private set; }
 
     public float JumpDuration => jumpDuration;
     public float JumpElapsed => jumpElapsed;
@@ -90,8 +93,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 standingColliderCenter;
     private Vector3 standingVisualScale;
     private Vector3 standingVisualPosition;
-    private int prevVisionHorizontal;
-    private float visionHoldTimer;
+    private DroneVisionInput subscribedVision;
+    private float lastVisionStepTime = -10f;
 
 
     private void Awake()
@@ -184,6 +187,9 @@ public class PlayerController : MonoBehaviour
     {
         GameEvents.GameStarted += EnableControl;
         GameEvents.GameOver += DisableControl;
+        if (worldMovement == null)
+            worldMovement = FindFirstObjectByType<WorldMovementManager>();
+        EnsureVisionSubscription();
     }
 
 
@@ -191,6 +197,11 @@ public class PlayerController : MonoBehaviour
     {
         GameEvents.GameStarted -= EnableControl;
         GameEvents.GameOver -= DisableControl;
+        if (subscribedVision != null)
+        {
+            subscribedVision.OnLeanStep -= HandleVisionLeanStep;
+            subscribedVision = null;
+        }
     }
 
 
@@ -200,6 +211,8 @@ public class PlayerController : MonoBehaviour
             return;
 
 
+        EnsureVisionSubscription();
+        UpdateVisionLocomotion();
         ReadInput();
 
         UpdateJumpAndSlide();
@@ -235,8 +248,13 @@ public class PlayerController : MonoBehaviour
         }
         RestoreStandingCollider();
         ResetPointerGesture();
-        prevVisionHorizontal = 0;
-        visionHoldTimer = 0f;
+        VisionRunIntensity = 0f;
+        lastVisionStepTime = -10f;
+        if (worldMovement == null)
+            worldMovement = FindFirstObjectByType<WorldMovementManager>();
+        if (worldMovement != null)
+            worldMovement.SetJogFactor(0f);
+        EnsureVisionSubscription();
         if (enableVisionControl && DroneVisionInput.Instance != null)
             DroneVisionInput.Instance.SetPreviewMode(PreviewMode.Corner);
     }
@@ -257,8 +275,9 @@ public class PlayerController : MonoBehaviour
         targetPosition.y = lockedY;
         RestoreStandingCollider();
         ResetPointerGesture();
-        prevVisionHorizontal = 0;
-        visionHoldTimer = 0f;
+        VisionRunIntensity = 0f;
+        if (worldMovement != null)
+            worldMovement.SetJogFactor(0f);
     }
 
 
@@ -494,41 +513,68 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void ReadVisionInput()
+    private void EnsureVisionSubscription()
     {
         if (!enableVisionControl)
             return;
-
         DroneVisionInput vision = DroneVisionInput.Instance;
-        if (vision == null || !vision.IsLocked)
-        {
-            prevVisionHorizontal = 0;
-            visionHoldTimer = 0f;
+        if (vision == null || subscribedVision == vision)
             return;
+        if (subscribedVision != null)
+            subscribedVision.OnLeanStep -= HandleVisionLeanStep;
+        subscribedVision = vision;
+        subscribedVision.OnLeanStep += HandleVisionLeanStep;
+    }
+
+    private void HandleVisionLeanStep(int direction)
+    {
+        if (!enableVisionControl || !canControl || Time.timeScale <= 0f || direction == 0)
+            return;
+        if (Time.unscaledTime - lastVisionStepTime < visionStepMinCooldown)
+            return;
+
+        lastVisionStepTime = Time.unscaledTime;
+        SetLane(currentLane + (direction > 0 ? 1 : -1));
+    }
+
+    private void UpdateVisionLocomotion()
+    {
+        float runIntensity = 0f;
+        DroneVisionInput vision = enableVisionControl ? DroneVisionInput.Instance : null;
+        if (vision != null && vision.IsLocked)
+        {
+            runIntensity = vision.RunIntensity;
+        }
+        else if (Keyboard.current != null)
+        {
+            // Optional keyboard run/sprint fallback only while camera isn't locked (never runs by default!)
+            if (Keyboard.current.rightShiftKey.isPressed ||
+                (Keyboard.current.leftShiftKey.isPressed && (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.eKey.isPressed)))
+                runIntensity = 1.0f;
+            else if (Keyboard.current.leftShiftKey.isPressed)
+                runIntensity = 0.52f;
         }
 
-        int h = vision.Horizontal;
-        if (h == 0)
+        VisionRunIntensity = Mathf.Clamp01(runIntensity);
+
+        float jogFactor = 0f;
+        if (VisionRunIntensity >= 0.08f)
         {
-            prevVisionHorizontal = 0;
-            visionHoldTimer = 0f;
-            return;
+            if (VisionRunIntensity < 0.65f)
+                jogFactor = Mathf.Lerp(0.55f, 1.05f, (VisionRunIntensity - 0.08f) / 0.57f);
+            else
+                jogFactor = Mathf.Lerp(1.05f, 1.48f, (VisionRunIntensity - 0.65f) / 0.35f);
         }
 
-        if (h != prevVisionHorizontal)
-        {
-            prevVisionHorizontal = h;
-            visionHoldTimer = 0f;
-            SetLane(currentLane + h);
-            return;
-        }
+        if (worldMovement == null)
+            worldMovement = FindFirstObjectByType<WorldMovementManager>();
+        if (worldMovement != null)
+            worldMovement.SetJogFactor(jogFactor);
+    }
 
-        visionHoldTimer += Time.deltaTime;
-        if (visionHoldTimer >= visionHoldRepeatInterval)
-        {
-            visionHoldTimer = 0f;
-            SetLane(currentLane + h);
-        }
+    private void ReadVisionInput()
+    {
+        // Lean lane triggers arrive cleanly once per debounced lean via HandleVisionLeanStep.
     }
 
 

@@ -11,6 +11,7 @@ public static class SetupKamicaPlayerCharacter
 {
     private const string CharacterFolder = "Assets/Models/Player/Character";
     private const string FbxPath = CharacterFolder + "/Character_Model.fbx";
+    private const string FastRunAnimPath = CharacterFolder + "/Fast_Run.anim";
     private const string TexturePath = CharacterFolder + "/texture_pbr_20250901.png";
     private const string NormalPath = CharacterFolder + "/texture_pbr_20250901_normal.png";
     private const string MaterialPath = CharacterFolder + "/Character_Material.mat";
@@ -21,7 +22,12 @@ public static class SetupKamicaPlayerCharacter
     {
         EditorApplication.delayCall += () =>
         {
-            ExecuteSetup(silent: false);
+            if (Application.isBatchMode || EditorApplication.isPlayingOrWillChangePlaymode)
+                return;
+            if (SessionState.GetBool("Komika_SetupChar_v2", false))
+                return;
+            SessionState.SetBool("Komika_SetupChar_v2", true);
+            ExecuteSetup(silent: true);
         };
     }
 
@@ -264,6 +270,8 @@ public static class SetupKamicaPlayerCharacter
         AnimationClip runAsset = allClips.FirstOrDefault(c => c.name.Equals("Run_Cycle", System.StringComparison.OrdinalIgnoreCase));
         if (runAsset == null)
             runAsset = allClips.FirstOrDefault(c => c.name.Equals("Run", System.StringComparison.OrdinalIgnoreCase));
+
+        AnimationClip fastRunAsset = BuildFastRunFromRunClip(runAsset, idleAsset);
         AnimationClip jumpAsset = allClips.FirstOrDefault(c => c.name.Equals("Jump", System.StringComparison.OrdinalIgnoreCase));
         if (jumpAsset == null)
             jumpAsset = allClips.FirstOrDefault(c => c.name.IndexOf("Jump", System.StringComparison.OrdinalIgnoreCase) >= 0);
@@ -280,6 +288,7 @@ public static class SetupKamicaPlayerCharacter
 
         // Ensure Parameters exist
         EnsureParameter(animController, "IsRunning", AnimatorControllerParameterType.Bool);
+        EnsureParameter(animController, "RunBlend", AnimatorControllerParameterType.Float, 0.0f);
         EnsureParameter(animController, "IsJumping", AnimatorControllerParameterType.Bool);
         EnsureParameter(animController, "IsSliding", AnimatorControllerParameterType.Bool);
         EnsureParameter(animController, "JumpSpeed", AnimatorControllerParameterType.Float, 1.0f);
@@ -319,8 +328,32 @@ public static class SetupKamicaPlayerCharacter
             idleCheckWatchState.speed = 1f;
 
             // 2. Action States
+            // Clean any prior embedded BlendTree subassets before adding updated RunLocomotion BlendTree
+            foreach (var subAsset in AssetDatabase.LoadAllAssetsAtPath(ControllerPath))
+            {
+                if (subAsset is BlendTree bt)
+                    Object.DestroyImmediate(bt, true);
+            }
+
             AnimatorState runState = GetOrCreateState("Run", new Vector3(550, 200, 0));
-            runState.motion = runAsset;
+            if (fastRunAsset != null)
+            {
+                var runTree = new BlendTree
+                {
+                    name = "RunLocomotion",
+                    blendType = BlendTreeType.Simple1D,
+                    blendParameter = "RunBlend",
+                    useAutomaticThresholds = false
+                };
+                AssetDatabase.AddObjectToAsset(runTree, animController);
+                runTree.AddChild(runAsset, 0f);
+                runTree.AddChild(fastRunAsset, 1f);
+                runState.motion = runTree;
+            }
+            else
+            {
+                runState.motion = runAsset;
+            }
             runState.speed = 1f;
 
             AnimatorState jumpState = GetOrCreateState("Jump", new Vector3(550, 350, 0));
@@ -442,12 +475,20 @@ public static class SetupKamicaPlayerCharacter
             jumpToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsRunning");
 
             // --- E. Lane Change transitions ---
-            // Move_Left -> Run (smooth exit back to run)
+            // Move_Left -> Run or Idle (smooth exit depending on locomotion state)
             var leftToRun = moveLeftState.AddTransition(runState);
             leftToRun.hasExitTime = true;
             leftToRun.exitTime = 0.85f;
             leftToRun.hasFixedDuration = true;
             leftToRun.duration = 0.12f;
+            leftToRun.AddCondition(AnimatorConditionMode.If, 0, "IsRunning");
+
+            var leftToIdle = moveLeftState.AddTransition(idleState);
+            leftToIdle.hasExitTime = true;
+            leftToIdle.exitTime = 0.85f;
+            leftToIdle.hasFixedDuration = true;
+            leftToIdle.duration = 0.14f;
+            leftToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsRunning");
 
             var leftToJump = moveLeftState.AddTransition(jumpState);
             leftToJump.hasExitTime = false;
@@ -455,12 +496,20 @@ public static class SetupKamicaPlayerCharacter
             leftToJump.duration = 0.05f;
             leftToJump.AddCondition(AnimatorConditionMode.If, 0, "IsJumping");
 
-            // Move_Right -> Run (smooth exit back to run)
+            // Move_Right -> Run or Idle (smooth exit depending on locomotion state)
             var rightToRun = moveRightState.AddTransition(runState);
             rightToRun.hasExitTime = true;
             rightToRun.exitTime = 0.85f;
             rightToRun.hasFixedDuration = true;
             rightToRun.duration = 0.12f;
+            rightToRun.AddCondition(AnimatorConditionMode.If, 0, "IsRunning");
+
+            var rightToIdle = moveRightState.AddTransition(idleState);
+            rightToIdle.hasExitTime = true;
+            rightToIdle.exitTime = 0.85f;
+            rightToIdle.hasFixedDuration = true;
+            rightToIdle.duration = 0.14f;
+            rightToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsRunning");
 
             var rightToJump = moveRightState.AddTransition(jumpState);
             rightToJump.hasExitTime = false;
@@ -659,6 +708,191 @@ public static class SetupKamicaPlayerCharacter
         string msg = "[SetupKamicaPlayer] SUCCESS! Character, Animations (Idle, Run, Jump synced), and Scene fully configured.";
         Debug.Log(msg);
         return msg;
+    }
+
+    private static AnimationClip BuildFastRunFromRunClip(AnimationClip runClip, AnimationClip idleClip)
+    {
+        if (runClip == null) return null;
+
+        float srcLen = Mathf.Max(0.1f, runClip.length);
+        float dstLen = 0.38f; // Athletic high-tempo sprint stride (~30% faster cadence than normal jog)
+        int sampleCount = 17; // 16 intervals, exact closed loop frame[0] == frame[16]
+
+        var bindings = AnimationUtility.GetCurveBindings(runClip);
+        var byPath = new Dictionary<string, Dictionary<string, AnimationCurve>>();
+        foreach (var b in bindings)
+        {
+            if (b.type != typeof(Transform)) continue;
+            if (!byPath.TryGetValue(b.path, out var map))
+            {
+                map = new Dictionary<string, AnimationCurve>();
+                byPath[b.path] = map;
+            }
+            map[b.propertyName] = AnimationUtility.GetEditorCurve(runClip, b);
+        }
+
+        var idleByPath = new Dictionary<string, Dictionary<string, AnimationCurve>>();
+        if (idleClip != null)
+        {
+            foreach (var b in AnimationUtility.GetCurveBindings(idleClip))
+            {
+                if (b.type != typeof(Transform)) continue;
+                if (!idleByPath.TryGetValue(b.path, out var map))
+                {
+                    map = new Dictionary<string, AnimationCurve>();
+                    idleByPath[b.path] = map;
+                }
+                map[b.propertyName] = AnimationUtility.GetEditorCurve(idleClip, b);
+            }
+        }
+
+        static Quaternion SampleQuat(Dictionary<string, AnimationCurve> map, float time)
+        {
+            if (map == null
+                || !map.TryGetValue("m_LocalRotation.x", out var cx)
+                || !map.TryGetValue("m_LocalRotation.y", out var cy)
+                || !map.TryGetValue("m_LocalRotation.z", out var cz)
+                || !map.TryGetValue("m_LocalRotation.w", out var cw))
+                return Quaternion.identity;
+            var q = new Quaternion(cx.Evaluate(time), cy.Evaluate(time), cz.Evaluate(time), cw.Evaluate(time));
+            float mag = Mathf.Sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+            return mag > 1e-6f ? new Quaternion(q.x / mag, q.y / mag, q.z / mag, q.w / mag) : Quaternion.identity;
+        }
+
+        static Quaternion MeanQuat(Dictionary<string, AnimationCurve> map, float len)
+        {
+            if (map == null || !map.ContainsKey("m_LocalRotation.w")) return Quaternion.identity;
+            Quaternion refQ = SampleQuat(map, 0f);
+            Vector4 sum = Vector4.zero;
+            int n = 16;
+            for (int i = 0; i < n; i++)
+            {
+                Quaternion q = SampleQuat(map, (i / (float)n) * len);
+                if (Quaternion.Dot(q, refQ) < 0f) q = new Quaternion(-q.x, -q.y, -q.z, -q.w);
+                sum += new Vector4(q.x, q.y, q.z, q.w);
+            }
+            return sum.sqrMagnitude > 1e-8f ? new Quaternion(sum.x, sum.y, sum.z, sum.w).normalized : refQ;
+        }
+
+        float idleLen = idleClip != null ? Mathf.Max(0.1f, idleClip.length) : 1f;
+        Quaternion ComputeLeanDelta(string boneSuffix, float boostWeight)
+        {
+            string runKey = byPath.Keys.FirstOrDefault(p => p.EndsWith("/" + boneSuffix) || p == boneSuffix);
+            string idleKey = idleByPath.Keys.FirstOrDefault(p => p.EndsWith("/" + boneSuffix) || p == boneSuffix);
+            if (runKey == null || idleKey == null) return Quaternion.identity;
+            Quaternion qRun = MeanQuat(byPath[runKey], srcLen);
+            Quaternion qIdle = MeanQuat(idleByPath[idleKey], idleLen);
+            Quaternion deltaFromIdle = qRun * Quaternion.Inverse(qIdle);
+            return Quaternion.SlerpUnclamped(Quaternion.identity, deltaFromIdle, boostWeight);
+        }
+
+        Quaternion spineLean = ComputeLeanDelta("Spine", 1.15f);
+        Quaternion chestLean = ComputeLeanDelta("Chest", 1.10f);
+        Quaternion headCounter = Quaternion.Inverse(Quaternion.Slerp(Quaternion.identity, chestLean * spineLean, 0.72f));
+
+        AnimationClip clip = new AnimationClip { name = "Fast_Run", frameRate = 30f };
+
+        foreach (var kv in byPath)
+        {
+            string path = kv.Key;
+            var map = kv.Value;
+            string leaf = path.Contains("/") ? path.Substring(path.LastIndexOf('/') + 1) : path;
+
+            // Scale positions slightly on Hips for athletic sprint bounce
+            if (map.TryGetValue("m_LocalPosition.x", out var px)
+                && map.TryGetValue("m_LocalPosition.y", out var py)
+                && map.TryGetValue("m_LocalPosition.z", out var pz))
+            {
+                bool isHips = leaf == "Hips";
+                var nPx = new AnimationCurve();
+                var nPy = new AnimationCurve();
+                var nPz = new AnimationCurve();
+                float meanY = 0f;
+                for (int i = 0; i < sampleCount - 1; i++) meanY += py.Evaluate((i / 16f) * srcLen);
+                meanY /= 16f;
+                for (int i = 0; i < sampleCount; i++)
+                {
+                    float u = i / 16f;
+                    float st = u * srcLen;
+                    float dt = u * dstLen;
+                    float y = py.Evaluate(st);
+                    if (isHips) y = meanY + (y - meanY) * 1.45f - 0.015f;
+                    nPx.AddKey(new Keyframe(dt, px.Evaluate(st)));
+                    nPy.AddKey(new Keyframe(dt, y));
+                    nPz.AddKey(new Keyframe(dt, pz.Evaluate(st)));
+                }
+                clip.SetCurve(path, typeof(Transform), "m_LocalPosition.x", nPx);
+                clip.SetCurve(path, typeof(Transform), "m_LocalPosition.y", nPy);
+                clip.SetCurve(path, typeof(Transform), "m_LocalPosition.z", nPz);
+            }
+
+            // Amplify rotational stride/swing cleanly around each bone's own average pose
+            if (map.ContainsKey("m_LocalRotation.x") && map.ContainsKey("m_LocalRotation.w"))
+            {
+                float amp = 1.0f;
+                Quaternion extra = Quaternion.identity;
+
+                if (leaf.StartsWith("UpperLeg.") || leaf.StartsWith("UpperArm.")) amp = 1.42f;
+                else if (leaf.StartsWith("LowerLeg.") || leaf.StartsWith("LowerArm.")) amp = 1.35f;
+                else if (leaf.StartsWith("Foot.") || leaf.StartsWith("Toes.")) amp = 1.25f;
+                else if (leaf.StartsWith("Cape_") || leaf.StartsWith("HairTail") || leaf.StartsWith("Coat_Front")) amp = 1.48f;
+                else if (leaf == "Spine") { amp = 1.30f; extra = spineLean; }
+                else if (leaf == "Chest" || leaf == "UpperChest") { amp = 1.30f; extra = chestLean; }
+                else if (leaf == "Head") { amp = 1.15f; extra = headCounter; }
+
+                Quaternion meanQ = MeanQuat(map, srcLen);
+                var qx = new AnimationCurve();
+                var qy = new AnimationCurve();
+                var qz = new AnimationCurve();
+                var qw = new AnimationCurve();
+                Quaternion prevQ = Quaternion.identity;
+
+                for (int i = 0; i < sampleCount; i++)
+                {
+                    float u = i / 16f;
+                    float st = (i == sampleCount - 1) ? 0f : u * srcLen;
+                    float dt = u * dstLen;
+                    Quaternion qOrig = SampleQuat(map, st);
+                    if (Quaternion.Dot(qOrig, meanQ) < 0f)
+                        qOrig = new Quaternion(-qOrig.x, -qOrig.y, -qOrig.z, -qOrig.w);
+
+                    Quaternion q = amp == 1.0f ? qOrig : Quaternion.SlerpUnclamped(meanQ, qOrig, amp);
+                    q = (extra * q).normalized;
+                    if (i > 0 && Quaternion.Dot(q, prevQ) < 0f)
+                        q = new Quaternion(-q.x, -q.y, -q.z, -q.w);
+                    prevQ = q;
+
+                    qx.AddKey(new Keyframe(dt, q.x));
+                    qy.AddKey(new Keyframe(dt, q.y));
+                    qz.AddKey(new Keyframe(dt, q.z));
+                    qw.AddKey(new Keyframe(dt, q.w));
+                }
+
+                clip.SetCurve(path, typeof(Transform), "m_LocalRotation.x", qx);
+                clip.SetCurve(path, typeof(Transform), "m_LocalRotation.y", qy);
+                clip.SetCurve(path, typeof(Transform), "m_LocalRotation.z", qz);
+                clip.SetCurve(path, typeof(Transform), "m_LocalRotation.w", qw);
+            }
+        }
+
+        clip.EnsureQuaternionContinuity();
+        var settings = AnimationUtility.GetAnimationClipSettings(runClip);
+        settings.loopTime = true;
+        settings.loopBlend = true;
+        settings.startTime = 0f;
+        settings.stopTime = dstLen;
+        AnimationUtility.SetAnimationClipSettings(clip, settings);
+
+        var existing = AssetDatabase.LoadAssetAtPath<AnimationClip>(FastRunAnimPath);
+        if (existing != null)
+        {
+            EditorUtility.CopySerialized(clip, existing);
+            EditorUtility.SetDirty(existing);
+            Object.DestroyImmediate(clip);
+            return existing;
+        }
+        AssetDatabase.CreateAsset(clip, FastRunAnimPath);
+        return clip;
     }
 
     private static void EnsureParameter(AnimatorController controller, string paramName, AnimatorControllerParameterType type, float defaultValue = 0f)

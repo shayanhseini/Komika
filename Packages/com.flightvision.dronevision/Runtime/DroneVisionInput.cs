@@ -79,11 +79,19 @@ namespace DroneVision
         [Tooltip("How long the green frame stays big before moving to the corner (auto preview)")]
         [Range(0, 3)] public float lockedShowSeconds = 0.7f;
 
-        [Header("Gesture tuning (upright lean mode or legacy wings mode)")]
-        [Tooltip("ON: player stands upright naturally and leans slightly left/right to steer (no arms-up required, no up/down jump).")]
+        [Header("Gesture tuning (upright lean + running in place)")]
+        [Tooltip("ON: player stands upright naturally, jogs in place to run, and leans slightly left/right to steer.")]
         public bool uprightLeanMode = true;
-        [Tooltip("Left / right sensitivity in shoulder widths. Lower = easier slight lean (0.20 = gentle ~10 deg lean).")]
-        [Range(0.08f, 0.8f)] public float rollEnter = 0.20f;
+        [Tooltip("Left / right sensitivity in shoulder widths. Higher = fewer accidental turns while jogging.")]
+        [Range(0.08f, 0.8f)] public float rollEnter = 0.24f;
+        [Tooltip("Cooldown (ms) before triggering another lane shift in the same direction.")]
+        [Range(150f, 1000f)] public float leanCooldownMs = 340f;
+        [Tooltip("Minimum neutral upright duration (ms) before re-arming the same lean direction.")]
+        [Range(40f, 400f)] public float leanNeutralRearmMs = 110f;
+        [Tooltip("Detect running/jogging in place to drive forward speed and Idle/Run/FastRun animations.")]
+        public bool enableJogDetection = true;
+        [Tooltip("Steps/sec threshold mapped to fast sprint animation (FastRun).")]
+        [Range(1.8f, 4.0f)] public float jogSprintHz = 2.65f;
         [Tooltip("Up: both wrists this far above the shoulder line (unused in uprightLeanMode)")]
         [Range(0.1f, 0.6f)] public float upMargin = 0.25f;
         [Tooltip("Down: both wrists this far below the shoulder line (unused in uprightLeanMode)")]
@@ -135,6 +143,11 @@ namespace DroneVision
         public int Horizontal { get; private set; }
         /// <summary>-1 down / 0 / +1 up — the S / W key, only while locked and wings up.</summary>
         public int Vertical { get; private set; }
+        /// <summary>0 = standing still (Idle), ~0.4..0.7 = running in place, ~0.75..1.0 = fast sprint.</summary>
+        public float RunIntensity { get; private set; }
+        /// <summary>Detected in-place footstep cadence in steps/sec.</summary>
+        public float StepCadence { get; private set; }
+        public bool IsRunningInPlace { get { return RunIntensity > 0.08f; } }
         public bool Right { get { return Horizontal > 0; } }
         public bool Left { get { return Horizontal < 0; } }
         public bool Up { get { return Vertical > 0; } }
@@ -158,6 +171,8 @@ namespace DroneVision
         public event Action<bool> OnWingsChanged;
         /// <summary>Horizontal changed: -1 / 0 / +1 (key A / none / D).</summary>
         public event Action<int> OnHorizontalChanged;
+        /// <summary>Fires ONCE (-1 left or +1 right) per anti-bounce debounced lean.</summary>
+        public event Action<int> OnLeanStep;
         /// <summary>Vertical changed: -1 / 0 / +1 (key S / none / W).</summary>
         public event Action<int> OnVerticalChanged;
         public event Action<VisionStatus> OnStatusChanged;
@@ -185,7 +200,7 @@ namespace DroneVision
 
         [DllImport("__Internal")] private static extern void DroneVision_Start(string configJson);
         [DllImport("__Internal")] private static extern int DroneVision_Read(float[] buffer, int length);
-        [DllImport("__Internal")] private static extern void DroneVision_SetUi(int op, int phase, float progress, int hint, int side, int vert, int held, int keys);
+        [DllImport("__Internal")] private static extern void DroneVision_SetUi(int op, int phase, float progress, int hint, int side, int vert, int held, int keys, int runPct);
         [DllImport("__Internal")] private static extern void DroneVision_SetPreviewMode(int mode);
         [DllImport("__Internal")] private static extern void DroneVision_SetPaused(int paused);
         [DllImport("__Internal")] private static extern void DroneVision_SetModel(string model);
@@ -293,11 +308,12 @@ namespace DroneVision
             FeedBuffer.ReadPoses(_buf, _pool, _poses, _sigs);
             Consume(_tracker.Update(_poses, _sigs, _buf[FeedBuffer.Aspect], _lastFrameT));
 
-            // tell the page who the player is: it draws their frame, wings and the lit keys
+            // tell the page who the player is: it draws their frame, lean/jog state and the lit keys
             DroneState s = _tracker.State;
             int phase = !s.Tracking ? 0 : (s.Locked ? 2 : 1);
+            int runPct = s.Locked ? Mathf.RoundToInt(Mathf.Clamp01((float)s.RunIntensity) * 100f) : 0;
             DroneVision_SetUi(s.Tracking ? s.Operator : -1, phase, (float)s.LockProgress, (int)s.Hint, s.Side, s.Vert,
-                s.HandsHeld ? 1 : 0, KeyBits());
+                s.HandsHeld ? 1 : 0, KeyBits(), runPct);
         }
 
         private void UpdateAutoPreview()
@@ -324,10 +340,12 @@ namespace DroneVision
         }
 
         // ---- editor / fallback: a virtual player whose wings follow the arrow keys ------
+        private float _simJogPhase;
+
         private void ReadKeyboard()
         {
             if (_paused) return;
-            float roll = 0, pitch = 0;
+            float roll = 0, pitch = 0, jogHz = 0f;
             if (_debug.HasValue)
             {
                 roll = _debug.Value.x;
@@ -338,13 +356,15 @@ namespace DroneVision
 #if ENABLE_LEGACY_INPUT_MANAGER
                 roll = (Input.GetKey(KeyCode.RightArrow) ? 1 : 0) - (Input.GetKey(KeyCode.LeftArrow) ? 1 : 0);
                 pitch = (Input.GetKey(KeyCode.UpArrow) ? 1 : 0) - (Input.GetKey(KeyCode.DownArrow) ? 1 : 0);
+                if (Input.GetKey(KeyCode.RightShift)) jogHz = 3.2f;
+                else if (Input.GetKey(KeyCode.LeftShift)) jogHz = Input.GetKey(KeyCode.LeftControl) ? 3.2f : 1.9f;
 #endif
             }
-            // wrists move at most ~6 shoulder widths per second, like a person
             float step = 6f * Time.unscaledDeltaTime;
-            _simRoll = Mathf.MoveTowards(_simRoll, roll * 0.5f, step);
+            _simRoll = Mathf.MoveTowards(_simRoll, roll * 0.55f, step);
             _simPitch = Mathf.MoveTowards(_simPitch, pitch * 0.6f, step);
-            FillSimPose(_sim, _simRoll, _simPitch, uprightLeanMode);
+            if (jogHz > 0f) _simJogPhase += Time.unscaledDeltaTime * jogHz * Mathf.PI * 2f;
+            FillSimPose(_sim, _simRoll, _simPitch, uprightLeanMode, jogHz > 0f ? _simJogPhase : 0f, jogHz > 0f);
             _poses.Clear();
             _sigs.Clear();
             _poses.Add(_sim);
@@ -352,8 +372,8 @@ namespace DroneVision
             Consume(_tracker.Update(_poses, _sigs, _sim.Aspect, Time.unscaledTime * 1000.0));
         }
 
-        /// <summary>Synthetic front-facing pose for Editor arrow-key testing.</summary>
-        private static void FillSimPose(PoseFrame f, float roll, float pitch, bool leanMode)
+        /// <summary>Synthetic front-facing pose for Editor arrow/shift-key testing.</summary>
+        private static void FillSimPose(PoseFrame f, float roll, float pitch, bool leanMode, float jogPhase = 0f, bool jogging = false)
         {
             const double cx = 0.5, sy = 0.4, sw = 0.1; // shoulder width (frame-width units)
             double aspect = 16.0 / 9.0, swh = sw * aspect;
@@ -362,14 +382,19 @@ namespace DroneVision
             for (int i = 0; i < PoseFrame.Count; i++) lm[i] = new Landmark(cx, 0.5, 0);
             if (leanMode)
             {
+                double bob = jogging ? Math.Sin(jogPhase) * swh * 0.045 : 0.0;
+                double kneeSwing = jogging ? Math.Sin(jogPhase * 0.5) * swh * 0.25 : 0.0;
                 double sx = cx - roll * sw * 0.55;
-                lm[PoseFrame.Nose] = new Landmark(cx - roll * sw * 0.85, sy - swh * 0.8, 0.99);
-                lm[PoseFrame.LShoulder] = new Landmark(sx + sw / 2, sy - roll * swh * 0.12, 0.99);
-                lm[PoseFrame.RShoulder] = new Landmark(sx - sw / 2, sy + roll * swh * 0.12, 0.99);
-                lm[PoseFrame.LHip] = new Landmark(cx + sw * 0.4, sy + swh * 1.45, 0.97);
-                lm[PoseFrame.RHip] = new Landmark(cx - sw * 0.4, sy + swh * 1.45, 0.97);
-                lm[PoseFrame.LWrist] = new Landmark(sx + sw * 0.65, sy + swh * 1.35, 0.9);
-                lm[PoseFrame.RWrist] = new Landmark(sx - sw * 0.65, sy + swh * 1.35, 0.9);
+                double syBob = sy + bob;
+                lm[PoseFrame.Nose] = new Landmark(cx - roll * sw * 0.85, syBob - swh * 0.8, 0.99);
+                lm[PoseFrame.LShoulder] = new Landmark(sx + sw / 2, syBob - roll * swh * 0.12, 0.99);
+                lm[PoseFrame.RShoulder] = new Landmark(sx - sw / 2, syBob + roll * swh * 0.12, 0.99);
+                lm[PoseFrame.LHip] = new Landmark(cx + sw * 0.4, syBob + swh * 1.45, 0.97);
+                lm[PoseFrame.RHip] = new Landmark(cx - sw * 0.4, syBob + swh * 1.45, 0.97);
+                lm[PoseFrame.LKnee] = new Landmark(cx + sw * 0.42, syBob + swh * 2.45 - Math.Max(0, kneeSwing), 0.95);
+                lm[PoseFrame.RKnee] = new Landmark(cx - sw * 0.42, syBob + swh * 2.45 - Math.Max(0, -kneeSwing), 0.95);
+                lm[PoseFrame.LWrist] = new Landmark(sx + sw * 0.65, syBob + swh * 1.35, 0.9);
+                lm[PoseFrame.RWrist] = new Landmark(sx - sw * 0.65, syBob + swh * 1.35, 0.9);
             }
             else
             {
@@ -400,6 +425,8 @@ namespace DroneVision
             Hint = s.Hint;
             Tracking = s.Tracking;
             LockProgress = (float)s.LockProgress;
+            RunIntensity = s.Locked ? (float)s.RunIntensity : 0f;
+            StepCadence = s.Locked ? (float)s.StepCadence : 0f;
 
             if (s.Locked != IsLocked)
             {
@@ -419,6 +446,10 @@ namespace DroneVision
             {
                 Horizontal = h;
                 RaiseInt(OnHorizontalChanged, h);
+            }
+            if (live && s.LeanTrigger != 0)
+            {
+                RaiseInt(OnLeanStep, s.LeanTrigger);
             }
             if (v != Vertical)
             {
@@ -676,6 +707,8 @@ namespace DroneVision
         {
             c.uprightLeanMode = uprightLeanMode;
             c.rollEnter = rollEnter; c.upMargin = upMargin; c.downMargin = downMargin;
+            c.leanCooldownMs = leanCooldownMs; c.leanNeutralRearmMs = leanNeutralRearmMs;
+            c.enableJogDetection = enableJogDetection; c.jogSprintHz = jogSprintHz;
             c.lockMs = lockMs; c.lockGraceMs = lockGraceMs; c.holdLine = holdLine; c.invert = invert;
             c.stageZone = stageZone; c.minOperatorScale = minPlayerSize;
         }

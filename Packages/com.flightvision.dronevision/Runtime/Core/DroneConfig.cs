@@ -12,7 +12,7 @@ namespace DroneVision.Core
         // gesture mode: upright body lean (runner left/right) vs legacy open wings
         public bool uprightLeanMode = true;
         // roll (left / right): normalized torso lean + shoulder tilt (or wrist diff in wing mode)
-        public double rollEnter = 0.20;
+        public double rollEnter = 0.24;
         /// <summary>Difference that maps to Roll = ±1 (analog output).</summary>
         public double rollFull = 0.55;
         // pitch (up / down): both wrists above / below the shoulder line by this much (unused in uprightLeanMode)
@@ -21,9 +21,20 @@ namespace DroneVision.Core
         /// <summary>Mean wrist height that maps to Pitch = ±1 (analog output).</summary>
         public double pitchFull = 1.0;
         /// <summary>A zone is left only below enter × this (no flicker).</summary>
-        public double releaseRatio = 0.65;
+        public double releaseRatio = 0.48;
         /// <summary>A zone change must hold this many frames (exhibition light jitter).</summary>
-        public int zoneFrames = 2;
+        public int zoneFrames = 3;
+        /// <summary>Minimum cooldown (ms) between consecutive triggers in the same direction.</summary>
+        public double leanCooldownMs = 340;
+        /// <summary>Minimum upright time (ms) required before re-arming the same lean direction.</summary>
+        public double leanNeutralRearmMs = 110;
+        // running-in-place cadence detection
+        public bool enableJogDetection = true;
+        public double jogStepDeadband = 0.017;
+        public double jogKneeDeadband = 0.055;
+        public double jogTimeoutMs = 450;
+        public double jogMinHz = 1.25;
+        public double jogSprintHz = 2.65;
         // wings: both wrists above this fraction of the shoulder → hip distance (hanging arms ≈ 1.12-1.19)
         public double holdLine = 0.9;
         public double handVisibility = 0.35;
