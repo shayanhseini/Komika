@@ -13,6 +13,7 @@ public class CrossroadTrafficController : MonoBehaviour
 
     private GameManager gameManager;
     private GameObject activeVehicle;
+    private bool isVehicleDispatched;
     private int travelDirection;
     private float nextSpawnTime;
 
@@ -25,13 +26,13 @@ public class CrossroadTrafficController : MonoBehaviour
 
     private void OnEnable()
     {
-        ClearActiveVehicle();
+        HideActiveVehicle();
         nextSpawnTime = Time.time + initialDelay;
     }
 
     private void OnDisable()
     {
-        ClearActiveVehicle();
+        HideActiveVehicle();
     }
 
     private void Update()
@@ -39,12 +40,11 @@ public class CrossroadTrafficController : MonoBehaviour
         if (gameManager == null || gameManager.State != GameState.Playing)
             return;
 
-        if (activeVehicle == null || !activeVehicle.activeInHierarchy)
+        if (!isVehicleDispatched || activeVehicle == null || !activeVehicle.activeInHierarchy)
         {
-            if (activeVehicle != null)
+            if (isVehicleDispatched)
             {
-                Destroy(activeVehicle);
-                activeVehicle = null;
+                HideActiveVehicle();
                 nextSpawnTime = Time.time + Random.Range(minimumGapSeconds, maximumGapSeconds);
                 return;
             }
@@ -58,8 +58,7 @@ public class CrossroadTrafficController : MonoBehaviour
         if ((travelDirection > 0 && activeVehicle.transform.localPosition.x >= destinationX) ||
             (travelDirection < 0 && activeVehicle.transform.localPosition.x <= destinationX))
         {
-            Destroy(activeVehicle);
-            activeVehicle = null;
+            HideActiveVehicle();
             nextSpawnTime = Time.time + Random.Range(minimumGapSeconds, maximumGapSeconds);
         }
     }
@@ -71,17 +70,22 @@ public class CrossroadTrafficController : MonoBehaviour
 
         travelDirection = Random.value < 0.5f ? 1 : -1;
         Transform spawnPoint = travelDirection > 0 ? leftSpawnPoint : rightSpawnPoint;
-        activeVehicle = Instantiate(carPrefab, vehicleContainer);
-        activeVehicle.name = "Crossroad Car";
+        if (activeVehicle == null)
+        {
+            activeVehicle = Instantiate(carPrefab, vehicleContainer);
+            activeVehicle.name = "Crossroad Car";
+        }
         activeVehicle.transform.localPosition = spawnPoint.localPosition;
         activeVehicle.transform.localRotation = Quaternion.Euler(0f, travelDirection > 0 ? 90f : -90f, 0f);
         activeVehicle.transform.localScale = Vector3.one;
+        activeVehicle.SetActive(true);
+        isVehicleDispatched = true;
     }
 
-    private void ClearActiveVehicle()
+    private void HideActiveVehicle()
     {
-        if (activeVehicle != null)
-            Destroy(activeVehicle);
-        activeVehicle = null;
+        isVehicleDispatched = false;
+        if (activeVehicle != null && activeVehicle.activeSelf)
+            activeVehicle.SetActive(false);
     }
 }

@@ -48,6 +48,10 @@ public class UIManager : MonoBehaviour
     private readonly Dictionary<CanvasGroup, Coroutine> fadeCoroutines =
         new Dictionary<CanvasGroup, Coroutine>();
 
+    private int lastDisplayedSpeed = -1;
+    private int lastDisplayedDistance = -1;
+    private int lastDisplayedCoin = -1;
+
 
     private void Awake()
     {
@@ -155,12 +159,11 @@ public class UIManager : MonoBehaviour
 
     private void UpdateCoin(int score)
     {
-        if (coinText == null)
+        if (coinText == null || score == lastDisplayedCoin)
             return;
 
-
-        coinText.text =
-            score.ToString("D4");
+        lastDisplayedCoin = score;
+        coinText.text = score.ToString("D4");
     }
 
 
@@ -193,13 +196,12 @@ public class UIManager : MonoBehaviour
             worldMovement == null)
             return;
 
+        int displayedSpeed = Mathf.RoundToInt(worldMovement.RealSpeed);
+        if (displayedSpeed == lastDisplayedSpeed)
+            return;
 
-        float displayedSpeed =
-            worldMovement.RealSpeed;
-
-
-        speedText.text =
-            $"{displayedSpeed:000}";
+        lastDisplayedSpeed = displayedSpeed;
+        speedText.text = displayedSpeed.ToString("D3");
     }
 
 
@@ -209,8 +211,12 @@ public class UIManager : MonoBehaviour
             gameManager == null)
             return;
 
-        distanceText.text =
-            $"{gameManager.Distance:000}";
+        int displayedDistance = Mathf.RoundToInt(gameManager.Distance);
+        if (displayedDistance == lastDisplayedDistance)
+            return;
+
+        lastDisplayedDistance = displayedDistance;
+        distanceText.text = displayedDistance.ToString("D3");
     }
 
 

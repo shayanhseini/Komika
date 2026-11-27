@@ -271,6 +271,7 @@ public static class TehranCityBuilder
                 mat.DisableKeyword("_NORMALMAP");
             }
 
+            mat.enableInstancing = true;
             EditorUtility.SetDirty(mat);
             return mat;
         }
@@ -301,6 +302,7 @@ public static class TehranCityBuilder
                 new Color(0.44f, 0.50f, 0.60f, 1f));
             mat.SetColor("_BaseColor", col);
             mat.SetColor("_EmissionColor", emission);
+            mat.enableInstancing = true;
             EditorUtility.SetDirty(mat);
             return mat;
         }
@@ -320,10 +322,12 @@ public static class TehranCityBuilder
         worldSignMat.SetFloat("_Sharpness", 0.22f);
         worldSignMat.SetFloat("_CullMode", 2f);
         worldSignMat.SetColor("_FaceColor", Color.white);
+        worldSignMat.enableInstancing = true;
         EditorUtility.SetDirty(worldSignMat);
 
         Material chinarLeavesMat = MakeTexturedMat("Mat_Tehran_ChinarLeaves", $"{CityTexDir}/Tehran_Chinar_Leaves.png", null, 0.08f, 0.0f, 0.28f, 0.14f, new Color(0.20f, 0.30f, 0.22f, 1f), alphaClip: true, doubleSided: true);
         chinarLeavesMat.SetColor("_BaseColor", new Color(0.80f, 0.90f, 0.74f, 1f));
+        chinarLeavesMat.enableInstancing = true;
         EditorUtility.SetDirty(chinarLeavesMat);
 
         return new CityMaterials
@@ -590,7 +594,7 @@ public static class TehranCityBuilder
                     new Vector2(2.25f, 0.92f), mats.SignMetro, mats.SignMetroAccent, "مترو ولیعصر\nخط ۴", new Color(1f, 0.96f, 0.90f), 3.6f, doubleSided: true, strutDepth: 0.45f);
             }),
             ChinarTree        = BuildChinarTreePrefab(),
-            StreetLamp        = BuildSingleMatPrefab("Tehran_StreetLamp",      mats.Nature),
+            StreetLamp        = BuildSingleMatPrefab("Tehran_StreetLamp",      mats.Nature, castShadows: false),
             HighwayGantry     = BuildSingleMatPrefab("Tehran_Highway_Gantry",  mats.Signage, true, go =>
             {
                 AttachSignboard(go, mats, "Sign_GantryBlue", new Vector3(-2.50f, 6.05f, -0.28f), Vector3.zero,
@@ -598,12 +602,12 @@ public static class TehranCityBuilder
                 AttachSignboard(go, mats, "Sign_GantryGreen", new Vector3(2.50f, 6.05f, -0.28f), Vector3.zero,
                     new Vector2(4.35f, 1.56f), mats.SignHighwayGreen, mats.SignCreamTrim, "بزرگراه مدرس\nمسیر برج میلاد", Color.white, 4.1f);
             }),
-            StreetSignPole    = BuildSingleMatPrefab("Tehran_StreetSign_Pole", mats.Signage, true, go =>
+            StreetSignPole    = BuildSingleMatPrefab("Tehran_StreetSign_Pole", mats.Signage, castShadows: false, go =>
             {
                 AttachSignboard(go, mats, "Sign_StreetName", new Vector3(0f, 2.50f, -0.09f), Vector3.zero,
                     new Vector2(1.32f, 0.66f), mats.SignHighwayBlue, mats.SignCreamTrim, "خیابان ولیعصر\nمنطقه ۶", Color.white, 2.1f, doubleSided: true);
             }),
-            Peugeot206        = BuildSingleMatPrefab("Tehran_Peugeot206", mats.Peugeot206),
+            Peugeot206        = BuildSingleMatPrefab("Tehran_Peugeot206", mats.Peugeot206, castShadows: false),
             CityBackdropBlock = BuildSingleMatPrefab("Tehran_CityBackdrop_Block", mats.CityBackdrop, castShadows: false),
             Road20m           = BuildRoadPrefab("Tehran_Road_20m"),
             Crosswalk20m      = BuildRoadPrefab("Tehran_Crosswalk_20m"),
@@ -1027,10 +1031,21 @@ public static class TehranCityBuilder
             var so = new SerializedObject(culling);
             SerializedProperty distProp = so.FindProperty("renderDistance");
             if (distProp != null) distProp.floatValue = 450f;
+            SerializedProperty cityProp = so.FindProperty("cityCullDistance");
+            if (cityProp != null) cityProp.floatValue = 262f;
             so.ApplyModifiedPropertiesWithoutUndo();
         }
         if (Camera.main != null)
+        {
             Camera.main.farClipPlane = 450f;
+            var uac = Camera.main.GetComponent<UniversalAdditionalCameraData>();
+            if (uac != null)
+            {
+                uac.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+                uac.antialiasingQuality = AntialiasingQuality.Low;
+                EditorUtility.SetDirty(uac);
+            }
+        }
 
         // Bring Gameplay Camera closer & slightly lower for a natural third-person runner framing (16:9 wide + jump clearance)
         GameObject gameplayPt = GameObject.Find("Camera Game Transform");
@@ -1169,6 +1184,20 @@ public static class TehranCityBuilder
         Bounds sb = ComputeRendererBounds(horizonMilad);
         // Anchor Milad base solidly into the horizon plateau (44m below 0, ~44m clear in front of Alborz foothills)
         horizonMilad.transform.position = new Vector3(6.5f, -44f - sb.min.y, 138f);
+
+        int horizonLayer = LayerMask.NameToLayer("Horizon");
+        if (horizonLayer >= 0)
+        {
+            void SetLayerRecursive(GameObject rootObj)
+            {
+                if (rootObj == null) return;
+                foreach (Transform tr in rootObj.GetComponentsInChildren<Transform>(true))
+                    tr.gameObject.layer = horizonLayer;
+            }
+            SetLayerRecursive(GameObject.Find("Tehran_Horizon_Ground"));
+            SetLayerRecursive(GameObject.Find("Tehran_Horizon_Alborz"));
+            SetLayerRecursive(horizonMilad);
+        }
     }
 
     private static void BuildMenuStreetBackdrop(CityPrefabs p)

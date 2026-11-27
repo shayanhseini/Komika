@@ -107,7 +107,7 @@ function createView(cfg) {
     meterEl: root.querySelector('#dv-meter'), meterFill: root.querySelector('#dv-meter > i'), keysEl: root.querySelector('#dv-keys'),
     toast: root.querySelector('#dv-toast'), toastTimer: 0,
     mode: 'lobby', corner: cfg.previewCorner || 'bottom-left', labels: cfg.previewLabels !== false,
-    showBox: cfg.statusBox !== false, lastText: '', lastBox: '', errorAt: 0 };
+    showBox: cfg.statusBox !== false, lastText: '', lastBox: '', lastPoseSeq: -1, lastRenderKey: '', errorAt: 0 };
   // left-to-right on screen: ← left · → right (bits 2, 1; jump/slide remain keyboard/swipe)
   v.keySpans = [[2, labels[1]], [1, labels[0]]].map(([bit, text]) => {
     const s = document.createElement('span');
@@ -165,23 +165,36 @@ function draw(v, now) {
   requestAnimationFrame(t => draw(v, t));
   if (v.mode === 'hidden' || !feed) return;
   const vid = feed.video;
-  if (vid.videoWidth && (v.canvas.width !== vid.videoWidth || v.canvas.height !== vid.videoHeight)) {
-    v.canvas.width = vid.videoWidth;
-    v.canvas.height = vid.videoHeight;
-    v.root.style.setProperty('--dv-ar', String(vid.videoWidth / vid.videoHeight));
+  if (vid.videoWidth) {
+    const scale = v.mode === 'corner' ? Math.min(1, 320 / vid.videoWidth) : 1;
+    const cw = Math.max(2, Math.round(vid.videoWidth * scale));
+    const ch = Math.max(2, Math.round(vid.videoHeight * scale));
+    if (v.canvas.width !== cw || v.canvas.height !== ch) {
+      v.canvas.width = cw;
+      v.canvas.height = ch;
+      v.root.style.setProperty('--dv-ar', String(vid.videoWidth / vid.videoHeight));
+      v.lastRenderKey = '';
+    }
   }
-  const ctx = v.ctx;
-  ctx.clearRect(0, 0, v.canvas.width, v.canvas.height);
   const player = ui.op >= 0 ? feed.poses[ui.op] : null;
-  v.box = bodyBox(player, v.box);
-  if (!player) v.box = null;
-  if (v.mode === 'lobby') {
-    drawOverlay(ctx, player, { side: ui.side, vert: ui.vert, held: ui.held }, { clear: false });
-    const pulse = ui.lockedAt ? Math.max(0, 1 - (now - ui.lockedAt) / 900) : 0;
-    drawBodyFrame(ctx, v.box, ui.phase, ui.progress, pulse);
-  } else {
-    drawOverlay(ctx, player, { side: ui.side, vert: ui.vert, held: ui.held }, { clear: false, light: true });
-    if (v.box) drawBodyFrame(ctx, v.box, ui.phase, ui.progress, 0);
+  if (feed.frameSeq !== v.lastPoseSeq) {
+    v.lastPoseSeq = feed.frameSeq;
+    v.box = bodyBox(player, v.box);
+    if (!player) v.box = null;
+  }
+  const pulse = v.mode === 'lobby' && ui.lockedAt ? Math.max(0, 1 - (now - ui.lockedAt) / 900) : 0;
+  const renderKey = `${feed.frameSeq}:${ui.phase}:${ui.side}:${ui.held ? 1 : 0}:${(ui.progress * 20) | 0}:${v.mode}:${ui.op}`;
+  if (renderKey !== v.lastRenderKey || pulse > 0) {
+    v.lastRenderKey = renderKey;
+    const ctx = v.ctx;
+    ctx.clearRect(0, 0, v.canvas.width, v.canvas.height);
+    if (v.mode === 'lobby') {
+      drawOverlay(ctx, player, { side: ui.side, vert: ui.vert, held: ui.held }, { clear: false });
+      drawBodyFrame(ctx, v.box, ui.phase, ui.progress, pulse);
+    } else {
+      drawOverlay(ctx, player, { side: ui.side, vert: ui.vert, held: ui.held }, { clear: false, light: true });
+      if (v.box) drawBodyFrame(ctx, v.box, ui.phase, ui.progress, 0);
+    }
   }
   if (v.showBox) paintBox(v);
   // If camera cannot start (denied or missing), don't leave the center menu dim forever
@@ -228,8 +241,8 @@ const api = {
     if (feed) { feed.start(); return; }
     view = createView(cfg);
     feed = new VisionFeed({
-      model: cfg.model || 'auto', numPoses: cfg.numPoses || 1, maxFps: cfg.maxFps || 30, video: view.video,
-      width: cfg.width || 960, height: cfg.height || 540,   // 16:9 like the PC app: open wings need a wide picture
+      model: cfg.model || 'lite', numPoses: cfg.numPoses || 1, maxFps: cfg.maxFps || 24, video: view.video,
+      width: cfg.width || 640, height: cfg.height || 360,
       focus: cfg.focusCrop === true,   // off by default: the web model jumps off the hands on a crop (measured)
     });
     window.DroneVisionFeed = feed; // for debugging from the console

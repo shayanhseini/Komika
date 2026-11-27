@@ -31,7 +31,7 @@ let lastBuild = null;
 // CPU is measured too and the faster one is kept (once, in the lobby, ~2 s).
 // GPU in a worker starts fast and slows down after ~16 frames (measured), so the
 // window is long enough to see the sustained speed.
-const PROBE_SKIP = 10, PROBE_FRAMES = 30, GPU_FAST_MS = 25;
+const PROBE_SKIP = 8, PROBE_FRAMES = 20, GPU_FAST_MS = 18;
 let probe = null;   // { stage: 'GPU' | 'CPU', times: [], gpuMs }
 
 function median(v) {

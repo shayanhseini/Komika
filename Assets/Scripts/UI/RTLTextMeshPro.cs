@@ -14,6 +14,9 @@ public class RTLTextMeshPro : MonoBehaviour
     [SerializeField] private bool convertDigitsToPersian = true;
 
     private TMP_Text targetText;
+    private string lastShapedRaw;
+    private bool lastShapedDigits;
+    private bool hasApplied;
 
     public string RawText
     {
@@ -28,7 +31,7 @@ public class RTLTextMeshPro : MonoBehaviour
 
     private void Awake() => Apply();
     private void OnEnable() => Apply();
-    private void OnValidate() => Apply();
+    private void OnValidate() { hasApplied = false; Apply(); }
 
     public void SetText(string value, bool? persianDigits = null)
     {
@@ -43,8 +46,20 @@ public class RTLTextMeshPro : MonoBehaviour
             targetText = GetComponent<TMP_Text>();
         if (targetText == null) return;
 
-        targetText.isRightToLeftText = false;
-        targetText.text = PersianTextShaper.Shape(rawText, convertDigitsToPersian);
+        if (Application.isPlaying && hasApplied
+            && string.Equals(lastShapedRaw, rawText, System.StringComparison.Ordinal)
+            && lastShapedDigits == convertDigitsToPersian)
+            return;
+
+        string shaped = PersianTextShaper.Shape(rawText, convertDigitsToPersian);
+        lastShapedRaw = rawText;
+        lastShapedDigits = convertDigitsToPersian;
+        hasApplied = true;
+
+        if (targetText.isRightToLeftText)
+            targetText.isRightToLeftText = false;
+        if (!string.Equals(targetText.text, shaped, System.StringComparison.Ordinal))
+            targetText.text = shaped;
     }
 
     public static void ApplyTo(TMP_Text label, string text, bool persianDigits = true)

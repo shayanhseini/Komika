@@ -5,6 +5,8 @@ using DroneVision.Core;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 public static class DroneVisionSceneSetup
@@ -19,7 +21,8 @@ public static class DroneVisionSceneSetup
         VerifyAnimatorAndAudioWiring();
         VerifyTrackerLeanCore();
         RenderFastRunCheckShot();
-        Debug.Log("[DroneVisionSceneSetup] Setup & lean + jog + FastRun + audio verification SUCCEEDED.");
+        RenderScenePerfVerification();
+        Debug.Log("[DroneVisionSceneSetup] Setup & lean + jog + FastRun + audio + WebGL perf verification SUCCEEDED.");
     }
 
     public static void SetupSceneQuiet()
@@ -58,11 +61,11 @@ public static class DroneVisionSceneSetup
         }
 
         activeInput.gameObject.name = "DroneVision";
-        activeInput.model = "auto";
+        activeInput.model = "lite";
         activeInput.numPoses = 1;
-        activeInput.maxFps = 30;
-        activeInput.cameraWidth = 960;
-        activeInput.cameraHeight = 540;
+        activeInput.maxFps = 24;
+        activeInput.cameraWidth = 640;
+        activeInput.cameraHeight = 360;
         activeInput.focusCrop = false;
 
         activeInput.autoPreview = true;
@@ -158,6 +161,8 @@ public static class DroneVisionSceneSetup
             }
         }
 
+        ApplyWebGLScenePerformanceOptimizations(scene);
+
         EditorUtility.SetDirty(activeInput);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveOpenScenes();
@@ -165,6 +170,150 @@ public static class DroneVisionSceneSetup
 
         if (openedTarget)
             Debug.Log("[DroneVisionSceneSetup] Opened & saved GameScene with root DroneVision, SFX & FastRun BlendTree.");
+    }
+
+    private static void ApplyWebGLScenePerformanceOptimizations(Scene scene)
+    {
+        // 1. Switch Main Camera AA from expensive TAA High (motion-vector + history passes) to crisp FXAA
+        Camera mainCam = Camera.main;
+        if (mainCam == null)
+        {
+            foreach (var c in UnityEngine.Object.FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (c != null && (c.CompareTag("MainCamera") || c.name.Contains("Main Camera")))
+                {
+                    mainCam = c;
+                    break;
+                }
+            }
+        }
+        if (mainCam != null)
+        {
+            mainCam.farClipPlane = 450f;
+            var uac = mainCam.GetComponent<UniversalAdditionalCameraData>();
+            if (uac != null)
+            {
+                uac.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+                uac.antialiasingQuality = AntialiasingQuality.Low;
+                uac.stopNaN = false;
+                EditorUtility.SetDirty(uac);
+            }
+            var culling = mainCam.GetComponent<CameraDistanceCulling>();
+            if (culling != null)
+            {
+                var cso = new SerializedObject(culling);
+                var rProp = cso.FindProperty("renderDistance");
+                if (rProp != null) rProp.floatValue = 450f;
+                var cityProp = cso.FindProperty("cityCullDistance");
+                if (cityProp != null) cityProp.floatValue = 262f;
+                cso.ApplyModifiedPropertiesWithoutUndo();
+                EditorUtility.SetDirty(culling);
+            }
+        }
+
+        // 2. Assign distant Horizon landmarks to Horizon layer so Default city geometry past fog (262m) culls cleanly
+        int horizonLayer = LayerMask.NameToLayer("Horizon");
+        if (horizonLayer >= 0)
+        {
+            foreach (string hName in new[] { "Tehran_Horizon_Ground", "Tehran_Horizon_Alborz", "Tehran_Horizon_MiladTower" })
+            {
+                GameObject hGo = GameObject.Find(hName);
+                if (hGo == null) continue;
+                foreach (Transform tr in hGo.GetComponentsInChildren<Transform>(true))
+                {
+                    if (tr.gameObject.layer != horizonLayer)
+                    {
+                        tr.gameObject.layer = horizonLayer;
+                        EditorUtility.SetDirty(tr.gameObject);
+                    }
+                }
+            }
+        }
+
+        // 3. Enable GPU Instancing across city/props materials (zero visual change, fewer draw calls)
+        foreach (string folder in new[] { "Assets/Models/City/Materials", "Assets/Materials" })
+        {
+            if (!AssetDatabase.IsValidFolder(folder)) continue;
+            foreach (string guid in AssetDatabase.FindAssets("t:Material", new[] { folder }))
+            {
+                Material mat = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid));
+                if (mat != null && !mat.enableInstancing)
+                {
+                    mat.enableInstancing = true;
+                    EditorUtility.SetDirty(mat);
+                }
+            }
+        }
+
+        // 4. Cap massive 2048 character albedo/normal textures to 1024 on WebGL (4x less VRAM & download, sharp in 3rd-person view)
+        foreach (string texPath in new[]
+        {
+            "Assets/Models/Player/Character/texture_pbr_20250901.png",
+            "Assets/Models/Player/Character/texture_pbr_20250901_normal.png"
+        })
+        {
+            var importer = AssetImporter.GetAtPath(texPath) as TextureImporter;
+            if (importer == null) continue;
+            var ps = importer.GetPlatformTextureSettings("WebGL");
+            if (!ps.overridden || ps.maxTextureSize != 1024 || ps.textureCompression != TextureImporterCompression.Compressed)
+            {
+                ps.name = "WebGL";
+                ps.overridden = true;
+                ps.maxTextureSize = 1024;
+                ps.textureCompression = TextureImporterCompression.Compressed;
+                ps.compressionQuality = 50;
+                importer.SetPlatformTextureSettings(ps);
+                importer.SaveAndReimport();
+            }
+        }
+
+        // 5. Disable shadow casting on small poles / decorative parked cars while keeping shadows on buildings, trees, obstacles & player
+        foreach (string prefabPath in new[]
+        {
+            "Assets/Prefabs/City/Tehran_StreetLamp.prefab",
+            "Assets/Prefabs/City/Tehran_StreetSign_Pole.prefab",
+            "Assets/Prefabs/City/Tehran_Peugeot206.prefab"
+        })
+        {
+            GameObject pRoot = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (pRoot == null) continue;
+            bool dirty = false;
+            foreach (Renderer r in pRoot.GetComponentsInChildren<Renderer>(true))
+            {
+                if (r.shadowCastingMode != ShadowCastingMode.Off)
+                {
+                    dirty = true;
+                    break;
+                }
+            }
+            if (dirty)
+            {
+                GameObject contents = PrefabUtility.LoadPrefabContents(prefabPath);
+                foreach (Renderer r in contents.GetComponentsInChildren<Renderer>(true))
+                    r.shadowCastingMode = ShadowCastingMode.Off;
+                PrefabUtility.SaveAsPrefabAsset(contents, prefabPath);
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
+        }
+
+        foreach (string prefix in new[] { "Menu_Lamp_", "Menu_Peugeot206_" })
+        {
+            foreach (GameObject rootObj in scene.GetRootGameObjects())
+            {
+                foreach (Transform tr in rootObj.GetComponentsInChildren<Transform>(true))
+                {
+                    if (!tr.name.StartsWith(prefix, StringComparison.Ordinal)) continue;
+                    foreach (Renderer r in tr.GetComponentsInChildren<Renderer>(true))
+                    {
+                        if (r.shadowCastingMode != ShadowCastingMode.Off)
+                        {
+                            r.shadowCastingMode = ShadowCastingMode.Off;
+                            EditorUtility.SetDirty(r);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static PoseFrame MakePose(double leanRight, bool includeHips, double wristUp = -1.2, double jogBob = 0.0, double kneeSwing = 0.0, double armSwing = 0.0)
@@ -442,6 +591,75 @@ public static class DroneVisionSceneSetup
         cam.targetTexture = null;
         UnityEngine.Object.DestroyImmediate(rt);
         UnityEngine.Object.DestroyImmediate(camGo);
+        EditorSceneManager.OpenScene(GameScenePath, OpenSceneMode.Single);
+    }
+
+    private static void RenderScenePerfVerification()
+    {
+        if (SceneManager.GetActiveScene().path != GameScenePath && File.Exists(GameScenePath))
+            EditorSceneManager.OpenScene(GameScenePath, OpenSceneMode.Single);
+
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        var uac = cam.GetComponent<UniversalAdditionalCameraData>();
+        var rp = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>("Assets/Settings/Mobile_RPAsset.asset");
+        var chunks = UnityEngine.Object.FindObjectsByType<WorldChunk>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        var dv = UnityEngine.Object.FindFirstObjectByType<DroneVisionInput>(FindObjectsInactive.Include);
+
+        int activeRenderers = 0, castShadowRenderers = 0;
+        long totalTriangles = 0;
+        foreach (MeshRenderer mr in UnityEngine.Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+        {
+            if (!mr.enabled || !mr.gameObject.activeInHierarchy) continue;
+            activeRenderers++;
+            if (mr.shadowCastingMode != ShadowCastingMode.Off) castShadowRenderers++;
+            var mf = mr.GetComponent<MeshFilter>();
+            if (mf != null && mf.sharedMesh != null) totalTriangles += mf.sharedMesh.triangles.Length / 3;
+        }
+        int horizonCount = 0;
+        int horizonLayer = LayerMask.NameToLayer("Horizon");
+        foreach (var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+            if (horizonLayer >= 0 && r.gameObject.layer == horizonLayer) horizonCount++;
+
+        Debug.Log($"[PerfVerify] AA={(uac != null ? uac.antialiasing.ToString() : "null")} MobileRP=(resScale={(rp ? rp.renderScale : -1f)}, shadowRes={(rp ? rp.mainLightShadowmapResolution : -1)}, shadowDist={(rp ? rp.shadowDistance : -1f)}, cascades={(rp ? rp.shadowCascadeCount : -1)}, addLights={(rp ? rp.additionalLightsRenderingMode.ToString() : "?")}) Chunks={chunks.Length} ActiveMR={activeRenderers} CastShadows={castShadowRenderers} TotalTris={totalTriangles} HorizonRenderers={horizonCount} CV=(model={dv?.model}, {dv?.cameraWidth}x{dv?.cameraHeight}@{dv?.maxFps}fps)");
+
+        if (uac == null || uac.antialiasing != AntialiasingMode.FastApproximateAntialiasing)
+            throw new Exception("Expected Main Camera FXAA antialiasing!");
+        if (rp == null || rp.mainLightShadowmapResolution > 1024 || rp.shadowCascadeCount != 1 || rp.shadowDistance > 65f)
+            throw new Exception("Mobile_RPAsset shadow optimizations not applied!");
+        if (dv == null || dv.model != "lite" || dv.cameraWidth != 640 || dv.maxFps != 24)
+            throw new Exception("DroneVision CV perf settings not applied!");
+
+        string outDir = @"C:\Users\Nima\.gemini\antigravity\brain\7b9ba8fe-181b-4459-b89e-1cb7eb5be3d3\scratch";
+        Directory.CreateDirectory(outDir);
+        Vector3 origPos = cam.transform.position;
+        Quaternion origRot = cam.transform.rotation;
+        var rt = new RenderTexture(1280, 720, 24, RenderTextureFormat.ARGB32);
+        var prev = cam.targetTexture;
+        cam.targetTexture = rt;
+
+        void Shoot(Vector3 pos, Quaternion rot, string fileName)
+        {
+            cam.transform.SetPositionAndRotation(pos, rot);
+            Shader.SetGlobalVector("_KomikaCurveOrigin", new Vector4(0f, 0f, -92.84f, 1f));
+            Shader.SetGlobalVector("_KomikaCurveParams", new Vector4(0.0012f, 0f, 160f, 0f));
+            cam.Render();
+            RenderTexture.active = rt;
+            var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
+            tex.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0);
+            tex.Apply();
+            File.WriteAllBytes(Path.Combine(outDir, fileName), tex.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(tex);
+        }
+
+        Shoot(new Vector3(0f, 2.55f, -98.40f), Quaternion.Euler(10.0f, 0f, 0f), "verify_perf_gameplay.png");
+        Shoot(new Vector3(0f, 0.45f, -90.50f), Quaternion.Euler(4.0f, 180f, 0f), "verify_perf_menu.png");
+
+        RenderTexture.active = null;
+        cam.targetTexture = prev;
+        UnityEngine.Object.DestroyImmediate(rt);
+        cam.transform.SetPositionAndRotation(origPos, origRot);
         EditorSceneManager.OpenScene(GameScenePath, OpenSceneMode.Single);
     }
 }

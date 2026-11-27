@@ -18,21 +18,12 @@
 // more exposure where the browser allows it (vision-feed.js).
 
 const TW = 64, TH = 48;          // tiny analysis image
-const MAX_SIDE = 512;            // model input never needs more
+const MAX_SIDE = 320;            // 256 px pose model needs no bigger input
 const LIFT_GAMMA = 0.5;
 const PROBE_AFTER = 6;           // frames without anyone before trying the other curve
 const RELAX_FRAMES = 45;         // well-lit player this long -> drop the lift again
-// Reading pixels back from the GPU (getImageData) stalls the pipeline: measured on
-// this PC, 17 ms for the 64×48 thumbnail and ~20 ms for the lift, against 12 ms for
-// the Lite model itself; in the Worker it added up to 133 ms/frame (8 FPS, hands lost
-// when churning fast). Light and clothing colour change slowly, so the thumbnail is
-// read only every ANALYSE_EVERY frames, and the model input is drawn on a GPU canvas
-// (no readback) unless the shadow lift is actually on.
-// Exception: while there is a crowd (2+ people seen in the last CROWD_HOLD frames) it is
-// read EVERY frame — the clothing colour is what stops a person passing behind the
-// player from taking over (crowd scenario 'crossing' failed in both games with colour
-// on every 6th frame only, and passes again with this rule). A lone player keeps the speed.
-const ANALYSE_EVERY = 6;
+// Reading pixels back from the GPU (getImageData) stalls the pipeline: sample only periodically unless crowded.
+const ANALYSE_EVERY = 8;
 const CROWD_HOLD = 30;
 
 export class FrameCues {

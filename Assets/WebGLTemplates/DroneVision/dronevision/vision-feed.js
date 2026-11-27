@@ -61,9 +61,9 @@ export class VisionFeed {
    */
   constructor(o = {}) {
     this.opts = {
-      model: 'lite', delegate: 'auto', numPoses: 1, adaptive: true, worker: 'auto', maxFps: 30,
+      model: 'lite', delegate: 'auto', numPoses: 1, adaptive: true, worker: 'auto', maxFps: 24,
       focus: false, exposure: true, cameraControl: false,
-      width: 960, height: 540, fps: 30,
+      width: 640, height: 360, fps: 30,
       assetsBase: new URL('../vendor/', import.meta.url).href,
       ...o,
     };
@@ -394,10 +394,10 @@ export class VisionFeed {
       this._lastSent = t0;
       const w = v.videoWidth, h = v.videoHeight;
       const roi = this.roi;
-      // ship only the region the model should look at, never more than 512 px on its long side
+      // ship only the region the model should look at, never more than 320 px on its long side
       const sx = roi ? roi.x * w : 0, sy = roi ? roi.y * h : 0;
       const sw = roi ? roi.w * w : w, sh = roi ? roi.h * h : h;
-      const k = Math.min(1, 512 / Math.max(sw, sh));
+      const k = Math.min(1, 320 / Math.max(sw, sh));
       const bitmap = await createImageBitmap(v, Math.round(sx), Math.round(sy), Math.round(sw), Math.round(sh),
         k < 1 ? { resizeWidth: Math.round(sw * k), resizeHeight: Math.round(sh * k), resizeQuality: 'low' } : undefined);
       if (token !== this._loopToken || !this.detector) { bitmap.close(); return; }

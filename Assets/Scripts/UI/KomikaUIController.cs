@@ -46,6 +46,9 @@ public class KomikaUIController : MonoBehaviour
 
     private int selectedCharacterIndex;
     private float displayedBestRecord;
+    private int lastHudCurrentInt = -1;
+    private int lastHudBestInt = -1;
+    private int lastHudCoinInt = -1;
     private bool isPaused;
     private Coroutine panelTransition;
 
@@ -88,7 +91,7 @@ public class KomikaUIController : MonoBehaviour
             return;
         if (gameManager.Distance >= displayedBestRecord)
             displayedBestRecord = gameManager.Distance;
-        UpdateRecordLabels();
+        UpdateHudRecordLabels();
     }
 
     public void OpenCharacterPanel() => TransitionTo(characterGroup);
@@ -167,6 +170,7 @@ public class KomikaUIController : MonoBehaviour
     {
         isPaused = false;
         Time.timeScale = 1f;
+        UpdateHudRecordLabels(force: true);
         TransitionTo(hudGroup);
     }
 
@@ -179,14 +183,44 @@ public class KomikaUIController : MonoBehaviour
         TransitionTo(gameOverGroup);
     }
 
-    private void HandleScoreChanged(int _) => UpdateRecordLabels();
+    private void HandleScoreChanged(int _) => UpdateHudRecordLabels();
+
+    private void UpdateHudRecordLabels(bool force = false)
+    {
+        float current = gameManager != null ? gameManager.Distance : 0f;
+        int currentInt = Mathf.FloorToInt(current);
+        int bestInt = Mathf.FloorToInt(Mathf.Max(displayedBestRecord, current));
+        int coins = gameManager != null ? gameManager.Score : 0;
+
+        if (force || currentInt != lastHudCurrentInt)
+        {
+            lastHudCurrentInt = currentInt;
+            RTLTextMeshPro.ApplyTo(currentRecordText, $"{currentInt} متر");
+        }
+        if (force || bestInt != lastHudBestInt)
+        {
+            lastHudBestInt = bestInt;
+            RTLTextMeshPro.ApplyTo(hudBestRecordText, $"{bestInt} متر");
+        }
+        if (force || coins != lastHudCoinInt)
+        {
+            lastHudCoinInt = coins;
+            RTLTextMeshPro.ApplyTo(hudCoinText, $"{coins}");
+        }
+    }
 
     private void UpdateRecordLabels()
     {
         float current = gameManager != null ? gameManager.Distance : 0f;
+        int currentInt = Mathf.FloorToInt(current);
+        int bestInt = Mathf.FloorToInt(Mathf.Max(displayedBestRecord, current));
         int coins = gameManager != null ? gameManager.Score : 0;
-        string currentValue = $"{Mathf.FloorToInt(current)} متر";
-        string bestValue = $"{Mathf.FloorToInt(Mathf.Max(displayedBestRecord, current))} متر";
+        lastHudCurrentInt = currentInt;
+        lastHudBestInt = bestInt;
+        lastHudCoinInt = coins;
+
+        string currentValue = $"{currentInt} متر";
+        string bestValue = $"{bestInt} متر";
         string coinValue = $"{coins}";
         RTLTextMeshPro.ApplyTo(currentRecordText, currentValue);
         RTLTextMeshPro.ApplyTo(hudBestRecordText, bestValue);

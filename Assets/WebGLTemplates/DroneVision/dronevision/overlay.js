@@ -139,14 +139,13 @@ export function drawBodyFrame(ctx, box, phase, progress = 0, pulse = 0) {
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.strokeStyle = color;
-  ctx.lineWidth = Math.max(3, s * (phase === 'locked' ? 0.014 : 0.009));
+  const baseLine = Math.max(3, s * (phase === 'locked' ? 0.014 : 0.009));
+  ctx.lineWidth = baseLine;
   if (phase === 'locked') {
-    ctx.shadowColor = color;
-    ctx.shadowBlur = s * (0.03 + 0.05 * pulse);
     ctx.fillStyle = `rgba(52, 211, 153, ${0.10 + 0.12 * pulse})`;
     ctx.fillRect(x, y, bw, bh);
   }
-  // four corner brackets
+  // four corner brackets (soft double-stroke glow without expensive 2D shadowBlur)
   const corners = [[x, y, 1, 1], [x + bw, y, -1, 1], [x, y + bh, 1, -1], [x + bw, y + bh, -1, -1]];
   ctx.beginPath();
   for (const [cx, cy, dx, dy] of corners) {
@@ -154,10 +153,16 @@ export function drawBodyFrame(ctx, box, phase, progress = 0, pulse = 0) {
     ctx.lineTo(cx, cy);
     ctx.lineTo(cx, cy + dy * len);
   }
+  if (phase === 'locked') {
+    ctx.save();
+    ctx.globalAlpha = 0.28 + 0.22 * pulse;
+    ctx.lineWidth = baseLine * 2.1;
+    ctx.stroke();
+    ctx.restore();
+  }
   ctx.stroke();
   // lock progress along the bottom edge
   if (phase === 'detected' && progress > 0) {
-    ctx.shadowBlur = 0;
     ctx.strokeStyle = FRAME_COLORS.locked;
     ctx.lineWidth = Math.max(4, s * 0.012);
     ctx.beginPath();

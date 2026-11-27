@@ -55,15 +55,15 @@ namespace DroneVision
         public static DroneVisionInput Instance { get; private set; }
 
         [Header("Camera & model")]
-        [Tooltip("auto (default): full model on PCs (closest to the PC app), lite on phones/weak PCs, and drops to lite if the PC is too slow · lite · full · heavy")]
-        public string model = "auto";
+        [Tooltip("lite (default for smooth WebGL 3D performance) · auto · full · heavy")]
+        public string model = "lite";
         [Tooltip("People the model looks for. 1 (default, as the PC app): it follows the player and never looks for anyone else")]
         [Range(1, 3)] public int numPoses = 1;
         [Tooltip("Max model runs per second")]
-        [Range(10, 30)] public int maxFps = 30;
-        [Tooltip("Camera format asked of the browser. 960×540 (16:9) as the PC app: open wings need a wide picture")]
-        public int cameraWidth = 960;
-        public int cameraHeight = 540;
+        [Range(10, 30)] public int maxFps = 24;
+        [Tooltip("Camera format asked of the browser. 640x360 (16:9) feeds 256px pose inference smoothly without starving WebGL")]
+        public int cameraWidth = 640;
+        public int cameraHeight = 360;
         [Tooltip("After the lock the model only sees a crop around the player. OFF: the web model jumps off the hands on a crop (measured)")]
         public bool focusCrop = false;
 
