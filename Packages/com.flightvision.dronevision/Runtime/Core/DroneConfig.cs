@@ -33,7 +33,7 @@ namespace DroneVision.Core
         public double jogStepDeadband = 0.015;
         public double jogKneeDeadband = 0.042;
         public double jogArmDeadband = 0.055;
-        public double jogTimeoutMs = 620;
+        public double jogTimeoutMs = 740;
         public double jogMinHz = 1.15;
         public double jogSprintHz = 3.00;
         // wings: both wrists above this fraction of the shoulder → hip distance (hanging arms ≈ 1.12-1.19)

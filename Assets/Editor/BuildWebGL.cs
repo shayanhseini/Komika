@@ -101,12 +101,12 @@ public static class BuildWebGL
                 if (File.Exists(indexPath))
                 {
                     string html = File.ReadAllText(indexPath);
-                    html = html.Replace("<title>Unity Web Player | EndlessFlyingProject</title>", "<title>Komika | کامیکا</title>");
-                    html = html.Replace("<title>Unity Web Player | Endless Flying Project</title>", "<title>Komika | کامیکا</title>");
-                    html = html.Replace("<title>Unity Web Player | Komika</title>", "<title>Komika | کامیکا</title>");
-                    html = html.Replace("<div id=\"unity-build-title\">EndlessFlyingProject</div>", "<div id=\"unity-build-title\">Komika | کامیکا</div>");
-                    html = html.Replace("<div id=\"unity-build-title\">Endless Flying Project</div>", "<div id=\"unity-build-title\">Komika | کامیکا</div>");
-                    html = html.Replace("<div id=\"unity-build-title\">Komika</div>", "<div id=\"unity-build-title\">Komika | کامیکا</div>");
+                    html = html.Replace("<title>Unity Web Player | EndlessFlyingProject</title>", "<title>Komika | کمیکا</title>");
+                    html = html.Replace("<title>Unity Web Player | Endless Flying Project</title>", "<title>Komika | کمیکا</title>");
+                    html = html.Replace("<title>Unity Web Player | Komika</title>", "<title>Komika | کمیکا</title>");
+                    html = html.Replace("<div id=\"unity-build-title\">EndlessFlyingProject</div>", "<div id=\"unity-build-title\">Komika | کمیکا</div>");
+                    html = html.Replace("<div id=\"unity-build-title\">Endless Flying Project</div>", "<div id=\"unity-build-title\">Komika | کمیکا</div>");
+                    html = html.Replace("<div id=\"unity-build-title\">Komika</div>", "<div id=\"unity-build-title\">Komika | کمیکا</div>");
 
                     if (!html.Contains("unity-progress-text") && html.Contains("<div id=\"unity-progress-bar-full\"></div>"))
                     {

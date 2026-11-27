@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using DroneVision;
 using DroneVision.Core;
+using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -152,6 +153,18 @@ public static class DroneVisionSceneSetup
         }
 
         var canvas = UnityEngine.Object.FindFirstObjectByType<Canvas>(FindObjectsInactive.Include);
+        foreach (var rtl in UnityEngine.Object.FindObjectsByType<RTLTextMeshPro>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (rtl == null || string.IsNullOrEmpty(rtl.RawText)) continue;
+            if (rtl.RawText.Contains("کامیکا"))
+            {
+                rtl.SetText(rtl.RawText.Replace("کامیکا", "کمیکا"), persianDigits: true);
+                EditorUtility.SetDirty(rtl);
+                var tmp = rtl.GetComponent<TMP_Text>();
+                if (tmp != null) EditorUtility.SetDirty(tmp);
+            }
+        }
+
         if (canvas != null)
         {
             Transform key3 = canvas.transform.Find("Komika UI/How To Play Panel/Window/Control 3/Keys");
@@ -417,14 +430,30 @@ public static class DroneVisionSceneSetup
         if (st.RunIntensity < 0.72)
             throw new Exception($"Fast sprint failed to reach FastRun band: run={st.RunIntensity}, hz={st.StepCadence}");
 
-        // 4. Stop moving (1000ms) -> drops cleanly back to Idle (< 0.08)
-        for (int i = 0; i < 30; i++)
+        // 4. Stop moving with realistic webcam jitter & noisy low-visibility knees -> must stay strictly Idle (< 0.08 in 750ms, <= 0.02 over 2s)
+        for (int i = 0; i < 19; i++)
         {
-            t += 33.3;
-            st = tracker.Update(MakePose(0.0, includeHips: true), t);
+            t += 40.0;
+            double jBob = Math.Sin(i * 1.1) * sw * 0.006;
+            double jArm = Math.Sin(i * 0.7) * sw * 0.025;
+            PoseFrame p = MakePose(0.02 * Math.Sin(i * 0.5), includeHips: true, wristUp: -1.3, jogBob: jBob, armSwing: jArm);
+            // Low-visibility bottom-edge hallucinated knees oscillating wildly while standing still must be rejected!
+            p.Landmarks[PoseFrame.LKnee] = new Landmark(0.54, 0.98 - Math.Sin(i * 0.6) * sw * 0.14, 0.45);
+            p.Landmarks[PoseFrame.RKnee] = new Landmark(0.46, 0.98 + Math.Sin(i * 0.6) * sw * 0.14, 0.45);
+            st = tracker.Update(p, t);
         }
         if (st.RunIntensity > 0.08)
-            throw new Exception($"Stop to Idle failed: run={st.RunIntensity}");
+            throw new Exception($"Stop to Idle failed within 760ms: run={st.RunIntensity}");
+        for (int i = 0; i < 35; i++)
+        {
+            t += 40.0;
+            double jBob = Math.Sin(i * 1.3) * sw * 0.007;
+            double jArm = Math.Sin(i * 0.9) * sw * 0.030;
+            PoseFrame p = MakePose(0.02 * Math.Sin(i * 0.4), includeHips: false, wristUp: -1.3, jogBob: jBob, armSwing: jArm);
+            st = tracker.Update(p, t);
+            if (st.RunIntensity > 0.05)
+                throw new Exception($"Noisy stationary drift triggered keep-walking: i={i}, run={st.RunIntensity}, hz={st.StepCadence}");
+        }
 
         // 5. Chest-up lateral lean (level shoulders, no hips) MUST trigger right & left reliably!
         int cuRight = 0, cuLeft = 0;
@@ -658,6 +687,17 @@ public static class DroneVisionSceneSetup
             throw new Exception("Mobile_RPAsset crisp resolution + shadow optimizations not applied!");
         if (dv == null || dv.model != "lite" || dv.cameraWidth != 640 || dv.maxFps != 24)
             throw new Exception("DroneVision CV perf settings not applied!");
+
+        foreach (var rtl in UnityEngine.Object.FindObjectsByType<RTLTextMeshPro>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (rtl != null && rtl.RawText != null && rtl.RawText.Contains("کامیکا"))
+                throw new Exception($"Legacy spelling found on RTLTextMeshPro '{rtl.name}': {rtl.RawText}");
+        }
+        foreach (var tmp in UnityEngine.Object.FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (tmp != null && !string.IsNullOrEmpty(tmp.text) && (tmp.text.Contains("کامیکا") || tmp.text.Contains("ﺎﮑﯿﻣﺎﮐ")))
+                throw new Exception($"Legacy spelling found on TMP_Text '{tmp.name}': {tmp.text}");
+        }
 
         string outDir = @"C:\Users\Nima\.gemini\antigravity\brain\7b9ba8fe-181b-4459-b89e-1cb7eb5be3d3\scratch";
         Directory.CreateDirectory(outDir);

@@ -196,6 +196,7 @@ namespace DroneVision
         private readonly float[] _buf = new float[FeedBuffer.Length];
         private int _lastSeq = -1;
         private double _lastFrameT;
+        private float _lastWebGLSeqTime = -10f;
         private int _sentPreview = -1;
 
         [DllImport("__Internal")] private static extern void DroneVision_Start(string configJson);
@@ -302,8 +303,17 @@ namespace DroneVision
             }
 
             int seq = (int)_buf[FeedBuffer.Seq];
-            if (seq == _lastSeq) return; // no new camera frame since the last Unity frame
+            if (seq == _lastSeq)
+            {
+                if (_lastWebGLSeqTime > 0f && Time.unscaledTime - _lastWebGLSeqTime > 0.72f && RunIntensity > 0f)
+                {
+                    RunIntensity = Mathf.MoveTowards(RunIntensity, 0f, 4.5f * Time.unscaledDeltaTime);
+                    if (RunIntensity < 0.04f) { RunIntensity = 0f; StepCadence = 0f; }
+                }
+                return; // no new camera frame since the last Unity frame
+            }
             _lastSeq = seq;
+            _lastWebGLSeqTime = Time.unscaledTime;
             _lastFrameT = FeedBuffer.Timestamp(_buf);
             FeedBuffer.ReadPoses(_buf, _pool, _poses, _sigs);
             Consume(_tracker.Update(_poses, _sigs, _buf[FeedBuffer.Aspect], _lastFrameT));

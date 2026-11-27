@@ -54,7 +54,7 @@ public static class UpgradeKomikaUIFlow
         var ar = accent.GetComponent<RectTransform>();
         ar.anchorMin = Vector2.zero; ar.anchorMax = new Vector2(0f, 1f);
         ar.pivot = new Vector2(0f, .5f); ar.sizeDelta = new Vector2(5f, 0f);
-        Text("Brand", mainBestCard.transform, "کامیکا - تهران", 16, Orange, TextAlignmentOptions.Right, new Vector2(6f, 23f), new Vector2(276f, 24f));
+        Text("Brand", mainBestCard.transform, "کمیکا - تهران", 16, Orange, TextAlignmentOptions.Right, new Vector2(6f, 23f), new Vector2(276f, 24f));
         Text("Caption", mainBestCard.transform, "بهترین رکورد", 15, Cyan, TextAlignmentOptions.Right, new Vector2(6f, 0f), new Vector2(276f, 24f));
         TMP_Text mainBest = Text("Value", mainBestCard.transform, "۰ متر", 22, Color.white, TextAlignmentOptions.Right, new Vector2(6f, -23f), new Vector2(276f, 30f));
 
