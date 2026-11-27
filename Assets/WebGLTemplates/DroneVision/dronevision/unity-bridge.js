@@ -137,7 +137,7 @@ function paintClasses(v) {
 
 function paintBox(v) {
   const state = ui.phase === 'locked' ? 'on' : ui.phase === 'detected' ? 'wait' : 'off';
-  const motionText = ui.runPct >= 62 ? 'تند دویدن ✓' : ui.runPct >= 10 ? 'در حال دویدن ✓' : 'متصل · درجا بزنید';
+  const motionText = ui.runPct >= 68 ? 'تند دویدن ✓' : ui.runPct >= 10 ? 'در حال دویدن ✓' : 'متصل · درجا بزنید';
   const text = ui.phase === 'locked' ? motionText
     : ui.phase === 'detected' ? 'در حال شناسایی…' : (ERROR_TEXT[feed && feed.status] ? 'دوربین قطع' : 'منتظر بازیکن');
   const pct = ui.phase === 'locked' ? Math.max(0, Math.min(100, ui.runPct | 0)) : 0;
@@ -148,7 +148,7 @@ function paintBox(v) {
   v.state.textContent = text;
   if (v.meterFill) {
     v.meterFill.style.width = pct + '%';
-    v.meterEl.className = pct >= 62 ? 'fast' : '';
+    v.meterEl.className = pct >= 68 ? 'fast' : '';
   }
   for (const s of v.keySpans) s.className = ui.keys & Number(s.dataset.bit) ? 'on' : '';
 }

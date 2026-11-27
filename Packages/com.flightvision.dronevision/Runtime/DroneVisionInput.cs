@@ -83,15 +83,15 @@ namespace DroneVision
         [Tooltip("ON: player stands upright naturally, jogs in place to run, and leans slightly left/right to steer.")]
         public bool uprightLeanMode = true;
         [Tooltip("Left / right sensitivity in shoulder widths. Higher = fewer accidental turns while jogging.")]
-        [Range(0.08f, 0.8f)] public float rollEnter = 0.24f;
+        [Range(0.08f, 0.8f)] public float rollEnter = 0.19f;
         [Tooltip("Cooldown (ms) before triggering another lane shift in the same direction.")]
-        [Range(150f, 1000f)] public float leanCooldownMs = 340f;
+        [Range(150f, 1000f)] public float leanCooldownMs = 230f;
         [Tooltip("Minimum neutral upright duration (ms) before re-arming the same lean direction.")]
-        [Range(40f, 400f)] public float leanNeutralRearmMs = 110f;
+        [Range(40f, 400f)] public float leanNeutralRearmMs = 60f;
         [Tooltip("Detect running/jogging in place to drive forward speed and Idle/Run/FastRun animations.")]
         public bool enableJogDetection = true;
         [Tooltip("Steps/sec threshold mapped to fast sprint animation (FastRun).")]
-        [Range(1.6f, 3.8f)] public float jogSprintHz = 2.45f;
+        [Range(1.6f, 4.0f)] public float jogSprintHz = 3.00f;
         [Tooltip("Up: both wrists this far above the shoulder line (unused in uprightLeanMode)")]
         [Range(0.1f, 0.6f)] public float upMargin = 0.25f;
         [Tooltip("Down: both wrists this far below the shoulder line (unused in uprightLeanMode)")]

@@ -135,7 +135,7 @@ public class PlayerAnimationController : MonoBehaviour
             float intensity = playerController != null
                 ? playerController.VisionRunIntensity
                 : (worldMovement != null ? Mathf.Clamp01((worldMovement.JogFactor - 0.35f) / 1.05f) : 0.5f);
-            float runBlend = Mathf.Clamp01((intensity - 0.50f) / 0.38f);
+            float runBlend = Mathf.Clamp01((intensity - 0.62f) / 0.34f);
             animator.SetFloat(RunBlendHash, runBlend, 0.12f, Time.deltaTime);
 
             float targetAnimSpeed = Mathf.Lerp(0.92f, 1.32f, runBlend);

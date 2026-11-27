@@ -11,39 +11,39 @@ namespace DroneVision.Core
     {
         // gesture mode: upright body lean (runner left/right) vs legacy open wings
         public bool uprightLeanMode = true;
-        // roll (left / right): normalized torso lean + shoulder tilt (or wrist diff in wing mode)
-        public double rollEnter = 0.24;
+        // roll (left / right): normalized torso lean + shoulder tilt + lateral shift
+        public double rollEnter = 0.19;
         /// <summary>Difference that maps to Roll = ±1 (analog output).</summary>
-        public double rollFull = 0.55;
+        public double rollFull = 0.50;
         // pitch (up / down): both wrists above / below the shoulder line by this much (unused in uprightLeanMode)
         public double upMargin = 0.25;
         public double downMargin = 0.3;
         /// <summary>Mean wrist height that maps to Pitch = ±1 (analog output).</summary>
         public double pitchFull = 1.0;
         /// <summary>A zone is left only below enter × this (no flicker).</summary>
-        public double releaseRatio = 0.48;
-        /// <summary>A zone change must hold this many frames (exhibition light jitter).</summary>
-        public int zoneFrames = 3;
+        public double releaseRatio = 0.45;
+        /// <summary>A zone change must hold this many frames.</summary>
+        public int zoneFrames = 2;
         /// <summary>Minimum cooldown (ms) between consecutive triggers in the same direction.</summary>
-        public double leanCooldownMs = 340;
+        public double leanCooldownMs = 230;
         /// <summary>Minimum upright time (ms) required before re-arming the same lean direction.</summary>
-        public double leanNeutralRearmMs = 110;
+        public double leanNeutralRearmMs = 60;
         // running-in-place cadence & vigor detection
         public bool enableJogDetection = true;
-        public double jogStepDeadband = 0.0085;
-        public double jogKneeDeadband = 0.025;
-        public double jogArmDeadband = 0.032;
+        public double jogStepDeadband = 0.015;
+        public double jogKneeDeadband = 0.042;
+        public double jogArmDeadband = 0.055;
         public double jogTimeoutMs = 620;
         public double jogMinHz = 1.15;
-        public double jogSprintHz = 2.45;
+        public double jogSprintHz = 3.00;
         // wings: both wrists above this fraction of the shoulder → hip distance (hanging arms ≈ 1.12-1.19)
         public double holdLine = 0.9;
         public double handVisibility = 0.35;
         public double handGraceMs = 250;
         public double edgeMargin = 0.01;
         // smoothing + latency
-        public double minCutoff = 1.5;
-        public double beta = 1.5;
+        public double minCutoff = 1.6;
+        public double beta = 1.8;
         public double dCutoff = 1.0;
         public double leadMs = 30;
         public double maxLead = 0.15;

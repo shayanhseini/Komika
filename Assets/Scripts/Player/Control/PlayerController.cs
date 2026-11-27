@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Computer Vision (Standing Lean & In-Place Jogging)")]
     [SerializeField] private bool enableVisionControl = true;
-    [SerializeField, Range(0.15f, 0.8f)] private float visionStepMinCooldown = 0.25f;
+    [SerializeField, Range(0.12f, 0.8f)] private float visionStepMinCooldown = 0.18f;
     [SerializeField] private WorldMovementManager worldMovement;
 
 
@@ -560,10 +560,10 @@ public class PlayerController : MonoBehaviour
         float jogFactor = 0f;
         if (VisionRunIntensity >= 0.08f)
         {
-            if (VisionRunIntensity < 0.65f)
-                jogFactor = Mathf.Lerp(0.55f, 1.05f, (VisionRunIntensity - 0.08f) / 0.57f);
+            if (VisionRunIntensity < 0.68f)
+                jogFactor = Mathf.Lerp(0.55f, 1.05f, (VisionRunIntensity - 0.08f) / 0.60f);
             else
-                jogFactor = Mathf.Lerp(1.05f, 1.48f, (VisionRunIntensity - 0.65f) / 0.35f);
+                jogFactor = Mathf.Lerp(1.05f, 1.48f, (VisionRunIntensity - 0.68f) / 0.32f);
         }
 
         if (worldMovement == null)

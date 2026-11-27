@@ -76,11 +76,11 @@ public static class DroneVisionSceneSetup
         activeInput.lockedShowSeconds = 0.7f;
 
         activeInput.uprightLeanMode = true;
-        activeInput.rollEnter = 0.24f;
-        activeInput.leanCooldownMs = 340f;
-        activeInput.leanNeutralRearmMs = 110f;
+        activeInput.rollEnter = 0.19f;
+        activeInput.leanCooldownMs = 230f;
+        activeInput.leanNeutralRearmMs = 60f;
         activeInput.enableJogDetection = true;
-        activeInput.jogSprintHz = 2.45f;
+        activeInput.jogSprintHz = 3.00f;
         activeInput.lockMs = 350f;
         activeInput.lockGraceMs = 1200f;
         activeInput.invert = false;
@@ -92,11 +92,16 @@ public static class DroneVisionSceneSetup
         var gameMgr = UnityEngine.Object.FindFirstObjectByType<GameManager>(FindObjectsInactive.Include);
         var playerCtrl = UnityEngine.Object.FindFirstObjectByType<PlayerController>(FindObjectsInactive.Include);
         var diffMgr = UnityEngine.Object.FindFirstObjectByType<DifficultyManager>(FindObjectsInactive.Include);
-        if (playerCtrl != null && worldMove != null)
+        if (playerCtrl != null)
         {
             var pcSo = new SerializedObject(playerCtrl);
-            var wmProp = pcSo.FindProperty("worldMovement");
-            if (wmProp != null) wmProp.objectReferenceValue = worldMove;
+            if (worldMove != null)
+            {
+                var wmProp = pcSo.FindProperty("worldMovement");
+                if (wmProp != null) wmProp.objectReferenceValue = worldMove;
+            }
+            var cdProp = pcSo.FindProperty("visionStepMinCooldown");
+            if (cdProp != null) cdProp.floatValue = 0.18f;
             pcSo.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(playerCtrl);
         }
@@ -316,10 +321,10 @@ public static class DroneVisionSceneSetup
         }
     }
 
-    private static PoseFrame MakePose(double leanRight, bool includeHips, double wristUp = -1.2, double jogBob = 0.0, double kneeSwing = 0.0, double armSwing = 0.0)
+    private static PoseFrame MakePose(double leanRight, bool includeHips, double wristUp = -1.2, double jogBob = 0.0, double kneeSwing = 0.0, double armSwing = 0.0, double lateralX = 0.0)
     {
         var f = new PoseFrame { Aspect = 16.0 / 9.0 };
-        double cx = 0.5, sy = 0.4 + jogBob, sw = 0.1, swh = sw * f.Aspect;
+        double cx = 0.5 - lateralX, sy = 0.4 + jogBob, sw = 0.1, swh = sw * f.Aspect;
         Landmark[] lm = f.Landmarks;
         for (int i = 0; i < PoseFrame.Count; i++) lm[i] = new Landmark(cx, 0.5, 0);
 
@@ -331,10 +336,10 @@ public static class DroneVisionSceneSetup
         lm[PoseFrame.RElbow] = new Landmark(sx - sw * 0.60, sy + swh * 0.65 + armSwing, 0.95);
         if (includeHips)
         {
-            lm[PoseFrame.LHip] = new Landmark(cx + sw * 0.4, sy + swh * 1.45, 0.97);
-            lm[PoseFrame.RHip] = new Landmark(cx - sw * 0.4, sy + swh * 1.45, 0.97);
-            lm[PoseFrame.LKnee] = new Landmark(cx + sw * 0.42, sy + swh * 2.45 - Math.Max(0.0, kneeSwing), 0.95);
-            lm[PoseFrame.RKnee] = new Landmark(cx - sw * 0.42, sy + swh * 2.45 - Math.Max(0.0, -kneeSwing), 0.95);
+            lm[PoseFrame.LHip] = new Landmark(0.5 + sw * 0.4, sy + swh * 1.45, 0.97);
+            lm[PoseFrame.RHip] = new Landmark(0.5 - sw * 0.4, sy + swh * 1.45, 0.97);
+            lm[PoseFrame.LKnee] = new Landmark(0.5 + sw * 0.42, sy + swh * 2.45 - Math.Max(0.0, kneeSwing), 0.95);
+            lm[PoseFrame.RKnee] = new Landmark(0.5 - sw * 0.42, sy + swh * 2.45 - Math.Max(0.0, -kneeSwing), 0.95);
         }
         lm[PoseFrame.LWrist] = new Landmark(sx + sw * 0.65, sy - wristUp * swh, 0.9);
         lm[PoseFrame.RWrist] = new Landmark(sx - sw * 0.65, sy - wristUp * swh, 0.9);
@@ -346,63 +351,68 @@ public static class DroneVisionSceneSetup
         var cfg = new DroneConfig
         {
             uprightLeanMode = true,
-            rollEnter = 0.24,
-            releaseRatio = 0.48,
-            zoneFrames = 3,
-            leanCooldownMs = 340,
-            leanNeutralRearmMs = 110,
+            rollEnter = 0.19,
+            releaseRatio = 0.45,
+            zoneFrames = 2,
+            leanCooldownMs = 230,
+            leanNeutralRearmMs = 60,
             enableJogDetection = true,
-            jogSprintHz = 2.45,
+            jogSprintHz = 3.00,
             lockMs = 350
         };
         var tracker = new DroneTracker(cfg);
         double t = 0;
         double sw = 0.1 * (16.0 / 9.0);
 
-        // 1. Stand still with realistic MediaPipe sensor jitter (~18 FPS) -> locks, RunIntensity == 0 (Idle)
+        // 1. Stand still + tiny camera/body fidget (~0.008) -> locks, stays Idle (NEVER triggers Run or FastRun!)
         DroneState st = null;
-        for (int i = 0; i < 20; i++)
-        {
-            t += 55.0;
-            double noise = ((i % 3) - 1) * sw * 0.0025;
-            st = tracker.Update(MakePose(0.0, includeHips: true, wristUp: -1.3, jogBob: noise), t);
-        }
-        if (!st.Locked || st.Side != 0 || st.Vert != 0 || st.RunIntensity > 0.05)
-            throw new Exception($"Stationary noise check failed: locked={st.Locked}, side={st.Side}, run={st.RunIntensity}");
-
-        // 2a. Soft realistic indoor jog @ 15 FPS with natural foot weight-shift sway and NO knees visible
-        for (int i = 0; i < 24; i++)
-        {
-            t += 66.7;
-            double phase = (t / 1000.0) * 1.75 * Math.PI * 2.0;
-            double bob = Math.Sin(phase) * sw * 0.018;
-            double sway = Math.Sin(phase * 0.5) * 0.08;
-            st = tracker.Update(MakePose(sway, includeHips: false, wristUp: -1.3, jogBob: bob), t);
-        }
-        if (st.RunIntensity < 0.30)
-            throw new Exception($"Soft 15FPS jog with sway failed: run={st.RunIntensity}, hz={st.StepCadence}");
-
-        // 2b. Chest-up view where arms pump and head barely moves (no hips/knees)
-        for (int i = 0; i < 15; i++) { t += 55.0; tracker.Update(MakePose(0.0, includeHips: false), t); }
         for (int i = 0; i < 24; i++)
         {
             t += 50.0;
-            double phase = (t / 1000.0) * 1.9 * Math.PI * 2.0;
-            double bob = Math.Sin(phase) * sw * 0.007;
+            double fidgetBob = Math.Sin(i * 0.8) * sw * 0.007;
+            double fidgetArm = Math.Sin(i * 0.5) * sw * 0.025;
+            st = tracker.Update(MakePose(0.03 * Math.Sin(i * 0.4), includeHips: true, wristUp: -1.3, jogBob: fidgetBob, armSwing: fidgetArm), t);
+        }
+        if (!st.Locked || st.Side != 0 || st.Vert != 0 || st.RunIntensity > 0.08)
+            throw new Exception($"Tiny fidget/stationary check failed: locked={st.Locked}, side={st.Side}, run={st.RunIntensity}");
+
+        // 2a. Normal jogging @ ~1.65 Hz with weight-shift sway (NO hips) -> Run band (0.25..0.60), NOT FastRun, ZERO lean triggers!
+        int spuriousLean = 0;
+        for (int i = 0; i < 28; i++)
+        {
+            t += 55.0;
+            double phase = (t / 1000.0) * 1.65 * Math.PI * 2.0;
+            double bob = Math.Sin(phase) * sw * 0.024;
+            double arm = Math.Sin(phase * 0.5) * sw * 0.08;
+            double sway = Math.Sin(phase * 0.5) * 0.08;
+            st = tracker.Update(MakePose(sway, includeHips: false, wristUp: -1.3, jogBob: bob, armSwing: arm), t);
+            if (st.LeanTrigger != 0) spuriousLean++;
+        }
+        if (st.RunIntensity < 0.25 || st.RunIntensity >= 0.65 || spuriousLean > 0)
+            throw new Exception($"Normal jog band/sway check failed: run={st.RunIntensity}, hz={st.StepCadence}, spuriousLean={spuriousLean}");
+
+        // 2b. Settle then test chest-up arm-pump jog (~1.85 Hz) -> Normal Run (NOT FastRun!)
+        for (int i = 0; i < 20; i++) { t += 50.0; tracker.Update(MakePose(0.0, includeHips: false), t); }
+        for (int i = 0; i < 28; i++)
+        {
+            t += 45.0;
+            double phase = (t / 1000.0) * 1.85 * Math.PI * 2.0;
+            double bob = Math.Sin(phase) * sw * 0.020;
             double arm = Math.Sin(phase * 0.5) * sw * 0.095;
             st = tracker.Update(MakePose(0.0, includeHips: false, wristUp: -1.1, jogBob: bob, armSwing: arm), t);
         }
-        if (st.RunIntensity < 0.30)
+        if (st.RunIntensity < 0.25 || st.RunIntensity >= 0.66)
             throw new Exception($"Chest-up arm pump jog failed: run={st.RunIntensity}, hz={st.StepCadence}");
 
-        // 3. Fast sprint in place (~2.75 Hz) -> RunIntensity pushes into sprint band (>= 0.72)
-        for (int i = 0; i < 40; i++)
+        // 3. Genuine fast sprint in place (~2.95 Hz) -> RunIntensity pushes into FastRun band (>= 0.72)
+        for (int i = 0; i < 42; i++)
         {
             t += 33.3;
-            double phase = (t / 1000.0) * 2.75 * Math.PI * 2.0;
-            double bob = Math.Sin(phase) * sw * 0.040;
-            double knee = Math.Sin(phase * 0.5) * sw * 0.20;
-            st = tracker.Update(MakePose(0.0, includeHips: true, wristUp: -1.3, jogBob: bob, kneeSwing: knee), t);
+            double phase = (t / 1000.0) * 2.95 * Math.PI * 2.0;
+            double bob = Math.Sin(phase) * sw * 0.044;
+            double knee = Math.Sin(phase * 0.5) * sw * 0.22;
+            double arm = Math.Sin(phase * 0.5) * sw * 0.16;
+            st = tracker.Update(MakePose(0.0, includeHips: true, wristUp: -1.3, jogBob: bob, kneeSwing: knee, armSwing: arm), t);
         }
         if (st.RunIntensity < 0.72)
             throw new Exception($"Fast sprint failed to reach FastRun band: run={st.RunIntensity}, hz={st.StepCadence}");
@@ -416,35 +426,53 @@ public static class DroneVisionSceneSetup
         if (st.RunIntensity > 0.08)
             throw new Exception($"Stop to Idle failed: run={st.RunIntensity}");
 
-        // 5. Anti-double-trigger lean check: lean right -> triggers ONCE, brief wobble must NOT trigger twice!
+        // 5. Chest-up lateral lean (level shoulders, no hips) MUST trigger right & left reliably!
+        int cuRight = 0, cuLeft = 0;
+        for (int i = 0; i < 8; i++)
+        {
+            t += 40.0;
+            st = tracker.Update(MakePose(0.06, includeHips: false, lateralX: 0.032), t);
+            if (st.LeanTrigger > 0) cuRight++;
+        }
+        for (int i = 0; i < 8; i++)
+        {
+            t += 40.0;
+            st = tracker.Update(MakePose(-0.06, includeHips: false, lateralX: -0.032), t);
+            if (st.LeanTrigger < 0) cuLeft++;
+        }
+        if (cuRight != 1 || cuLeft != 1)
+            throw new Exception($"Chest-up lateral lean check failed: right={cuRight}, left={cuLeft}");
+        for (int i = 0; i < 12; i++) { t += 40.0; tracker.Update(MakePose(0.0, includeHips: true), t); }
+
+        // 6. Full-body anti-double-trigger lean check: lean right -> triggers ONCE, brief dip inside zone must NOT trigger twice!
         int rightTriggers = 0;
         for (int i = 0; i < 8; i++)
         {
             t += 33.3;
-            st = tracker.Update(MakePose(0.75, includeHips: true), t);
+            st = tracker.Update(MakePose(0.55, includeHips: true), t);
             if (st.LeanTrigger > 0) rightTriggers++;
         }
         if (rightTriggers != 1)
             throw new Exception($"Expected exact 1 right trigger on initial lean, got {rightTriggers}");
 
-        // Brief partial return (60ms < 110ms neutral rearm) then lean right again -> MUST NOT double trigger!
+        // Brief partial dip keeping inside hysteresis (> 0.19*0.45=0.085) then lean right again -> MUST NOT double trigger!
         for (int i = 0; i < 2; i++)
         {
-            t += 30.0;
-            st = tracker.Update(MakePose(0.15, includeHips: true), t);
+            t += 33.3;
+            st = tracker.Update(MakePose(0.20, includeHips: true), t);
             if (st.LeanTrigger > 0) rightTriggers++;
         }
         for (int i = 0; i < 8; i++)
         {
             t += 33.3;
-            st = tracker.Update(MakePose(0.75, includeHips: true), t);
+            st = tracker.Update(MakePose(0.55, includeHips: true), t);
             if (st.LeanTrigger > 0) rightTriggers++;
         }
         if (rightTriggers != 1)
             throw new Exception($"Double-trigger guard failed! triggers={rightTriggers}");
 
-        // Full upright return (350ms) then clean second lean right -> MUST trigger cleanly!
-        for (int i = 0; i < 12; i++)
+        // Quick upright settle (~140ms) then clean second lean right -> MUST re-arm and trigger cleanly!
+        for (int i = 0; i < 8; i++)
         {
             t += 33.3;
             tracker.Update(MakePose(0.0, includeHips: true), t);
@@ -452,18 +480,18 @@ public static class DroneVisionSceneSetup
         for (int i = 0; i < 10; i++)
         {
             t += 33.3;
-            st = tracker.Update(MakePose(0.75, includeHips: true), t);
+            st = tracker.Update(MakePose(0.55, includeHips: true), t);
             if (st.LeanTrigger > 0) rightTriggers++;
         }
         if (rightTriggers != 2)
             throw new Exception($"Rearmed second lean right failed! triggers={rightTriggers}");
 
-        // Opposite lean left works cleanly without waiting long neutral settle
+        // Opposite lean left works cleanly without stalling
         int leftTriggers = 0;
-        for (int i = 0; i < 12; i++)
+        for (int i = 0; i < 10; i++)
         {
             t += 33.3;
-            st = tracker.Update(MakePose(-0.75, includeHips: true), t);
+            st = tracker.Update(MakePose(-0.55, includeHips: true), t);
             if (st.LeanTrigger < 0) leftTriggers++;
         }
         if (leftTriggers != 1 || st.Vert != 0)

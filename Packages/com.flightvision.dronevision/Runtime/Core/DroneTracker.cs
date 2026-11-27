@@ -110,7 +110,66 @@ namespace DroneVision.Core
         private double _neutralSinceMs;
         private bool _neutralArmed = true;
 
-        // running-in-place cadence & vigor detector state (raw Y baselines prevent shoulder-width foreshortening spikes)
+        // upright center baseline for lateral sway lean (works even without hips in frame)
+        private bool _hasCenterX;
+        private double _centerX;
+
+        // running-in-place independent step streams (prevents 2x-3x double counting across bob/knee/elbow)
+        private struct StepStream
+        {
+            public double[] Times;
+            public int Count;
+            public int WriteIdx;
+            public double LastMs;
+
+            public StepStream(int cap)
+            {
+                Times = new double[cap];
+                Count = 0;
+                WriteIdx = 0;
+                LastMs = -1e9;
+            }
+
+            public void Reset()
+            {
+                Count = 0;
+                WriteIdx = 0;
+                LastMs = -1e9;
+            }
+
+            public void Record(double tMs, double minIntervalMs = 220.0)
+            {
+                if (Times == null) Times = new double[12];
+                if (tMs - LastMs < minIntervalMs) return;
+                LastMs = tMs;
+                Times[WriteIdx] = tMs;
+                WriteIdx = (WriteIdx + 1) % Times.Length;
+                if (Count < Times.Length) Count++;
+            }
+
+            public double Cadence(double tMs, double timeoutMs, double windowMs = 1400.0)
+            {
+                if (Times == null || Count == 0 || tMs - LastMs > timeoutMs) return 0.0;
+                int valid = 0;
+                double firstMs = double.PositiveInfinity, lastMs = double.NegativeInfinity;
+                for (int i = 0; i < Count; i++)
+                {
+                    double st = Times[i];
+                    if (tMs - st <= windowMs)
+                    {
+                        valid++;
+                        if (st < firstMs) firstMs = st;
+                        if (st > lastMs) lastMs = st;
+                    }
+                }
+                if (valid < 2) return 0.0;
+                double spanS = Math.Max(0.34, (lastMs - firstMs) / 1000.0);
+                double rateSpan = (valid - 1) / spanS;
+                double rateNow = valid / Math.Max(0.45, (tMs - firstMs) / 1000.0);
+                return Math.Min(rateSpan, rateNow);
+            }
+        }
+
         private bool _hasBob;
         private double _bobRawMean;
         private double _bobFast;
@@ -131,10 +190,9 @@ namespace DroneVision.Core
         private double _sustainedEnergyMs;
         private double _prevRawRoll;
         private double _suppressStepUntilMs = -1e9;
-        private double _lastAnyStepMs = -1e9;
-        private readonly double[] _stepTimes = new double[16];
-        private int _stepCount;
-        private int _stepWriteIdx;
+        private StepStream _bobSteps = new StepStream(12);
+        private StepStream _kneeSteps = new StepStream(12);
+        private StepStream _armSteps = new StepStream(12);
 
         private struct Wrist
         {
@@ -192,6 +250,8 @@ namespace DroneVision.Core
             _inNeutral = true;
             _neutralSinceMs = 0;
             _neutralArmed = true;
+            _hasCenterX = false;
+            _centerX = 0;
         }
 
         private void ResetJogState()
@@ -216,9 +276,9 @@ namespace DroneVision.Core
             _sustainedEnergyMs = 0;
             _prevRawRoll = 0;
             _suppressStepUntilMs = -1e9;
-            _lastAnyStepMs = -1e9;
-            _stepCount = 0;
-            _stepWriteIdx = 0;
+            _bobSteps.Reset();
+            _kneeSteps.Reset();
+            _armSteps.Reset();
             State.RunIntensity = 0;
             State.StepCadence = 0;
         }
@@ -402,18 +462,26 @@ namespace DroneVision.Core
                     s.HandsHeld = true;
                     if (hadGrip && tMs - prevGrip > cfg.filterResetGapMs) ResetFilters();
 
+                    bool continuous = hadGrip && tMs - prevGrip <= cfg.filterResetGapMs;
+                    if (!continuous || !_hasCenterX)
+                    {
+                        _hasCenterX = true;
+                        _centerX = m.CenterX;
+                    }
+
                     double shoulderTilt = m.ShoulderTilt / _wRef; // >0 when player's right shoulder dips (leaning right)
+                    double lateralShift = MathUtil.Clamp((_centerX - m.CenterX) * frame.Aspect / _wRef, -0.85, 0.85);
                     double bodyShift;
                     if (m.HasTorso)
                     {
                         double torsoShift = (m.HipCenterX - m.CenterX) * frame.Aspect / _wRef;
                         double headBonus = m.HasNose ? MathUtil.Clamp((m.CenterX - m.NoseX) * frame.Aspect / _wRef, -0.35, 0.35) : 0.0;
-                        bodyShift = 0.72 * torsoShift + 0.45 * shoulderTilt + 0.15 * headBonus;
+                        bodyShift = 0.55 * torsoShift + 0.35 * shoulderTilt + 0.15 * headBonus + 0.40 * lateralShift;
                     }
                     else
                     {
-                        double headShift = m.HasNose ? MathUtil.Clamp((m.CenterX - m.NoseX) * frame.Aspect / _wRef * 1.35, -0.35, 0.35) : 0.0;
-                        bodyShift = m.HasNose ? (0.95 * shoulderTilt + 0.32 * headShift) : 1.15 * shoulderTilt;
+                        double headShift = m.HasNose ? MathUtil.Clamp((m.CenterX - m.NoseX) * frame.Aspect / _wRef * 1.25, -0.35, 0.35) : 0.0;
+                        bodyShift = 0.65 * shoulderTilt + 0.28 * headShift + 0.72 * lateralShift;
                     }
                     if (cfg.invert) bodyShift = -bodyShift;
 
@@ -446,7 +514,7 @@ namespace DroneVision.Core
                         if (s.Locked && prevSide != side)
                         {
                             bool opposite = _lastTriggerDir != 0 && side == -_lastTriggerDir;
-                            double neededCooldown = opposite ? cfg.leanCooldownMs * 0.55 : cfg.leanCooldownMs;
+                            double neededCooldown = opposite ? cfg.leanCooldownMs * 0.5 : cfg.leanCooldownMs;
                             bool canFire = (tMs - _lastTriggerMs >= neededCooldown) && (opposite || _neutralArmed);
                             if (canFire)
                             {
@@ -468,7 +536,7 @@ namespace DroneVision.Core
 
                     if (cfg.enableJogDetection)
                     {
-                        UpdateJogCadence(in m, tMs, dtS, rawRoll, hadGrip && tMs - prevGrip <= cfg.filterResetGapMs);
+                        UpdateJogCadence(in m, tMs, dtS, rawRoll, continuous);
                     }
                     else
                     {
@@ -476,17 +544,24 @@ namespace DroneVision.Core
                         s.StepCadence = 0;
                     }
 
-                    if (hadGrip && tMs - prevGrip <= cfg.filterResetGapMs)
+                    if (continuous)
                     {
-                        if (!s.Locked && Math.Abs(bodyShift - _tilt) < 0.18)
+                        double gapS = (tMs - prevGrip) / 1000.0;
+                        // Slowly track standing center position only when near upright (never during an intentional lean!)
+                        if (!s.Locked)
                         {
-                            double aFast = 1 - Math.Exp(-(tMs - prevGrip) / 1000 / Math.Max(0.3, cfg.restAdaptTauS * 0.15));
-                            _tilt = MathUtil.Clamp(_tilt + (bodyShift - _tilt) * aFast, -0.15, 0.15);
+                            _centerX += (m.CenterX - _centerX) * (1 - Math.Exp(-gapS / 1.2));
+                            if (Math.Abs(shoulderTilt - _tilt) < 0.14)
+                            {
+                                double aFast = 1 - Math.Exp(-gapS / Math.Max(0.6, cfg.restAdaptTauS * 0.35));
+                                _tilt = MathUtil.Clamp(_tilt + (shoulderTilt - _tilt) * aFast, -0.10, 0.10);
+                            }
                         }
-                        else if (side == 0 && s.Locked && (tMs - _lastTriggerMs > 420.0) && Math.Abs(bodyShift - _tilt) < cfg.rollEnter * 0.42)
+                        else if (side == 0 && Math.Abs(rawRoll) < cfg.rollEnter * 0.65 && (tMs - _lastTriggerMs > 300.0))
                         {
-                            double a = 1 - Math.Exp(-(tMs - prevGrip) / 1000 / cfg.restAdaptTauS);
-                            _tilt = MathUtil.Clamp(_tilt + (bodyShift - _tilt) * a, -cfg.restRollLimit, cfg.restRollLimit);
+                            _centerX += (m.CenterX - _centerX) * (1 - Math.Exp(-gapS / 3.2));
+                            double a = 1 - Math.Exp(-gapS / cfg.restAdaptTauS);
+                            _tilt = MathUtil.Clamp(_tilt + (shoulderTilt - _tilt) * a, -cfg.restRollLimit, cfg.restRollLimit);
                         }
                     }
                 }
@@ -641,9 +716,10 @@ namespace DroneVision.Core
                 return;
             }
 
-            // Only suppress extreme sudden torso whip (> 0.16 per frame), NEVER suppress natural jogging weight-shift sway
-            if (Math.Abs(rawRoll - _prevRawRoll) > 0.16)
-                _suppressStepUntilMs = tMs + 100.0;
+            // Suppress head-bob & limb step triggers briefly during sudden sideways leans so turning never triggers sprinting
+            double rollDelta = Math.Abs(rawRoll - _prevRawRoll);
+            if (rollDelta > 0.085 || (Math.Abs(rawRoll) > cfg.rollEnter * 0.85 && rollDelta > 0.04))
+                _suppressStepUntilMs = tMs + 150.0;
             _prevRawRoll = rawRoll;
 
             if (!_hasBob)
@@ -658,11 +734,11 @@ namespace DroneVision.Core
             _bobRawMean += (yRaw - _bobRawMean) * (1 - Math.Exp(-dtS / 0.32));
             double hpY = (yRaw - _bobRawMean) / _wRef;
             _prevBobFast = _bobFast;
-            _bobFast += (hpY - _bobFast) * (1 - Math.Exp(-dtS / 0.035));
-            double bobRate = (_bobFast - _prevBobFast) / Math.Max(0.015, dtS);
+            _bobFast += (hpY - _bobFast) * (1 - Math.Exp(-dtS / 0.04));
+            double bobRate = (_bobFast - _prevBobFast) / Math.Max(0.016, dtS);
 
             bool suppressed = tMs < _suppressStepUntilMs;
-            double bobSwing = Math.Max(0.012, 2.0 * cfg.jogStepDeadband);
+            double bobSwing = Math.Max(0.022, 2.0 * cfg.jogStepDeadband);
             if (suppressed)
             {
                 _bobExtreme = _bobFast;
@@ -691,7 +767,7 @@ namespace DroneVision.Core
                 {
                     _bobCycleDir = 1;
                     _bobExtreme = _bobFast;
-                    RecordStep(tMs);
+                    _bobSteps.Record(tMs, 220.0);
                 }
             }
 
@@ -706,9 +782,10 @@ namespace DroneVision.Core
                 }
                 _kneeRawMean += (m.KneeDiffY - _kneeRawMean) * (1 - Math.Exp(-dtS / 0.45));
                 double hpKnee = (m.KneeDiffY - _kneeRawMean) / _wRef;
-                legInst = Math.Min(1.6, Math.Abs(hpKnee) / 0.045);
+                double kneeExcess = Math.Max(0.0, Math.Abs(hpKnee) - cfg.jogKneeDeadband * 0.55);
+                legInst = Math.Min(1.2, kneeExcess / 0.085);
 
-                double kneeSwing = Math.Max(0.03, 2.0 * cfg.jogKneeDeadband);
+                double kneeSwing = Math.Max(0.05, 2.0 * cfg.jogKneeDeadband);
                 if (!suppressed)
                 {
                     if (_kneeCycleDir == 0)
@@ -726,7 +803,7 @@ namespace DroneVision.Core
                         {
                             _kneeCycleDir = -1;
                             _kneeExtreme = hpKnee;
-                            RecordStep(tMs);
+                            _kneeSteps.Record(tMs, 220.0);
                         }
                     }
                     else
@@ -736,7 +813,7 @@ namespace DroneVision.Core
                         {
                             _kneeCycleDir = 1;
                             _kneeExtreme = hpKnee;
-                            RecordStep(tMs);
+                            _kneeSteps.Record(tMs, 220.0);
                         }
                     }
                 }
@@ -750,7 +827,8 @@ namespace DroneVision.Core
                     if (!_hasHipAlt) { _hasHipAlt = true; _hipAltRawMean = rawHip; }
                     _hipAltRawMean += (rawHip - _hipAltRawMean) * (1 - Math.Exp(-dtS / 0.40));
                     double hpHip = (rawHip - _hipAltRawMean) / _wRef;
-                    legInst = Math.Min(1.3, Math.Abs(hpHip) / 0.030);
+                    double hipExcess = Math.Max(0.0, Math.Abs(hpHip) - 0.018);
+                    legInst = Math.Min(1.1, hipExcess / 0.055);
                 }
                 else
                 {
@@ -769,9 +847,10 @@ namespace DroneVision.Core
                 }
                 _armRawMean += (m.ElbowDiffY - _armRawMean) * (1 - Math.Exp(-dtS / 0.45));
                 double hpArm = (m.ElbowDiffY - _armRawMean) / _wRef;
-                armInst = Math.Min(1.4, Math.Abs(hpArm) / 0.065);
+                double armExcess = Math.Max(0.0, Math.Abs(hpArm) - cfg.jogArmDeadband * 0.55);
+                armInst = Math.Min(1.2, armExcess / 0.11);
 
-                double armSwing = Math.Max(0.035, 2.0 * cfg.jogArmDeadband);
+                double armSwing = Math.Max(0.065, 2.0 * cfg.jogArmDeadband);
                 if (!suppressed)
                 {
                     if (_armCycleDir == 0)
@@ -789,7 +868,7 @@ namespace DroneVision.Core
                         {
                             _armCycleDir = -1;
                             _armExtreme = hpArm;
-                            RecordStep(tMs);
+                            _armSteps.Record(tMs, 220.0);
                         }
                     }
                     else
@@ -799,7 +878,7 @@ namespace DroneVision.Core
                         {
                             _armCycleDir = 1;
                             _armExtreme = hpArm;
-                            RecordStep(tMs);
+                            _armSteps.Record(tMs, 220.0);
                         }
                     }
                 }
@@ -809,73 +888,68 @@ namespace DroneVision.Core
                 _hasArm = false;
             }
 
-            // Combine vertical bounce + velocity + leg/hip/arm oscillation energy (with stationary noise gate)
-            double bobInst = suppressed ? 0.0 : Math.Min(1.8, Math.Abs(_bobFast) / 0.018 + Math.Abs(bobRate) / 0.22);
-            double limbInst = suppressed ? 0.0 : Math.Max(legInst, armInst * 0.85);
+            // Deadband-gated vertical bounce + limb energy: tiny fidgets stay near 0; real jogging fills Run band smoothly
+            double bobPosExcess = Math.Max(0.0, Math.Abs(_bobFast) - cfg.jogStepDeadband * 0.7);
+            double bobRateExcess = Math.Max(0.0, Math.Abs(bobRate) - 0.12);
+            double bobInst = suppressed ? 0.0 : Math.Min(1.2, bobPosExcess / 0.032 + bobRateExcess / 0.42);
+            double limbInst = suppressed ? 0.0 : Math.Max(legInst, armInst * 0.9);
             double instEnergy = Math.Max(bobInst, Math.Max(limbInst, 0.55 * bobInst + 0.55 * limbInst));
-            double eTau = instEnergy > _motionEnergy ? 0.11 : 0.24;
+            double eTau = instEnergy > _motionEnergy ? 0.12 : 0.16;
             _motionEnergy += (instEnergy - _motionEnergy) * (1.0 - Math.Exp(-dtS / eTau));
-            if (_motionEnergy >= 0.36) _sustainedEnergyMs = Math.Min(2000.0, _sustainedEnergyMs + dtS * 1000.0);
+            if (_motionEnergy >= 0.34) _sustainedEnergyMs = Math.Min(2000.0, _sustainedEnergyMs + dtS * 1000.0);
             else _sustainedEnergyMs = 0.0;
 
-            // Compute active cadence from recent steps within rolling 1.35s window
-            int valid = 0;
-            double firstMs = double.PositiveInfinity, lastMs = double.NegativeInfinity;
-            for (int i = 0; i < _stepCount; i++)
-            {
-                double st = _stepTimes[i];
-                if (tMs - st <= 1350.0)
-                {
-                    valid++;
-                    if (st < firstMs) firstMs = st;
-                    if (st > lastMs) lastMs = st;
-                }
-            }
+            double cBob = _bobSteps.Cadence(tMs, cfg.jogTimeoutMs);
+            double cKnee = _kneeSteps.Cadence(tMs, cfg.jogTimeoutMs);
+            double cArm = _armSteps.Cadence(tMs, cfg.jogTimeoutMs);
+            double cadence = MergeChannelCadences(cBob, cKnee, cArm);
 
+            double lastAnyStep = Math.Max(_bobSteps.LastMs, Math.Max(_kneeSteps.LastMs, _armSteps.LastMs));
+            double sinceLast = tMs - lastAnyStep;
             double targetRun = 0.0;
-            double cadence = 0.0;
-            double sinceLast = valid > 0 ? tMs - lastMs : double.PositiveInfinity;
-            if (valid >= 2 && sinceLast <= cfg.jogTimeoutMs)
+
+            if (cadence >= cfg.jogMinHz * 0.72)
             {
-                double spanS = Math.Max(0.32, (lastMs - firstMs) / 1000.0);
-                double rateSpan = (valid - 1) / spanS;
-                double rateNow = valid / Math.Max(0.45, (tMs - firstMs) / 1000.0);
-                cadence = Math.Min(rateSpan, rateNow);
-                if (cadence >= cfg.jogMinHz * 0.65)
-                {
-                    double frac = MathUtil.Clamp((cadence - cfg.jogMinHz) / Math.Max(0.35, cfg.jogSprintHz - cfg.jogMinHz), 0.0, 1.0);
-                    double cadenceDrive = 0.38 + 0.62 * frac;
-                    double energyBonus = MathUtil.Clamp((_motionEnergy - 0.55) / 0.85, 0.0, 1.0);
-                    targetRun = Math.Max(cadenceDrive, 0.36 + 0.55 * energyBonus);
-                }
+                double frac = MathUtil.Clamp((cadence - cfg.jogMinHz) / Math.Max(0.45, cfg.jogSprintHz - cfg.jogMinHz), 0.0, 1.0);
+                double cadenceDrive = 0.30 + 0.68 * frac;
+                // Amplitude energy can never launch a calm jog into Sprint: cap non-sprint energy bonus at 0.56!
+                double vigorBonus = MathUtil.Clamp((_motionEnergy - 0.55) / 0.65, 0.0, 0.12);
+                targetRun = Math.Min(0.98, cadenceDrive + (cadence >= cfg.jogMinHz * 1.4 ? vigorBonus : 0.0));
+                if (cadence < 2.2) targetRun = Math.Min(targetRun, 0.58);
             }
-            else if (valid >= 1 && sinceLast <= cfg.jogTimeoutMs && _motionEnergy >= 0.40)
+            else if (sinceLast <= cfg.jogTimeoutMs && _motionEnergy >= 0.36)
             {
-                // Immediate bridge on very first step or single missed frame
-                targetRun = MathUtil.Clamp(0.34 + 0.30 * (_motionEnergy - 0.40), 0.32, 0.65);
+                // First single step bridges into normal Run cleanly without spiking into FastRun
+                targetRun = MathUtil.Clamp(0.28 + 0.24 * (_motionEnergy - 0.36), 0.28, 0.54);
             }
-            else if (_sustainedEnergyMs >= 200.0 && _motionEnergy >= 0.50)
+            else if (_sustainedEnergyMs >= 260.0 && _motionEnergy >= 0.48)
             {
-                // Fallback continuous motion drive for low-FPS cameras
-                targetRun = MathUtil.Clamp(0.35 + 0.45 * ((_motionEnergy - 0.50) / 0.75), 0.32, 0.78);
+                // Low-FPS fallback drives calm Run only (never FastRun without measured fast step cadence)
+                targetRun = MathUtil.Clamp(0.28 + 0.26 * ((_motionEnergy - 0.48) / 0.52), 0.28, 0.54);
             }
 
             s.StepCadence = cadence;
-            double tau = targetRun > s.RunIntensity ? 0.11 : (sinceLast > cfg.jogTimeoutMs ? 0.13 : 0.22);
+            double tau = targetRun > s.RunIntensity ? 0.12 : (targetRun <= 0.0 ? 0.09 : 0.20);
             double alpha = 1.0 - Math.Exp(-dtS / tau);
             s.RunIntensity = s.RunIntensity + (targetRun - s.RunIntensity) * alpha;
             if (targetRun <= 0.0 && s.RunIntensity < 0.04) s.RunIntensity = 0.0;
         }
 
-        private void RecordStep(double tMs)
+        private static double MergeChannelCadences(double a, double b, double c)
         {
-            // Refractory guard prevents bob + knee + elbow from double-counting the same footstep
-            if (tMs - _lastAnyStepMs < 145.0)
-                return;
-            _lastAnyStepMs = tMs;
-            _stepTimes[_stepWriteIdx] = tMs;
-            _stepWriteIdx = (_stepWriteIdx + 1) % _stepTimes.Length;
-            if (_stepCount < _stepTimes.Length) _stepCount++;
+            // Sort up to 3 active non-zero channel cadences so one noisy channel cannot double/triple the rate
+            int n = 0;
+            double x = 0, y = 0, z = 0;
+            if (a > 0) { x = a; n = 1; }
+            if (b > 0) { if (n == 0) x = b; else y = b; n++; }
+            if (c > 0) { if (n == 0) x = c; else if (n == 1) y = c; else z = c; n++; }
+            if (n == 0) return 0.0;
+            if (n == 1) return Math.Min(3.6, x);
+            if (n == 2) return Math.Min(x, y) * 0.65 + Math.Max(x, y) * 0.35;
+            if (x > y) { double t = x; x = y; y = t; }
+            if (y > z) { double t = y; y = z; z = t; }
+            if (x > y) { double t = x; x = y; y = t; }
+            return y; // median of the 3 channels
         }
     }
 }
