@@ -1,0 +1,40 @@
+# Apache / cPanel settings for a Unity WebGL build + the DroneVision engine.
+# (Unity copies this file next to index.html. On other servers set the same
+#  MIME types and Content-Encoding headers.)
+
+<IfModule mod_mime.c>
+  # Unity compressed builds (Brotli / Gzip)
+  RemoveType .gz
+  AddEncoding gzip .gz
+  AddType application/octet-stream .data.gz
+  AddType application/wasm .wasm.gz
+  AddType application/javascript .js.gz
+  AddType application/octet-stream .symbols.json.gz
+  RemoveType .br
+  AddEncoding br .br
+  AddType application/octet-stream .data.br
+  AddType application/wasm .wasm.br
+  AddType application/javascript .js.br
+  AddType application/octet-stream .symbols.json.br
+
+  # DroneVision engine (MediaPipe WebAssembly + models)
+  AddType application/wasm .wasm
+  AddType text/javascript .mjs
+  AddType application/octet-stream .task
+</IfModule>
+
+<IfModule mod_headers.c>
+  # models and wasm never change for a given version: cache them hard
+  <FilesMatch "\.(task|wasm|wasm\.br|wasm\.gz|data\.br|data\.gz)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # camera access is only allowed for this page and same-origin frames
+  Header set Permissions-Policy "camera=(self)"
+</IfModule>
+
+<IfModule mod_headers.c>
+  # engine scripts: always revalidate (a stale pose worker mixed with a new page breaks detection)
+  <FilesMatch "\.(js|mjs|html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
